@@ -17,7 +17,7 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 
 ### Phase 2: Memory Capture and Process Analysis (2009-12-05, 10:00 AM)
 - **Activity:** Alex runs TrueCrypt to create an encrypted container for `project_secrets.zip`, spawning processes for hiding data (e.g., under explorer.exe), and initiates network staging.
-- **Link to Labs:** Lab 2 (Memory Forensics) – Analyze `evidence/memory.winddramimage` (M57 scenario dump) with Volatility 3. Plugins (pslist/pstree) reveal TrueCrypt.exe (PID ~1000+, parent explorer.exe) for encryption; netscan shows localhost SMB/RPC and outbound connections (e.g., port 445) prepping data transfer. Dump process memory to extract strings like volume paths or IPs.
+- **Link to Labs:** Lab 2 (Memory Forensics) – Analyze `evidence/memory.ram` (M57 scenario dump) with Volatility 3. Plugins (pslist/pstree) reveal TrueCrypt.exe (PID ~1000+, parent explorer.exe) for encryption; netscan shows localhost SMB/RPC and outbound connections (e.g., port 445) prepping data transfer. Dump process memory to extract strings like volume paths or IPs.
 - **Key Findings:** TrueCrypt process tree indicates data concealment (hidden volumes for exfil prep); netscan detects external outbound (e.g., 192.168.1.100 suspect IP) linking to later network phase—correlates to Lab 1 deletion as staging hidden tracks.
 
 ### Phase 3: GUI Exploration and Deep Dive (2009-12-05, Afternoon)
