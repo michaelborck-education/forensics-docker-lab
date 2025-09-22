@@ -18,7 +18,7 @@
 ---
 
 ## Evidence
-Use provided sample memory dump `evidence/memdump.raw`. (Instructor may distribute a small practice dump from e.g., a public training set.)
+Download and place `mair_dump1.raw` (safe Windows XP memory dump ~128MB from Digital Corpora: https://digitalcorpora.org/downloads/mair-windows-memdumps/) into `evidence/memdump.raw`. (Public training set; no malware.)
 
 ---
 

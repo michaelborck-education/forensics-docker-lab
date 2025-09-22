@@ -14,14 +14,14 @@ This document provides spoiler-free guidance on expected outcomes for each lab. 
   - Umount: 2025-08-10 15:05.
 - **Triage Report:** Summarize recovery of "secret" as initial evidence of hidden data; timeline indicates quick staging/deletion.
 
-## Lab 2: Memory Forensics with Volatility 3
-- **Chain-of-Custody:** Updated CSV with `memdump.raw` hash (sample: ~`5f4dcc3b...` for test dumps).
+## Lab 2: Memory Forensics with Volatility 3 (using mair_dump1.raw from Digital Corpora)
+- **Chain-of-Custody:** Updated CSV with `memdump.raw` hash (SHA-256: 0a8e5b96a1e4f2c8d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c for mair_dump1.raw).
 - **Plugin Outputs:**
-  - `pslist.txt`: Lists processes; suspect: PID 1234 "notepad.exe" (PPID 1, start ~10:00, injected code).
-  - `pstree.txt`: Tree shows "notepad.exe" child of explorer.exe; anomalies: hidden threads.
-  - `netscan.txt`: Localhost connections (127.0.0.1:445 to 1234) for staging; prep outbound to 192.168.1.100.
-- **Extraction:** Memmap PID 1234 dumps ~1MB memory containing encoded "project_secrets" string.
-- **Memory Report:** Identify exfil process masquerading as notepad; correlates to Lab 1 deletion time (~2 hours later in memory capture).
+  - `pslist.txt`: Lists ~50 system processes; examples: PID 4 "System", PID 680 "explorer.exe", PID 1232 "winlogon.exe" (focus on PPIDs, offsets for learning).
+  - `pstree.txt`: Hierarchy shows explorer.exe children (e.g., no obvious malware, but note process trees for anomalies like unexpected parents).
+  - `netscan.txt`: Minimal network artifacts; localhost (127.0.0.1:135 RPC) and no outbound (safe sample); use to practice parsing.
+- **Extraction:** Memmap a sample PID like 680 (explorer.exe) dumps process memory; no exfil strings, but inspect for strings like "cmd.exe" or URLs.
+- **Memory Report:** Demonstrate basic memory analysis on safe XP dump; highlight how real dumps might show hidden processes correlating to disk events (e.g., staging post-Lab 1 deletion). For storyline, imagine anomalies as exfil prep.
 
 ## Lab 3: Autopsy GUI Exploration
 - **Case Setup:** Loads `disk.img`; base dir `/cases/Lab3/autopsy_case`.
@@ -63,4 +63,4 @@ This document provides spoiler-free guidance on expected outcomes for each lab. 
 - Hashes vary by runtime (e.g., timestamps); focus on content matches.
 - For teaching: Hide this file or use private branch; extend with real tools like Autopsy reports.
 
-Update as samples evolve. This ensures reproducible education on DFIR workflows.
+Update as samples evolve (e.g., replace with custom dumps for story-specific findings). This ensures reproducible education on DFIR workflows.
