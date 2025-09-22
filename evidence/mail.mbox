@@ -1,7 +1,28 @@
+From: admin@cloudcore.com Mon Dec  7 08:00:00 2009
+Date: Mon,  7 Dec 2009 08:00:00 +0000
+From: admin@cloudcore.com
+To: team@cloudcore.com
+Subject: Daily System Backup Complete
+Message-ID: <001@cloudcore.com>
+
+Routine backup logs attached. No issues.
+
+---
+From: hr@cloudcore.com Mon Dec  7 08:30:00 2009
+Date: Mon,  7 Dec 2009 08:30:00 +0000
+From: hr@cloudcore.com
+To: all@cloudcore.com
+Subject: Holiday Reminder
+Message-ID: <002@cloudcore.com>
+
+Don't forget the holiday party next week!
+
+---
+From: alex@cloudcore.com Mon Dec  7 09:45:00 2009
+Date: Mon,  7 Dec 2009 09:45:00 +0000
 From: alex@cloudcore.com
 To: exfil@personal.com
 Subject: Project Update
-Date: Mon,  7 Dec 2009 09:45:00 +0000
 Message-ID: <123@cloudcore.com>
 
 Attached: project_secrets.zip
