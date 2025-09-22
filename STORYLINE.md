@@ -32,7 +32,7 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 
 ### Phase 5: Network Exfiltration Confirmation (2025-08-13, 10:30 AM)
 - **Activity:** Alex uses a self-infected botnet (via IRC C2) for plausible deniability, downloading/deploying custom exfil tool (e.g., ysbinstall_1000489_3.exe) and scanning (advscan dcom135) before large HTTP POST to suspicious server.
-- **Link to Labs:** Lab 5 (Network Analysis) – Tshark on `Lab_5.cap` (renamed evidence/network.cap) reveals IRC connection to hunt3d.devilz.net (#s01/#sl0w3r), bot commands for exe downloads (bbnz.exe/jocker.exe/ysbinstall_1000489_3.exe), .advscan on port 135 (prep for transfer/vuln scan), confirming orchestrated exfil (~50MB to IP 203.0.113.50:8080 matching project_secrets.zip).
+- **Link to Labs:** Lab 5 (Network Analysis) – Tshark on `evidence/network.cap` (~114KB from ethical-hacking caps) reveals IRC connection to hunt3d.devilz.net (#s01/#sl0w3r), bot commands for exe downloads (bbnz.exe/jocker.exe/ysbinstall_1000489_3.exe), .advscan on port 135 (prep for transfer/vuln scan), confirming orchestrated exfil (~50MB to IP 203.0.113.50:8080 matching project_secrets.zip).
 - **Key Findings:** IRC C2 channel (nickname damn-0262937047) deploys exfil tool, timestamps (10:32-10:45) align with USB removal; botnet provides cover ("virus" excuse) for sophisticated insider attack.
 
 ### Phase 6: Incident Closure and Reporting (Post-Incident)
