@@ -25,3 +25,6 @@ This repo supports 6 labs on DFIR exfil investigation (2009 Cloudcore story). Ti
 - Advanced: Add bulk_extractor for exfil keywords.
 
 See TROUBLESHOOTING.md for student issues. Feedback to issues.
+
+## Course Mapping
+See COURSE_MAPPING.md for a 12-week syllabus integrating theory and labs.
