@@ -1,0 +1,16 @@
+# Generated files and outputs (student work)
+cases/*
+
+# Evidence files (large, replaceable)
+evidence/*
+!evidence/.gitkeep
+
+# Docker and temp
+.git/
+*.log
+.DS_Store
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
