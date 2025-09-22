@@ -7,7 +7,7 @@ This lab series simulates a digital forensics investigation into a suspected dat
 The following outlines the suspected exfiltration storyline, derived from artifacts across all labs. Each lab builds on prior findings to construct a coherent picture.
 
 ### Incident Setup (Pre-2025-08-10)
-- **Context:** Employee \"Alex Doe\" (suspect) works in engineering with access to proprietary source code and client data.
+- **Context:** Employee "Alex Doe" (suspect) works in engineering with access to proprietary source code and client data.
 - **Initial Actions:** Alex copies sensitive files (e.g., `project_secrets.zip`) to a workstation for staging.
 
 ### Phase 1: Local Preparation and Deletion (2025-08-10 to 08-12)
@@ -16,9 +16,9 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Key Findings:** Deleted file contained partial project notes; timeline shows mount at `/mnt/usb` followed by deletion to hide tracks.
 
 ### Phase 2: Memory Capture and Process Analysis (2025-08-12, 10:00 AM)
-- **Activity:** Alex runs a staging script, spawning suspicious processes (e.g., `exfil.exe` disguised as `notepad.exe`).
-- **Link to Labs:** Lab 2 (Memory Forensics) – Analyze `memdump.raw` with Volatility 3. Plugins reveal hidden processes (PID 1234: suspicious parent-child tree), network connections to localhost (staging data), and dumped process memory containing encoded file fragments.
-- **Key Findings:** Process tree shows injection into legitimate apps; netscan detects outbound prep to IP 192.168.1.100 (suspect's home IP).
+- **Activity:** Alex runs TrueCrypt to create an encrypted container for `project_secrets.zip`, spawning processes for hiding data (e.g., under explorer.exe), and initiates network staging.
+- **Link to Labs:** Lab 2 (Memory Forensics) – Analyze `evidence/memory.winddramimage` (M57 scenario dump) with Volatility 3. Plugins (pslist/pstree) reveal TrueCrypt.exe (PID ~1000+, parent explorer.exe) for encryption; netscan shows localhost SMB/RPC and outbound connections (e.g., port 445) prepping data transfer. Dump process memory to extract strings like volume paths or IPs.
+- **Key Findings:** TrueCrypt process tree indicates data concealment (hidden volumes for exfil prep); netscan detects external outbound (e.g., 192.168.1.100 suspect IP) linking to later network phase—correlates to Lab 1 deletion as staging hidden tracks.
 
 ### Phase 3: GUI Exploration and Deep Dive (2025-08-12, Afternoon)
 - **Activity:** Full filesystem walkthrough identifies metadata anomalies (e.g., modified timestamps on `/home/alex/Documents/secrets/`).
