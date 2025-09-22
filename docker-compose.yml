@@ -1,0 +1,98 @@
+version: "3.8"
+
+# Forensic Analysis Lab (containers run tools against read-only evidence)
+services:
+  # One-stop CLI toolbox (Sleuth Kit, TestDisk/PhotoRec, Foremost, ewf-tools, exiftool, hashdeep, bulk_extractor, YARA, Volatility3)
+  dfir:
+    build: ./images/dfir-cli
+    image: forensic/dfir-cli:latest
+    user: "${PUID}:${PGID}"
+    read_only: true
+    working_dir: /cases
+    volumes:
+      - ./evidence:/evidence:ro    # <-- mount evidence READ-ONLY
+      - ./cases:/cases             # outputs & working files
+      - ./rules:/rules:ro          # optional YARA rules, etc.
+    tmpfs:
+      - /tmp
+    command: ["sleep", "infinity"]
+
+  # Plaso (log2timeline) for super timelines
+  plaso:
+    image: log2timeline/plaso:latest
+    user: "${PUID}:${PGID}"
+    read_only: true
+    working_dir: /cases
+    volumes:
+      - ./evidence:/evidence:ro
+      - ./cases:/cases
+    tmpfs:
+      - /tmp
+    command: ["sleep", "infinity"]
+
+  # Volatility 3 for memory forensics
+  vol3:
+    image: sk4la/volatility3:latest
+    user: "${PUID}:${PGID}"
+    read_only: true
+    working_dir: /cases
+    volumes:
+      - ./evidence:/evidence:ro
+      - ./cases:/cases
+    tmpfs:
+      - /tmp
+    command: ["sleep", "infinity"]
+
+  # YARA scanner (use with ./rules)
+  yara:
+    image: blacktop/yara:latest
+    user: "${PUID}:${PGID}"
+    read_only: true
+    working_dir: /cases
+    volumes:
+      - ./evidence:/evidence:ro
+      - ./cases:/cases
+      - ./rules:/rules:ro
+    tmpfs:
+      - /tmp
+    command: ["sleep", "infinity"]
+
+  # Optional GUI: Autopsy over noVNC in your browser at http://localhost:8080/vnc.html
+  # Note: community images vary; if it doesn't start on your OS, keep using CLI tools above.
+  autopsy:
+    image: bannsec/autopsy:latest
+    depends_on:
+      - novnc
+    environment:
+      - DISPLAY=novnc:0.0
+    networks: [x11]
+    volumes:
+      - ./cases:/cases
+      - ./evidence:/evidence:ro
+    # If Autopsy doesn't auto-start, run: docker compose exec autopsy autopsy &
+
+  novnc:
+    image: theasp/novnc:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - DISPLAY_WIDTH=${DISPLAY_WIDTH}
+      - DISPLAY_HEIGHT=${DISPLAY_HEIGHT}
+      - RUN_XTERM=no
+    networks: [x11]
+
+  # Chain-of-custody helper: hashes everything under /evidence and appends to /cases/chain_of_custody.csv
+  hashlog:
+    image: python:3.12-alpine
+    user: "${PUID}:${PGID}"
+    read_only: true
+    volumes:
+      - ./evidence:/evidence:ro
+      - ./cases:/cases
+      - ./scripts:/scripts:ro
+    command: ["python", "/scripts/hashlog.py", "/evidence", "/cases/chain_of_custody.csv", "sha256"]
+    environment:
+      - COC_NOTE=initial intake
+
+networks:
+  x11: {}
