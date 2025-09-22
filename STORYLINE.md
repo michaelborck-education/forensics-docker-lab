@@ -31,9 +31,9 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Key Findings:** Email headers reveal BCC to external domain; logs confirm USB serial \"12345-ABC\" insertion right after email, suggesting staged data transfer.
 
 ### Phase 5: Network Exfiltration Confirmation (2025-08-13, 10:30 AM)
-- **Activity:** Data transferred over network post-USB staging (large HTTP POST to suspicious server).
-- **Link to Labs:** Lab 5 (Network Analysis) – Tshark on `network.pcap` identifies TCP sessions to external IP 203.0.113.50:8080 (08-13 10:32-10:45), with ~50MB transfers matching `project_secrets.zip` size.
-- **Key Findings:** Filters show non-standard ports and user-agent strings indicative of custom exfil tool; timestamps align with USB removal log.
+- **Activity:** Alex uses a self-infected botnet (via IRC C2) for plausible deniability, downloading/deploying custom exfil tool (e.g., ysbinstall_1000489_3.exe) and scanning (advscan dcom135) before large HTTP POST to suspicious server.
+- **Link to Labs:** Lab 5 (Network Analysis) – Tshark on `Lab_5.cap` (renamed evidence/network.cap) reveals IRC connection to hunt3d.devilz.net (#s01/#sl0w3r), bot commands for exe downloads (bbnz.exe/jocker.exe/ysbinstall_1000489_3.exe), .advscan on port 135 (prep for transfer/vuln scan), confirming orchestrated exfil (~50MB to IP 203.0.113.50:8080 matching project_secrets.zip).
+- **Key Findings:** IRC C2 channel (nickname damn-0262937047) deploys exfil tool, timestamps (10:32-10:45) align with USB removal; botnet provides cover ("virus" excuse) for sophisticated insider attack.
 
 ### Phase 6: Incident Closure and Reporting (Post-Incident)
 - **Overall Impact:** Exfiltrated data includes source code and client PII; potential IP theft.
