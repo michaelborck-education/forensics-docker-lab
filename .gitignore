@@ -1,9 +1,24 @@
-# Generated files and outputs (student work)
-cases/*
+# Generated files and outputs (student work, exclude subdirs but allow templates)
+cases/**/*
+!cases/Lab_*/README.md
+!cases/Lab_1/rubric.csv
+!cases/Lab_1/chain_of_custody_template.csv
+!cases/Lab_*/**/*.md  # Allow report templates
 
-# Evidence files (large, replaceable)
+# Evidence files (large, replaceable; allow dummies/templates)
 evidence/*
 !evidence/.gitkeep
+!evidence/encrypted_container.dat
+
+# Docker and temp
+.git/
+*.log
+.DS_Store
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
 
 # Docker and temp
 .git/
