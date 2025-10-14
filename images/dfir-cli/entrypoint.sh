@@ -18,22 +18,7 @@ export HISTFILESIZE=2000
 export TMPDIR=/tmp
 
 # Execute the command passed to the container
-if [ "$#" -eq 0 ]; then
-    # No command provided - start bash
-    # Check if we have a TTY (interactive mode)
-    if [ -t 0 ]; then
-        # Interactive mode with TTY
-        exec /bin/bash --norc
-    else
-        # No TTY - print message and exit cleanly
-        echo ""
-        echo "⚠️  No interactive terminal detected."
-        echo "    For interactive mode, use: docker compose run --rm -it dfir"
-        echo "    For one-off commands, use: docker compose run --rm dfir <command>"
-        echo ""
-        exit 0
-    fi
-else
-    # Command provided - execute it
-    exec "$@"
-fi
+# This allows both:
+# - Interactive: docker compose run --rm -it dfir (CMD provides /bin/bash)
+# - One-off: docker compose run --rm dfir fls /evidence/disk.img
+exec "$@"
