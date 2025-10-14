@@ -1,6 +1,6 @@
 # Forensic Analysis Lab (Docker)
 
-A reproducible **forensic analysis** environment that uses containers **to analyze evidence** (not to run malware).  
+A reproducible **forensic analysis** environment that uses containers **to analyse evidence** (not to run malware).  
 It includes CLI tools (Sleuth Kit, ewf-tools, TestDisk/PhotoRec, Foremost, bulk_extractor, YARA, Volatility 3), Plaso, and an **optional** Autopsy GUI via noVNC.
 
 ## Quick start

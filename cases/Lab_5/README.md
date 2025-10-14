@@ -1,6 +1,6 @@
 # Forensic Lab 5: Network Artifact Analysis
 
-**Goal:** Analyze a packet capture (PCAP) to detect suspicious exfiltration.
+**Goal:** Analyse a packet capture (PCAP) to detect suspicious exfiltration.
 
 **Skills:**  
 - Use tshark/Wireshark in Docker.  
@@ -20,6 +20,7 @@
    ```bash
    docker run --rm -v $PWD/evidence:/evidence:ro corfr/tshark -r /evidence/network.pcap -q -z conv,tcp > cases/Lab_5/connections.txt
    ```
+
 3. Identify suspicious sessions (large transfers, odd ports).  
 4. Document in `network_report.md`.  
 

@@ -2,6 +2,7 @@
 
 ## Learning outcomes
 By the end of this lab you will be able to:
+
 1. **Apply** a chain-of-custody process using hashing and logging.
 2. **Recover** deleted files from a disk image using Sleuth Kit/Foremost.
 3. **Construct** a Plaso timeline and **interpret** notable events.

@@ -1,0 +1,55 @@
+  ________________________________________________________________
+ /                                                                \
+|   DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY              |
+|   Cloudcore 2009 Data Exfiltration Investigation               |
+ \________________________________________________________________/
+
+  🔍 Tools Installed:
+    • Sleuth Kit (fls, icat, fsstat, tsk_recover, mmls, blkls)
+    • TestDisk/PhotoRec (file carving)
+    • Foremost (signature-based carving)
+    • libewf-tools (E01 image support)
+    • YARA (malware pattern matching)
+    • exiftool, hashdeep, file utilities
+    • grep, strings, vim, nano
+
+  📦 Specialized Containers (run from host):
+    • Volatility 3: docker compose run --rm vol3 vol -f ...
+    • Plaso/log2timeline: docker compose run --rm plaso ...
+
+  📁 Workspace Structure:
+    /evidence → Read-only evidence storage (DO NOT MODIFY!)
+    /cases    → Your analysis outputs and reports
+    /rules    → YARA rules and signatures
+
+  ⚠️  Forensic Best Practices:
+    • Never modify original evidence (evidence/ is read-only)
+    • Document EVERY command executed
+    • Maintain chain of custody (use hashlog service)
+    • Verify hashes before and after analysis
+
+  📚 Quick Command Examples (inside this workstation):
+    • List files in disk image:
+      fls -r /evidence/disk.img
+
+    • Recover deleted files:
+      tsk_recover /evidence/disk.img recovered/
+
+    • Calculate evidence hash:
+      sha256sum /evidence/memory.raw
+
+    • Search with YARA:
+      yara -r /rules/malware.yar /evidence/
+
+    • Search for patterns:
+      grep -i "password" Lab_1/*.txt
+
+  💡 Tips:
+    • Use tab-completion for file paths
+    • Redirect output to /cases/ for persistence
+    • Type 'exit' to leave the workstation
+    • Files in /cases persist on your host machine
+
+  ________________________________________________________________
+
+  Environment ready. Proceed with analysis...

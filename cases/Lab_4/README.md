@@ -1,6 +1,6 @@
 # Forensic Lab 4: Email & Log Analysis
 
-**Goal:** Learn to analyze mailbox exports and system logs to detect evidence of exfiltration.
+**Goal:** Learn to analyse mailbox exports and system logs to detect evidence of exfiltration.
 
 **Skills:**  
 - Parse mailbox (`.mbox`) headers and attachments.  

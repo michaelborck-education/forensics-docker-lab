@@ -20,7 +20,7 @@ The forensic environment is designed to feel like logging into a dedicated foren
 
 ```bash
 # Enter the forensic workstation
-docker compose run --rm -it dfir
+docker compose run --rm dfir
 ```
 
 You'll see a banner with available tools and get an interactive bash prompt:
@@ -70,7 +70,7 @@ docker compose run --rm dfir fls -r /evidence/disk.img
 ## Test Run
 ```bash
 # Enter the workstation
-docker compose run --rm -it dfir
+docker compose run --rm dfir
 
 # Inside, test tools:
 fls -r /evidence/disk.img

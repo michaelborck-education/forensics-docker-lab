@@ -16,10 +16,12 @@
   # example
   docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/Lab1/fls.txt
   ```
+
 - Tools and versions (if relevant).
 
 ## 3. Findings
 ### 3.1 Recovered Artifacts
+
 - Path(s) & description(s):
   - `/cases/Lab1/tsk_recover_out/...` → <explain significance>
 - Hash each recovered file you reference:
@@ -31,6 +33,7 @@
 - Notable events (3–5) with timestamps & rationale:
   1) <timestamp> — <event> — Why it matters
   2) ...
+
 - Attach or reference `cases/Lab1/timeline.csv`
 
 ## 4. Integrity & Limitations

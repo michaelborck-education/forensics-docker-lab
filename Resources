@@ -1,0 +1,33 @@
+Yes, finding a single, free textbook that covers cyber forensics specifically for the Australian environment is difficult, as most resources are US-centric.
+
+The best approach is to combine a high-quality, general-purpose free textbook with specific Australian government and legal resources.
+
+---
+## Foundational Cyber Forensics Textbooks (Free)
+These resources are excellent for learning the core technical principles of digital forensics, which are universal.
+
+**Digital Forensics Laboratory Manual** (University of New Haven)
+This is a fantastic, hands-on lab manual that provides students with practical exercises. It covers fundamental topics like evidence handling, file system analysis (FAT, NTFS), and registry forensics using open-source tools. While it doesn't cover Australian law, it's perfect for the hands-on, technical component of a course.
+
+**NIST Special Publications**
+The US National Institute of Standards and Technology (NIST) provides the industry-standard guides for digital forensics procedures. These are not narrative textbooks but are essential, authoritative references.
+* **SP 800-86: Guide to Integrating Forensic Techniques into Incident Response:** Covers the forensic process from a cybersecurity incident perspective.
+* **SP 800-101: Guidelines on Mobile Device Forensics:** Provides a detailed framework for handling and analyzing mobile devices.
+
+---
+## Australian Legal & Procedural Context (Free)
+You'll need to supplement the technical knowledge from the books above with these Australian-specific resources to cover legal and procedural requirements.
+
+**The Australian Institute of Criminology (AIC)**
+The AIC publishes numerous reports, trends, and statistical bulletins on cybercrime in Australia. These papers are invaluable for understanding the local threat landscape and the Australian response to cybercrime.
+
+**Key Legislation on AustLII**
+Students must have a foundational understanding of the laws governing digital evidence. The Australasian Legal Information Institute (AustLII) provides free access to all legislation. Key acts include:
+* **Evidence Act 1995 (Cth):** Particularly sections on the admissibility of electronic documents and evidence.
+* **Telecommunications (Interception and Access) Act 1979 (TIA Act):** Governs law enforcement access to metadata and communications content.
+* **Surveillance Devices Act 2004 (Cth):** Regulates the use of surveillance devices by law enforcement.
+
+**Office of the eSafety Commissioner**
+While focused on online safety, the eSafety Commissioner's office publishes research and reports that are highly relevant to investigations involving online harassment, image-based abuse, and other forms of cybercrime prevalent in Australia.
+
+By combining the practical labs from the UNH manual with the procedural rigour of NIST guides and the essential legal context from Australian government sources, you can create a comprehensive and locally relevant curriculum for your students.

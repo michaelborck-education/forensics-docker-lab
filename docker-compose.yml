@@ -3,6 +3,10 @@ version: "3.8"
 # Forensic Analysis Lab (containers run tools against read-only evidence)
 services:
   # One-stop CLI toolbox (Sleuth Kit, TestDisk/PhotoRec, Foremost, ewf-tools, exiftool, hashdeep, bulk_extractor, YARA, Volatility3)
+  # Usage:
+  #   Interactive mode (recommended): docker compose run --rm -it dfir
+  #   One-off command: docker compose run --rm dfir fls -r /evidence/disk.img
+  #   Background mode: docker compose up -d dfir && docker compose exec dfir bash
   dfir:
     build: ./images/dfir-cli
     image: forensic/dfir-cli:latest
@@ -15,7 +19,9 @@ services:
       - ./rules:/rules:ro          # optional YARA rules, etc.
     tmpfs:
       - /tmp
-    command: ["sleep", "infinity"]
+    stdin_open: true                # Keep STDIN open for interactive sessions
+    tty: true                       # Allocate pseudo-TTY for interactive sessions
+    # Note: No 'command' specified - uses Dockerfile CMD (/bin/bash) by default
 
   # Plaso (log2timeline) for super timelines
   plaso:

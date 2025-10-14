@@ -31,7 +31,25 @@
 
 ## Steps
 
+### 0) Build and enter the forensic workstation
+```bash
+# First time only: Build the forensic container
+docker compose build dfir
+
+# Enter the interactive forensic workstation
+docker compose run --rm -it dfir
+```
+
+You'll see the forensic lab banner and get a bash prompt. All commands below can be run **inside this interactive session** (recommended) or as one-off commands (see Alternative below).
+
 ### 1) Hash baseline (integrity & intake)
+**Inside the workstation:**
+```bash
+# Exit the workstation temporarily (or open a new terminal)
+exit
+```
+
+**On your host:**
 ```bash
 docker compose run --rm hashlog
 # Optionally add a note
@@ -47,18 +65,30 @@ bash scripts/make_practice_image.sh
 This creates **`evidence/disk.img`** with a deleted file (`flag.txt`) to recover later.
 
 ### 3) List file system and recover deleted items
+**Re-enter the workstation:**
+```bash
+docker compose run --rm -it dfir
+```
+
+**Inside the workstation, run:**
 ```bash
 # File system listing (Sleuth Kit)
-docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/Lab_1/fls.txt
+fls -r -m / /evidence/disk.img > Lab_1/fls.txt
 
 # Recover deleted with TSK
-docker compose run --rm dfir tsk_recover -a /evidence/disk.img /cases/Lab_1/tsk_recover_out
+mkdir -p Lab_1/tsk_recover_out
+tsk_recover -a /evidence/disk.img Lab_1/tsk_recover_out
 
 # Optional: Compare with Foremost carving
-docker compose run --rm dfir foremost -i /evidence/disk.img -o /cases/Lab_1/foremost_out
+mkdir -p Lab_1/foremost_out
+foremost -i /evidence/disk.img -o Lab_1/foremost_out
+
+# Exit to run Plaso (different container)
+exit
 ```
 
 ### 4) Build a Plaso super-timeline and export CSV
+**On your host:**
 ```bash
 docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/disk.img
 docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso > cases/Lab_1/timeline.csv
@@ -67,6 +97,23 @@ Open `cases/Lab_1/timeline.csv` in your spreadsheet tool. Identify 3–5 notable
 
 ### 5) Complete your triage report
 Fill in `cases/Lab_1/triage_report.md` using the template. Reference recovered files and timeline evidence.
+
+---
+
+## Alternative: One-Off Commands (Not Recommended for Learning)
+
+If you prefer not to use the interactive workstation, you can run individual commands:
+
+```bash
+docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/Lab_1/fls.txt
+docker compose run --rm dfir tsk_recover -a /evidence/disk.img /cases/Lab_1/tsk_recover_out
+```
+
+**However, the interactive mode is recommended** because:
+- Less typing (no `docker compose run --rm dfir` prefix)
+- More realistic forensic workflow
+- Better for learning and exploration
+- Tab completion and command history work properly
 
 ---
 

@@ -1,6 +1,16 @@
 # Suggested Course Mapping: Cyber Forensics (12 Weeks)
 
-This 12-week schedule maps theory, readings, and hands-on labs from the repo to a typical cyber forensics course. Total: 3 credits, ~3hrs/week theory + 3hrs lab. Assessments: 1 (20%, Lab 1-2), 2 (40%, Labs 3-5), 3 (40%, Lab 6 report). Adjust for class size/time.
+This 12-week schedule maps theory, readings, and hands-on labs from the repo to a typical cyber forensics course. 
+
+Total: 25 credits, ~3hrs/week theory + lab. 
+
+Assessments: 
+
+* 1 (20%, Lab 1-2), 
+* 2 (40%, Labs 3-5), 
+* 3 (40%, Lab 6 report). 
+
+Adjust for class size/time.
 
 ## Week 1: Introduction to Cyber Forensics
 - **Theory**: Overview of DFIR (Digital Forensics & Incident Response); roles, principles (ACPO/ISO 27037).
@@ -37,28 +47,28 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
 - **Assessment 1 (20%)**: Lab 1 submission (recovery/timeline report).
 - **Duration**: 1hr theory + 2hrs lab.
 
-## Week 6: Analyzing Acquired Persistent Storage Images
+## Week 6: Analysing Acquired Persistent Storage Images
 - **Theory**: Filesystem analysis, carving, metadata.
 - **Readings**: GLOSSARY.md (carving); WORKBOOK.md (Lab 3 template).
 - **Activities**: Lab 3: Autopsy on disk.img (explore deleted, keywords).
 - **Assessment**: Peer review Lab 1 reports.
 - **Duration**: 1hr theory + 2hrs lab.
 
-## Week 7: Analyzing Acquired Volatile Storage Images
+## Week 7: Analysing Acquired Volatile Storage Images
 - **Theory**: Memory forensics (processes, netscan, extraction).
 - **Readings**: Lab 2 README (plugins).
 - **Activities**: Full Lab 2: Volatility on memory.ram (TrueCrypt/net).
 - **Assessment**: None (prep for Assessment 2).
 - **Duration**: 1hr theory + 2hrs lab.
 
-## Week 8: Acquiring and Analyzing Network Data
+## Week 8: Acquiring and Analysing Network Data
 - **Theory**: PCAP basics, protocols (IRC/HTTP), C2 detection.
 - **Readings**: Lab 5 README (tshark).
-- **Activities**: Lab 5: Analyze network.cap (IRC bot/exfil).
+- **Activities**: Lab 5: Analyse network.cap (IRC bot/exfil).
 - **Assessment**: Group discussion: "C2 in M57 vs. story."
 - **Duration**: 1hr theory + 2hrs lab.
 
-## Week 9: Analyzing Logs and Correlating Events
+## Week 9: Analysing Logs and Correlating Events
 - **Theory**: Log parsing (syslog/mbox), correlation techniques.
 - **Readings**: Lab 4 README (grep).
 - **Activities**: Full Lab 4: Parse mail.mbox/logs (USB/email tie).
@@ -84,7 +94,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
 - **Readings**: FACILITATION.md (grading).
 - **Activities**: Lab 6 part 2: Final report (narrative, recommendations).
 - **Assessment 3 (40%)**: Full Lab 6 report.
-- **Duration**: 1hr theory + 2hrs finalization.
+- **Duration**: 1hr theory + 2hrs finalisation.
 
 ## Notes
 - **Integration**: Labs follow theory; use WORKBOOK.md for notes.
