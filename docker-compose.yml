@@ -17,6 +17,7 @@ services:
       - ./rules:/rules:ro          # optional YARA rules, etc.
     tmpfs:
       - /tmp
+      - /usr/local/lib/python3.13/dist-packages/volatility3/symbols:uid=1000,gid=1000
     stdin_open: true                # Keep STDIN open for interactive sessions
     tty: true                       # Allocate pseudo-TTY for interactive sessions
     # Note: No 'command' specified - uses Dockerfile CMD (/bin/bash) by default
