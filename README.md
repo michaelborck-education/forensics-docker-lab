@@ -1,24 +1,45 @@
 # Forensic Analysis Lab (Docker)
 
-A reproducible **forensic analysis** environment that uses containers **to analyse evidence** (not to run malware).  
-It includes CLI tools (Sleuth Kit, ewf-tools, TestDisk/PhotoRec, Foremost, bulk_extractor, YARA, Volatility 3), Plaso, and an **optional** Autopsy GUI via noVNC.
+A reproducible **forensic analysis** environment that uses containers **to analyse evidence** (not to run malware).
+It includes CLI tools (Sleuth Kit, ewf-tools, TestDisk/PhotoRec, Foremost, YARA, Volatility 3), Plaso, and an **optional** Autopsy GUI via noVNC.
+
+Features an **immersive interactive forensic workstation** that simulates working in a real forensic lab environment.
 
 ## Quick start
 
+### Interactive Workstation (Recommended)
+
 ```bash
-# 1) Put test artifacts here (read-only inside containers)
+# 1) Setup directories
 mkdir -p evidence cases rules
 
-# 2) Build the toolbox image
+# 2) Build the forensic workstation
 docker compose build dfir
 
-# 3) (Recommended) Record chain-of-custody hashes of everything in ./evidence
+# 3) Enter the interactive forensic workstation
+docker compose run --rm -it dfir
+
+# You'll see a banner and get an analyst prompt:
+# analyst@forensics-lab:/cases$
+
+# Inside the workstation, run commands directly:
+fls -r /evidence/disk.img
+tsk_recover -a /evidence/disk.img Lab_1/recovered/
+grep -i "password" Lab_1/*.txt
+
+# Exit when done
+exit
+```
+
+See [docs/INTERACTIVE_WORKSTATION.md](docs/INTERACTIVE_WORKSTATION.md) for detailed guide.
+
+### One-Off Commands (Alternative)
+
+```bash
+# Record chain-of-custody hashes
 docker compose run --rm hashlog
 
-# 4) Start the toolbox containers (they just sleep; you run tools on demand)
-docker compose up -d dfir plaso vol3 yara
-
-# 5) Use tools (examples)
+# Use tools with one-off commands
 # Plaso super-timeline from an image:
 docker compose run --rm plaso log2timeline.py /cases/timeline.plaso /evidence/disk.img
 
@@ -35,7 +56,7 @@ docker compose run --rm dfir foremost -i /evidence/disk.img -o /cases/foremost_o
 docker compose run --rm -it dfir photorec
 
 # Volatility 3 (Windows example):
-docker compose run --rm vol3 vol -f /evidence/memdump.raw windows.pslist.PsList
+docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList
 
 # YARA scan recursively with your rules:
 docker compose run --rm yara yara -r /rules ./evidence > cases/yara_hits.txt

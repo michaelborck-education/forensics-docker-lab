@@ -1,5 +1,3 @@
-version: "3.8"
-
 # Forensic Analysis Lab (containers run tools against read-only evidence)
 services:
   # One-stop CLI toolbox (Sleuth Kit, TestDisk/PhotoRec, Foremost, ewf-tools, exiftool, hashdeep, bulk_extractor, YARA, Volatility3)

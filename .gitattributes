@@ -1,0 +1,13 @@
+# Force Unix line endings for shell scripts (critical for Docker)
+*.sh text eol=lf
+
+# Force Unix line endings for other script files
+entrypoint.sh text eol=lf
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+
+# Markdown files (can be platform-specific)
+*.md text
+
+# Let Git handle other files automatically
+* text=auto
