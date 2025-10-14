@@ -6,6 +6,11 @@ cat /etc/banner.txt
 # Set HOME to writable location (container is read-only)
 export HOME=/cases
 
+# Fix "I have no name!" by setting USER environment variable
+# This works even in read-only containers
+export USER=analyst
+export LOGNAME=analyst
+
 # Set a forensic-themed prompt for interactive sessions
 export PS1='\[\033[01;32m\]analyst@forensics-lab\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
