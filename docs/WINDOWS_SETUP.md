@@ -6,16 +6,27 @@
 
 **Cause:** Windows Git checkout converted Unix line endings (LF) to Windows line endings (CRLF), breaking the script.
 
-**Solution 1: Fix Line Endings and Rebuild**
+**Solution 1: Fix Line Endings and Rebuild (PowerShell - Works on All Windows)**
 
-```bash
-# In Git Bash or WSL:
-bash scripts/fix-line-endings.sh
+```powershell
+# Open PowerShell in the project folder:
+cd C:\path\to\forensics-docker-lab
 
-# Rebuild the Docker image:
-docker compose build dfir
+# Run the fix script:
+.\scripts\fix-line-endings.ps1
+
+# Rebuild the Docker image (no cache):
+docker compose build --no-cache dfir
 
 # Try again:
+docker compose run --rm -it dfir
+```
+
+**Alternative (If you have Git Bash or WSL):**
+
+```bash
+bash scripts/fix-line-endings.sh
+docker compose build --no-cache dfir
 docker compose run --rm -it dfir
 ```
 
