@@ -11,7 +11,15 @@ export HOME=/cases
 export USER=analyst
 export LOGNAME=analyst
 
-# Set a forensic-themed prompt for interactive sessions
+# Create .bashrc in /cases with forensic prompt (bash will source this on interactive start)
+cat > /cases/.bashrc << 'EOF'
+# Forensic workstation prompt
+export PS1='\[\033[01;32m\]analyst@forensics-lab\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+export USER=analyst
+export LOGNAME=analyst
+EOF
+
+# Also export for non-interactive commands
 export PS1='\[\033[01;32m\]analyst@forensics-lab\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
 # Set up bash history for convenience
