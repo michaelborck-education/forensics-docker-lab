@@ -34,7 +34,8 @@ export HISTFILESIZE=2000
 export TMPDIR=/tmp
 
 # Volatility 3 needs a writable cache directory for symbol files
-export VOLATILITY3_CACHE_PATH=/cases/.volatility3_cache
+export VOLATILITY3_CACHE_PATH=/tmp/.vol3cache
+mkdir -p /tmp/.vol3cache
 
 # Execute the command passed to the container
 # This allows both:
