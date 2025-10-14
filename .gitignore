@@ -9,6 +9,8 @@ cases/**/*
 evidence/*
 !evidence/.gitkeep
 !evidence/encrypted_container.dat
+evidence/memory.raw
+evidence/disk.img
 
 # Docker and temp
 .git/
