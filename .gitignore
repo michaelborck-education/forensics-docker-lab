@@ -11,6 +11,9 @@ evidence/*
 !evidence/encrypted_container.dat
 evidence/memory.raw
 evidence/disk.img
+cases/.cache
+_archive
+
 
 # Docker and temp
 .git/

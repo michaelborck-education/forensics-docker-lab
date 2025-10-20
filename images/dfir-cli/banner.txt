@@ -9,12 +9,13 @@
     • TestDisk/PhotoRec (file carving)
     • Foremost (signature-based carving)
     • libewf-tools (E01 image support)
+    • Volatility 3 (vol) - Modern Windows memory forensics
+    • Volatility 2 (vol2) - Legacy Windows XP/Vista/2000
     • YARA (malware pattern matching)
     • exiftool, hashdeep, file utilities
     • grep, strings, vim, nano
 
   📦 Specialized Containers (run from host):
-    • Volatility 3: docker compose run --rm vol3 vol -f ...
     • Plaso/log2timeline: docker compose run --rm plaso ...
 
   📁 Workspace Structure:
@@ -34,6 +35,12 @@
 
     • Recover deleted files:
       tsk_recover /evidence/disk.img recovered/
+
+    • Memory forensics (modern Windows 7+):
+      vol -f /evidence/memory.raw windows.pslist.PsList
+
+    • Memory forensics (legacy Windows XP):
+      vol2 -f /evidence/memory.raw --profile=WinXPSP2x86 pslist
 
     • Calculate evidence hash:
       sha256sum /evidence/memory.raw
