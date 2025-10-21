@@ -53,7 +53,9 @@ services:
 
   # Volatility 2 for legacy Windows (XP, 2000, NT)
   vol2:
+    build: ./images/volatility2
     image: forensic/volatility2:latest
+    platform: linux/amd64
     user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
