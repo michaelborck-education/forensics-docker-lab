@@ -8,7 +8,8 @@ services:
   dfir:
     build: ./images/dfir-cli
     image: forensic/dfir-cli:latest
-    user: "${PUID}:${PGID}"
+    platform: linux/amd64
+    user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
     volumes:
@@ -25,7 +26,8 @@ services:
   # Plaso (log2timeline) for super timelines
   plaso:
     image: log2timeline/plaso:latest
-    user: "${PUID}:${PGID}"
+    platform: linux/amd64
+    user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
     volumes:
@@ -35,10 +37,24 @@ services:
       - /tmp
     command: ["sleep", "infinity"]
 
-  # Volatility 3 for memory forensics
+  # Volatility 3 for memory forensics (Windows 7+)
   vol3:
     image: sk4la/volatility3:latest
-    user: "${PUID}:${PGID}"
+    platform: linux/amd64
+    user: "${PUID:-1000}:${PGID:-1000}"
+    read_only: true
+    working_dir: /cases
+    volumes:
+      - ./evidence:/evidence:ro
+      - ./cases:/cases
+    tmpfs:
+      - /tmp
+    command: ["sleep", "infinity"]
+
+  # Volatility 2 for legacy Windows (XP, 2000, NT)
+  vol2:
+    image: forensic/volatility2:latest
+    user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
     volumes:
@@ -51,7 +67,8 @@ services:
   # YARA scanner (use with ./rules)
   yara:
     image: blacktop/yara:latest
-    user: "${PUID}:${PGID}"
+    platform: linux/amd64
+    user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
     volumes:
@@ -65,7 +82,7 @@ services:
   # Optional GUI: Autopsy over noVNC in your browser at http://localhost:8080/vnc.html
   # Note: community images vary; if it doesn't start on your OS, keep using CLI tools above.
   autopsy:
-    image: bannsec/autopsy:latest
+    image: eecs388/autopsy:latest  # More up-to-date and multi-platform
     depends_on:
       - novnc
     environment:
@@ -74,10 +91,10 @@ services:
     volumes:
       - ./cases:/cases
       - ./evidence:/evidence:ro
-    # If Autopsy doesn't auto-start, run: docker compose exec autopsy autopsy &
+    # Note: No change needed for _JAVA_OPTIONS, but be aware if performance issues arise
 
   novnc:
-    image: theasp/novnc:latest
+    image: theasp/novnc:latest # This image also supports multiple architectures
     ports:
       - "8080:8080"
     environment:
@@ -89,7 +106,8 @@ services:
   # Chain-of-custody helper: hashes everything under /evidence and appends to /cases/chain_of_custody.csv
   hashlog:
     image: python:3.12-alpine
-    user: "${PUID}:${PGID}"
+    platform: linux/amd64
+    user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     volumes:
       - ./evidence:/evidence:ro

@@ -1,0 +1,19 @@
+FROM python:2.7-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python-dev \
+    yara \
+    libyara3 \
+    libyara-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Volatility 2
+RUN pip install volatility==2.6.1
+
+# Create working directory
+WORKDIR /evidence
+
+# Default command
+CMD ["vol.py", "-h"]

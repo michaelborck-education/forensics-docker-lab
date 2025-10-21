@@ -11,6 +11,7 @@ evidence/*
 !evidence/encrypted_container.dat
 evidence/memory.raw
 evidence/disk.img
+evidence/disk.E01
 cases/.cache
 _archive
 

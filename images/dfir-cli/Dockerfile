@@ -3,7 +3,7 @@ FROM debian:stable-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install forensic tools and utilities
+# Install forensic tools and utilities (including build tools for Python packages)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       ca-certificates tzdata \
@@ -20,6 +20,7 @@ RUN apt-get update && \
       curl wget \
       grep findutils \
       git \
+      build-essential python3-dev \
       && pip3 install --no-cache-dir --break-system-packages \
          volatility3 \
          pycryptodome \
