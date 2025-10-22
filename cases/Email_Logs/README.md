@@ -9,6 +9,13 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+---
+
 ## Evidence
 - `evidence/mail.mbox` (exported mailbox).  
 - `evidence/logs/` (system logs).  
@@ -16,11 +23,11 @@
 ---
 
 ## Tasks
-1. Hash all evidence files (`mail.mbox`, logs).  
-2. Extract headers from suspicious emails (look for external recipients, attachments).  
-3. Identify log entries showing USB mount events.  
-4. Correlate timestamps with recovered files and memory findings.  
-5. Document in `email_log_report.md`.
+1. Hash all evidence files (`mail.mbox`, logs).
+2. Extract headers from suspicious emails (look for external recipients, attachments).
+3. Identify log entries showing USB mount events.
+4. Correlate timestamps with recovered files and memory findings.
+5. Document in `email_log_report.md` - Start with: `cp templates/WORKBOOK.md cases/Email_Logs/email_log_report.md`
 
 ---
 

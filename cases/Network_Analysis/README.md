@@ -9,20 +9,23 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+---
+
 ## Evidence
 - `evidence/network.pcap`
 
 ---
 
 ## Tasks
-1. Hash the PCAP file (record in chain_of_custody).  
-2. Run tshark to list connections:  
-   ```bash
-   docker run --rm -v $PWD/evidence:/evidence:ro corfr/tshark -r /evidence/network.pcap -q -z conv,tcp > cases/Network_Analysis/connections.txt
-   ```
-
-3. Identify suspicious sessions (large transfers, odd ports).  
-4. Document in `network_report.md`.  
+1. Hash the PCAP file (record in chain_of_custody).
+2. Run tshark to list connections.
+3. Identify suspicious sessions (large transfers, odd ports).
+4. Document in `network_report.md` - Start with: `cp templates/WORKBOOK.md cases/Network_Analysis/network_report.md`  
 
 ---
 

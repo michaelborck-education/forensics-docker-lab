@@ -3,7 +3,7 @@ services:
   # One-stop CLI toolbox (Sleuth Kit, TestDisk/PhotoRec, Foremost, ewf-tools, exiftool, hashdeep, bulk_extractor, YARA, Volatility3)
   # Usage:
   #   Interactive mode (recommended): docker compose run --rm -it dfir
-  #   One-off command: docker compose run --rm dfir fls -r /evidence/disk.img
+  #   One-off command: docker compose run --rm dfir fls -r /evidence/usb.img
   #   Background mode: docker compose up -d dfir && docker compose exec dfir bash
   dfir:
     build: ./images/dfir-cli

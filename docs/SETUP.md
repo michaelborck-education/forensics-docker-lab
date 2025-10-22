@@ -10,7 +10,7 @@
 2. Build forensic workstation: `docker compose build dfir` (builds toolbox; ~5min)
 3. Create dirs: `mkdir -p evidence cases rules`
 4. Add evidence (see STORYLINE.md/Lab READMEs):
-   - Run `bash scripts/make_practice_image.sh` (sudo needed) for disk.img.
+   - Run `bash scripts/make_practice_image.sh` (sudo needed) for usb.img.
    - Download/copy memory.raw, network.cap, mail.mbox, logs/ (or use dummies).
 5. Baseline hashes: `docker compose run --rm hashlog` (logs to cases/chain_of_custody.csv)
 
@@ -42,10 +42,10 @@ analyst@forensics-lab:/cases$
 **Inside the workstation**, you can run commands directly:
 ```bash
 # List files in disk image
-fls -r /evidence/disk.img
+fls -r /evidence/usb.img
 
 # Recover deleted files
-tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
+tsk_recover -a /evidence/usb.img USB_Imaging/recovered/
 
 # Search for patterns
 grep -i "password" USB_Imaging/*.txt
@@ -64,7 +64,7 @@ exit
 
 You can still run individual commands without entering the workstation:
 ```bash
-docker compose run --rm dfir fls -r /evidence/disk.img
+docker compose run --rm dfir fls -r /evidence/usb.img
 ```
 
 ## Test Run
@@ -73,7 +73,7 @@ docker compose run --rm dfir fls -r /evidence/disk.img
 docker compose run --rm -it dfir
 
 # Inside, test tools:
-fls -r /evidence/disk.img
+fls -r /evidence/usb.img
 vol --help
 yara --version
 

@@ -9,15 +9,22 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+---
+
 ## Evidence
 - All prior artifacts from Labs 1–5.
 
 ---
 
 ## Tasks
-1. Review and cross-reference all evidence (USB, memory, Autopsy, email/logs, PCAP).  
-2. Construct a unified timeline of events.  
-3. Write a professional report (`final_case_report.md`) for Cloudcore management.  
+1. Review and cross-reference all evidence (USB, memory, Autopsy, email/logs, PCAP).
+2. Construct a unified timeline of events.
+3. Write a professional report (`final_case_report.md`) - Start with: `cp templates/WORKBOOK.md cases/Final_Report/final_case_report.md`
    - Include executive summary, evidence summary, timeline, findings, conclusion, appendix.  
 
 ---

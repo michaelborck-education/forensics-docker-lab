@@ -5,7 +5,7 @@ set -euo pipefail
 # Creates a practice image using native tools only
 
 mkdir -p evidence cases
-IMG="evidence/disk.img"
+IMG="evidence/usb.img"
 
 echo "[*] Creating 100MB disk image at $IMG"
 dd if=/dev/zero of="$IMG" bs=1M count=100 status=progress
@@ -137,5 +137,5 @@ echo "    - flag.txt (contains the flag)"
 echo "    - home/alex/Documents/project_secrets.txt (case evidence)"
 echo "    - tmp/email_draft.txt (incriminating evidence)"
 echo ""
-echo "[*] Test with: docker compose run --rm dfir fls -r /evidence/disk.img"
+echo "[*] Test with: docker compose run --rm dfir fls -r /evidence/usb.img"
 echo "[*] Or use: foremost -v -t all -i $IMG -o cases/output"

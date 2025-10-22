@@ -5,7 +5,7 @@ This repo supports 6 labs on DFIR exfil investigation (2009 Cloudcore story). Ti
 
 ## Prep
 1. Setup (SETUP.md): Build/test tools.
-2. Evidence: Populate evidence/ (disk.img via script, memory.ram, network.cap, mbox/logs as is).
+2. Evidence: Populate evidence/ (usb.img via script, memory.ram, network.cap, mbox/logs as is).
 3. Student materials: Provide repo; warn on spoilers (ANSWER_KEY.md).
 4. Tools: Ensure Docker; install tshark/Wireshark host-side for Lab 5 demo.
 

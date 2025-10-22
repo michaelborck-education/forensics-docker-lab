@@ -32,7 +32,7 @@ forensics-lab-week1-dfir/
 ├── entrypoint.sh                ← Container startup script
 │
 ├── evidence/                    ← READ-ONLY evidence files
-│   ├── cloudcore_suspect_usb.E01   (or disk.img - forensic image)
+│   ├── cloudcore_suspect_usb.E01   (or usb.img - forensic image)
 │   └── README.md
 │
 ├── cases/                       ← YOUR WORKSPACE (writable)
@@ -78,7 +78,7 @@ docker compose version
 
 ```bash
 # Navigate to this directory in terminal/command prompt
-cd /path/to/forensics-lab-week1-dfir
+cd /path/to/forensics-lab
 
 # Build the container (first time: ~2-5 minutes depending on connection)
 docker compose build
@@ -105,51 +105,61 @@ This will check that everything is configured correctly. All checks should pass 
 
 If you skip this step, continue to Step 4 below.
 
-### Step 4: Start Your Investigation
+### Step 4: Start Your Investigation - Immersive Workstation
 
-**Enter the Forensic Workstation:**
+**The Modern Way - Immersive Workstation Login:**
 ```bash
-# Start an interactive shell in the forensic environment
-docker compose run --rm dfir
+# Enter the forensic workstation with analyst identification
+./scripts/forensics-workstation
+
+# You'll be prompted for your analyst name (for case documentation)
+# Then you're inside the forensic workstation
 ```
 
 You'll see the forensic lab banner, then you're inside the workstation:
 ```
-  ____________________________________________________________
- /                                                           \
-|   DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY         |
-|   Cyber Security Investigation Environment                 |
- \____________________________________________________________/
+  ╔═════════════════════════════════════════════════════════════════╗
+  ║                                                                 ║
+  ║     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY           ║
+  ║                                                                 ║
+  ║           Cyber Security Investigation Environment             ║
+  ║                                                                 ║
+  ╚═════════════════════════════════════════════════════════════════╝
 
-bash-5.1#
+alice@forensics-lab:/cases$
 ```
 
-**Now run forensic commands directly (no docker prefix needed!):**
+**Now run forensic commands directly:**
 ```bash
 # Verify evidence integrity
-ewfverify /evidence/cloudcore_suspect_usb.E01
+analyst@forensics-lab:/cases$ ewfverify /evidence/usb.E01
 
 # Mount evidence
-mkdir -p /tmp/ewf
-ewfmount /evidence/cloudcore_suspect_usb.E01 /tmp/ewf
+analyst@forensics-lab:/cases$ mkdir -p /tmp/ewf
+analyst@forensics-lab:/cases$ ewfmount /evidence/usb.E01 /tmp/ewf
 
 # List files
-fls -r -d /tmp/ewf/ewf1
+analyst@forensics-lab:/cases$ fls -r -d /tmp/ewf/ewf1
+
+# Log commands for chain of custody
+analyst@forensics-lab:/cases$ coc-log "fls -r /evidence/usb.img" "Initial USB filesystem listing"
 
 # When done, exit the workstation
-exit
+analyst@forensics-lab:/cases$ exit
 ```
 
-**Why use interactive mode?**
-- ✅ Immersive forensic lab experience
-- ✅ See the lab banner every time
-- ✅ Less typing (no `docker compose run --rm dfir` every command)
-- ✅ Matches real-world workflow (SSH into dedicated forensic machine)
-- ✅ All commands in this lab assume interactive mode
+**Benefits of the immersive approach:**
+- ✅ **Immersive forensic lab experience** - feels like connecting to a real DFIR workstation
+- ✅ **Analyst identification** - your name is used in chain of custody logs
+- ✅ **Less typing** - no `docker compose` prefix on every command
+- ✅ **Real-world workflow** - matches industry practice of SSH-ing into dedicated forensic machines
+- ✅ **Comprehensive logging** - `coc-log` automatically timestamps and hashes all commands
 
-**Alternative: Single commands** (for quick one-off tasks only)
+**For Advanced Users - Direct Docker Commands:**
+If you prefer direct Docker commands (not recommended for students):
 ```bash
-docker compose run --rm dfir [command]
+docker compose build
+docker compose run --rm -it dfir bash
 ```
 
 ---

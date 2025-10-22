@@ -10,10 +10,17 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+---
+
 ## What to submit
-- `cases/Memory_Forensics/vol_output/` with plugin outputs (CSV/TXT).  
-- `cases/Memory_Forensics/memory_report.md` (template provided).  
-- Updated `cases/chain_of_custody.csv` including memory dump hash.
+- `cases/Memory_Forensics/vol_output/` with plugin outputs (CSV/TXT).
+- `cases/Memory_Forensics/memory_report.md` - Start with: `cp templates/WORKBOOK.md cases/Memory_Forensics/memory_report.md`
+- Updated `cases/chain_of_custody.csv` with memory dump hash.
 
 ---
 

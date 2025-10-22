@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 mkdir -p evidence cases
-IMG="evidence/disk.img"
+IMG="evidence/usb.img"
 
 echo "[*] Creating 100MB EXT4 image at $IMG"
 dd if=/dev/zero of="$IMG" bs=1M count=100 status=progress

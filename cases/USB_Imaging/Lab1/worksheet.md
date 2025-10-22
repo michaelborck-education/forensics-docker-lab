@@ -10,7 +10,7 @@ By the end of this lab you will be able to:
 
 ## Checklist
 - [ ] Ran `hashlog` and inspected `cases/chain_of_custody.csv`  
-- [ ] Created `evidence/disk.img` via script  
+- [ ] Created `evidence/usb.img` via script  
 - [ ] Recovered at least one file with `tsk_recover`  
 - [ ] Generated `timeline.csv` with `psort.py`  
 - [ ] Completed `triage_report.md`

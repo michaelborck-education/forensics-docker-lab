@@ -7,7 +7,7 @@
 
 ## Tool Errors
 - **Volatility "no profile"**: Run `vol -f memory.ram windows.info.Info` first for profile.
-- **Plaso "no artifacts"**: Ensure disk.img complete (rerun make_practice_image.sh).
+- **Plaso "no artifacts"**: Ensure usb.img complete (rerun make_practice_image.sh).
 - **tshark not found**: Install host-side `sudo apt install tshark` for Lab 5 (container lacks).
 
 ## Evidence

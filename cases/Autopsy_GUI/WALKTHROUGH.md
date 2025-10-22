@@ -20,7 +20,7 @@ This lab represents **Phase 3** of the Cloudcore investigation (December 5, 2009
 - Generate professional reports for stakeholders
 - Compare GUI findings with your CLI results from previous labs
 
-The disk image (`/evidence/disk.img`) contains evidence of file staging, deletion attempts, and suspicious activity that complements the TrueCrypt findings from Lab 2.
+The disk image (`/evidence/usb.img`) contains evidence of file staging, deletion attempts, and suspicious activity that complements the TrueCrypt findings from Lab 2.
 
 ---
 
@@ -30,7 +30,7 @@ Before starting, ensure:
 
 - [ ] Docker and Docker Compose are installed and running
 - [ ] You've completed Labs 1-2 or understand the case context
-- [ ] Evidence files are in place: `evidence/disk.img` exists
+- [ ] Evidence files are in place: `evidence/usb.img` exists
 - [ ] You've read `STORYLINE.md` for case background
 - [ ] Docker toolbox image is built: `docker compose build dfir`
 - [ ] Chain of custody CSV exists: `cases/chain_of_custody.csv`
@@ -42,7 +42,7 @@ Before starting, ensure:
 docker compose ps
 
 # Verify evidence file exists
-ls -lh evidence/disk.img
+ls -lh evidence/usb.img
 
 # Test browser compatibility (important for noVNC)
 # Chrome/Firefox work best, Safari may have issues
@@ -123,7 +123,7 @@ In the noVNC window:
 2. **Select "Disk Image or VM File"**
 3. **Browse to evidence location:**
    - Navigate to `/evidence/`
-   - Select `disk.img`
+   - Select `usb.img`
 4. **Configure data source:**
    - **Data Source Name:** `Cloudcore_Workstation_Disk`
    - **Type:** Autopsy should auto-detect as "Disk Image"
@@ -257,7 +257,7 @@ Once processing completes, you'll see the main analysis interface:
 As you explore Autopsy, answer these questions in your `autopsy_report.md`:
 
 1. **Evidence Integrity**
-   - What is the hash of disk.img? (Compare with Lab 1)
+   - What is the hash of usb.img? (Compare with Lab 1)
    - Did Autopsy calculate the same hash?
    - Is this documented in chain_of_custody.csv?
 
@@ -383,9 +383,9 @@ Tools and modules used:
 - Permission issues with evidence file
 
 **Solutions:**
-- Verify disk.img exists and has expected size: `ls -lh evidence/disk.img`
+- Verify usb.img exists and has expected size: `ls -lh evidence/usb.img`
 - Increase Docker memory allocation in Docker Desktop settings
-- Check file permissions: `chmod 644 evidence/disk.img`
+- Check file permissions: `chmod 644 evidence/usb.img`
 
 ### Problem: "Search returns no results"
 **Solutions:**

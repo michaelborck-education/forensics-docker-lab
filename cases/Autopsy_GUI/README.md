@@ -10,9 +10,18 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+Then use the **Autopsy GUI** as described in the steps below.
+
+---
+
 ## What to submit
-- `cases/Autopsy_GUI/autopsy_case/` directory (exported case data).  
-- `cases/Autopsy_GUI/autopsy_report.md` (template provided).
+- `cases/Autopsy_GUI/autopsy_case/` directory (exported case data).
+- `cases/Autopsy_GUI/autopsy_report.md` - Start with: `cp templates/WORKBOOK.md cases/Autopsy_GUI/autopsy_report.md`
 
 ---
 
@@ -27,7 +36,7 @@ docker compose up -d novnc autopsy
 2. **Create a new case**
 - Case name: `Lab3_<YourName>`  
 - Base directory: `/cases/Autopsy_GUI/autopsy_case`  
-- Add evidence: `/evidence/disk.img` (practice image from Lab1)
+- Add evidence: `/evidence/usb.img` (practice image from Lab1)
 
 3. **Explore evidence**
 - File system view (recover deleted files).  

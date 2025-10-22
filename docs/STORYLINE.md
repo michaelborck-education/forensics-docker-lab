@@ -12,7 +12,7 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 
 ### Phase 1: Local Preparation and Deletion (2009-12-01 to 12-05)
 - **Disk Activity:** Files are created and mounted (visible in EXT4 timestamps). Deleted files like `flag.txt` (placeholder for secrets) are recovered via carving.
-- **Link to Labs:** Lab 1 (Imaging & Triage) – Establish chain-of-custody for `disk.img`, recover deleted artifacts using Sleuth Kit and Foremost, build initial Plaso timeline showing file creation/deletion events around 12-05 14:30-15:00.
+- **Link to Labs:** Lab 1 (Imaging & Triage) – Establish chain-of-custody for `usb.img`, recover deleted artifacts using Sleuth Kit and Foremost, build initial Plaso timeline showing file creation/deletion events around 12-05 14:30-15:00.
 - **Key Findings:** Deleted file contained partial project notes; timeline shows mount at `/mnt/usb` followed by deletion to hide tracks.
 
 ### Phase 2: Memory Capture and Process Analysis (2009-12-05, 10:00 AM)
@@ -22,7 +22,7 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 
 ### Phase 3: GUI Exploration and Deep Dive (2009-12-05, Afternoon)
 - **Activity:** Full filesystem walkthrough identifies metadata anomalies (e.g., modified timestamps on `/home/alex/Documents/secrets/`).
-- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `disk.img` into Autopsy via noVNC. Keyword search for \"secret\" yields metadata hits; recover thumbnails of USB drive icons.
+- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.img` into Autopsy via noVNC. Keyword search for \"secret\" yields metadata hits; recover thumbnails of USB drive icons.
 - **Key Findings:** Autopsy reports confirm file modifications post-deletion; hash lookups match known good artifacts.
 
 ### Phase 4: Email and Log Correlation (2009-12-06)

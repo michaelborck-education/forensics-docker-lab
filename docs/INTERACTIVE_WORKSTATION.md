@@ -55,10 +55,10 @@ When you enter the workstation, you'll see a banner:
 
   📚 Quick Command Examples (inside this workstation):
     • List files in disk image:
-      fls -r /evidence/disk.img
+      fls -r /evidence/usb.img
 
     • Recover deleted files:
-      tsk_recover /evidence/disk.img recovered/
+      tsk_recover /evidence/usb.img recovered/
 
     • Calculate evidence hash:
       sha256sum /evidence/memory.raw
@@ -88,10 +88,10 @@ Once inside, you can run forensic tools directly without the `docker compose run
 
 ```bash
 # List files in disk image
-fls -r /evidence/disk.img
+fls -r /evidence/usb.img
 
 # Recover deleted files
-tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
+tsk_recover -a /evidence/usb.img USB_Imaging/recovered/
 
 # Search for patterns
 grep -i "password" USB_Imaging/*.txt
@@ -127,10 +127,10 @@ You can still run single commands without entering the workstation:
 
 ```bash
 # Run a single command
-docker compose run --rm dfir fls -r /evidence/disk.img
+docker compose run --rm dfir fls -r /evidence/usb.img
 
 # Pipe output
-docker compose run --rm dfir fls -r /evidence/disk.img > output.txt
+docker compose run --rm dfir fls -r /evidence/usb.img > output.txt
 ```
 
 This is useful for:
@@ -168,8 +168,8 @@ Your command history is saved to `cases/.bash_history` and persists across sessi
 ```bash
 # Inside workstation:
 analyst@forensics-lab:/cases$ history
-    1  fls -r /evidence/disk.img
-    2  tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
+    1  fls -r /evidence/usb.img
+    2  tsk_recover -a /evidence/usb.img USB_Imaging/recovered/
     3  grep -i "password" USB_Imaging/*.txt
 ```
 
@@ -267,7 +267,7 @@ docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList
 ### Plaso (Timeline Analysis)
 ```bash
 # Run from host:
-docker compose run --rm plaso log2timeline.py /cases/timeline.plaso /evidence/disk.img
+docker compose run --rm plaso log2timeline.py /cases/timeline.plaso /evidence/usb.img
 docker compose run --rm plaso psort.py -o l2tcsv /cases/timeline.plaso > cases/timeline.csv
 ```
 
@@ -285,8 +285,8 @@ docker compose run --rm plaso psort.py -o l2tcsv /cases/timeline.plaso > cases/t
 
 2. **Do your analysis:**
    ```bash
-   fls -r /evidence/disk.img > USB_Imaging/fls.txt
-   tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
+   fls -r /evidence/usb.img > USB_Imaging/fls.txt
+   tsk_recover -a /evidence/usb.img USB_Imaging/recovered/
    grep -i "suspicious" USB_Imaging/fls.txt
    ```
 

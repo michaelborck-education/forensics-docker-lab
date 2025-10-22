@@ -108,6 +108,18 @@ docker compose run --rm dfir test -w /cases
 check "Cases directory is writable at /cases"
 echo ""
 
+# 9. Check new immersive features
+echo "Checking immersive features..."
+[ -x "./scripts/forensics-workstation" ]
+check "forensics-workstation script is available and executable"
+
+docker compose run --rm dfir which coc-log >/dev/null 2>&1
+check "coc-log utility is available in container"
+
+[ -f "./templates/analysis_log.csv" ]
+check "analysis_log.csv template exists"
+echo ""
+
 # Summary
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Verification Summary"
@@ -124,7 +136,9 @@ if [ $FAILED -eq 0 ]; then
     echo "  1. Read SCENARIO.md for the case background"
     echo "  2. Review ASSIGNMENT.md for tasks and grading"
     echo "  3. Check COMMANDS.md for forensic command reference"
-    echo "  4. Start your analysis: docker compose run --rm dfir"
+    echo "  4. Start your investigation:"
+    echo "     • Recommended: ./scripts/forensics-workstation"
+    echo "     • Advanced: docker compose run --rm dfir"
     echo ""
 else
     echo -e "${RED}⚠️  Some checks failed. Please review the errors above.${NC}"

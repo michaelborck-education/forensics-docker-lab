@@ -51,7 +51,7 @@ docker compose run --rm dfir
 1. **Create .gitignore** to exclude evidence and student outputs:
 ```gitignore
 # Evidence files (too large for Git)
-evidence/disk.img
+evidence/usb.img
 evidence/memory.raw
 evidence/*.raw
 evidence/*.img
@@ -196,7 +196,7 @@ Git Repository (github.com/yourorg/forensics-lab):
 
 Separate Download (large files):
 ├── evidence-bundle-v1.0.zip (650MB)
-    ├── disk.img
+    ├── usb.img
     ├── memory.raw
     ├── network.cap
     ├── mail.mbox

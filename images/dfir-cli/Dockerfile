@@ -34,12 +34,13 @@ RUN git clone https://github.com/volatilityfoundation/volatility.git /opt/volati
     && ln -s /opt/volatility2/vol.py /usr/local/bin/vol2 \
     && chmod +x /opt/volatility2/vol.py
 
-# Copy banner and entrypoint script
+# Copy banner, entrypoint script, and coc-log utility
 COPY banner.txt /etc/banner.txt
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ../../scripts/coc-log /usr/local/bin/coc-log
 
-# Make entrypoint executable
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Make scripts executable
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/coc-log
 
 WORKDIR /cases
 
