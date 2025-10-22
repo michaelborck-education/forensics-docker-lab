@@ -20,8 +20,8 @@ Then use the **Autopsy GUI** as described in the steps below.
 ---
 
 ## What to submit
-- `cases/Lab_3/autopsy_case/` directory (exported case data).  
-- `cases/Lab_3/autopsy_report.md` (template provided).
+- `cases/Lab_3/autopsy_case/` directory (exported case data).
+- `cases/Lab_3/autopsy_report.md` - Start with: `cp templates/WORKBOOK.md cases/Lab_3/autopsy_report.md`
 
 ---
 

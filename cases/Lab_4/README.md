@@ -23,11 +23,11 @@
 ---
 
 ## Tasks
-1. Hash all evidence files (`mail.mbox`, logs).  
-2. Extract headers from suspicious emails (look for external recipients, attachments).  
-3. Identify log entries showing USB mount events.  
-4. Correlate timestamps with recovered files and memory findings.  
-5. Document in `email_log_report.md`.
+1. Hash all evidence files (`mail.mbox`, logs).
+2. Extract headers from suspicious emails (look for external recipients, attachments).
+3. Identify log entries showing USB mount events.
+4. Correlate timestamps with recovered files and memory findings.
+5. Document in `email_log_report.md` - Start with: `cp templates/WORKBOOK.md cases/Lab_4/email_log_report.md`
 
 ---
 

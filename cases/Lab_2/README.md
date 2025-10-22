@@ -18,9 +18,9 @@
 ---
 
 ## What to submit
-- `cases/Lab_2/vol_output/` with plugin outputs (CSV/TXT).  
-- `cases/Lab_2/memory_report.md` (template provided).  
-- Updated `cases/chain_of_custody.csv` including memory dump hash.
+- `cases/Lab_2/vol_output/` with plugin outputs (CSV/TXT).
+- `cases/Lab_2/memory_report.md` - Start with: `cp templates/WORKBOOK.md cases/Lab_2/memory_report.md`
+- Updated `cases/chain_of_custody.csv` with memory dump hash.
 
 ---
 

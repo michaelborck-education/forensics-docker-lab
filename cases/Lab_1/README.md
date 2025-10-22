@@ -31,11 +31,15 @@ You'll be prompted for your analyst name, then you're ready to work.
 
 ## What to submit
 1. **`cases/chain_of_custody.csv`** with your entries.
-2. **`cases/Lab_1/triage_report.md`** (template provided).
+   - Start with: `cp templates/chain_of_custody.csv cases/Lab_1/`
+2. **`cases/Lab_1/triage_report.md`** (use template).
+   - Start with: `cp templates/WORKBOOK.md cases/Lab_1/triage_report.md`
 3. **`cases/Lab_1/timeline.csv`** (export from psort).
 4. **Recovered artifacts** folder (`cases/Lab_1/tsk_recover_out` and/or `cases/Lab_1/foremost_out`).
 
 > Tip: Put your student ID and name in the first line of each Markdown file.
+>
+> **Interactive Guide:** Open `guides/worksheet.html` in your browser for step-by-step guided practice.
 
 ---
 
