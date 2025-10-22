@@ -1,62 +1,11 @@
-  ________________________________________________________________
- /                                                                \
-|   DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY              |
-|   Cloudcore 2009 Data Exfiltration Investigation               |
- \________________________________________________________________/
+╔═════════════════════════════════════════════════════════════════╗
+║                                                                 ║
+║     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY           ║
+║                                                                 ║
+║           Cloudcore 2009 Data Exfiltration Investigation       ║
+║                                                                 ║
+╚═════════════════════════════════════════════════════════════════╝
 
-  🔍 Tools Installed:
-    • Sleuth Kit (fls, icat, fsstat, tsk_recover, mmls, blkls)
-    • TestDisk/PhotoRec (file carving)
-    • Foremost (signature-based carving)
-    • libewf-tools (E01 image support)
-    • Volatility 3 (vol) - Modern Windows memory forensics
-    • Volatility 2 (vol2) - Legacy Windows XP/Vista/2000
-    • YARA (malware pattern matching)
-    • exiftool, hashdeep, file utilities
-    • grep, strings, vim, nano
+Ready for forensic analysis. See CHEATSHEET.md for quick reference.
+Type 'exit' to end session. All work is saved to ./cases/
 
-  📦 Specialized Containers (run from host):
-    • Plaso/log2timeline: docker compose run --rm plaso ...
-
-  📁 Workspace Structure:
-    /evidence → Read-only evidence storage (DO NOT MODIFY!)
-    /cases    → Your analysis outputs and reports
-    /rules    → YARA rules and signatures
-
-  ⚠️  Forensic Best Practices:
-    • Never modify original evidence (evidence/ is read-only)
-    • Document EVERY command executed
-    • Maintain chain of custody (use hashlog service)
-    • Verify hashes before and after analysis
-
-  📚 Quick Command Examples (inside this workstation):
-    • List files in disk image:
-      fls -r /evidence/usb.img
-
-    • Recover deleted files:
-      tsk_recover /evidence/usb.img recovered/
-
-    • Memory forensics (modern Windows 7+):
-      vol -f /evidence/memory.raw windows.pslist.PsList
-
-    • Memory forensics (legacy Windows XP):
-      vol2 -f /evidence/memory.raw --profile=WinXPSP2x86 pslist
-
-    • Calculate evidence hash:
-      sha256sum /evidence/memory.raw
-
-    • Search with YARA:
-      yara -r /rules/malware.yar /evidence/
-
-    • Search for patterns:
-      grep -i "password" USB_Imaging/*.txt
-
-  💡 Tips:
-    • Use tab-completion for file paths
-    • Redirect output to /cases/ for persistence
-    • Type 'exit' to leave the workstation
-    • Files in /cases persist on your host machine
-
-  ________________________________________________________________
-
-  Environment ready. Proceed with analysis...

@@ -38,6 +38,7 @@ forensics-docker-lab/
 │   ├── SETUP.md                        ← Installation and Docker setup guide
 │   ├── COMMANDS.md                     ← Forensic commands quick reference
 │   ├── QUICK_REFERENCE.md              ← Command syntax for all labs
+│   ├── CHEATSHEET.md                   ← Quick reference (inside workstation)
 │   ├── STORYLINE.md                    ← Investigation timeline and narrative
 │   ├── GLOSSARY.md                     ← Forensics terminology
 │   ├── TROUBLESHOOTING.md              ← Common issues and solutions
@@ -210,6 +211,7 @@ exit
 
 ### Quick Reference:
 
+- **Quick cheatsheet** → See `docs/CHEATSHEET.md` (tools, commands for each lab)
 - **Need a command?** → See `docs/COMMANDS.md`
 - **Stuck on a lab?** → See that lab's `WALKTHROUGH.md`
 - **Want to understand the case?** → See `docs/SCENARIO.md`
