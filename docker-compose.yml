@@ -6,7 +6,9 @@ services:
   #   One-off command: docker compose run --rm dfir fls -r /evidence/usb.img
   #   Background mode: docker compose up -d dfir && docker compose exec dfir bash
   dfir:
-    build: ./images/dfir-cli
+    build:
+      context: .
+      dockerfile: images/dfir-cli/Dockerfile
     image: forensic/dfir-cli:latest
     user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
