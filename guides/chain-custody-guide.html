@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chain of Custody - Complete Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .concept-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .concept-card h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .importance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .importance-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #6b73ff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .importance-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .importance-item h3 {
+            color: #6b73ff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .interactive-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #6b73ff;
+        }
+        
+        .required {
+            color: #e53e3e;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(107, 115, 255, 0.3);
+        }
+        
+        .output-section {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            font-family: monospace;
+            display: none;
+        }
+        
+        .output-section.show {
+            display: block;
+        }
+        
+        .copy-output-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .best-practices {
+            background: #fff8e1;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .best-practices h3 {
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+        
+        .best-practices ul {
+            margin-left: 1.5rem;
+        }
+        
+        .best-practices li {
+            margin: 0.5rem 0;
+        }
+        
+        .example-section {
+            background: #f0fdf4;
+            border: 2px solid #48bb78;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .example-section h3 {
+            color: #065f46;
+            margin-bottom: 1rem;
+        }
+        
+        .hash-calculator {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 1rem;
+            background: white;
+            border: 2px dashed #6b73ff;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input-label:hover {
+            background: #f0f4ff;
+            border-color: #000dff;
+        }
+        
+        .hash-results {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .hash-results.show {
+            display: block;
+        }
+        
+        .hash-value {
+            font-family: monospace;
+            word-break: break-all;
+            background: #f0f4f8;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+        
+        .legal-note {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .legal-note h3 {
+            color: #991b1b;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Chain of Custody</h1>
+            <p style="font-size: 1.2rem; opacity: 0.95;">Complete Guide for Digital Forensics</p>
+        </header>
+        
+        <div class="content">
+            <div class="concept-card">
+                <h2>What is Chain of Custody?</h2>
+                <p>Chain of Custody (CoC) is a chronological documentation that records the sequence of custody, control, transfer, analysis, and disposition of physical or electronic evidence. In digital forensics, it's the foundation of evidence admissibility in legal proceedings.</p>
+                
+                <p style="margin-top: 1rem;"><strong>Think of it as:</strong> A detailed diary of everywhere your evidence has been, who touched it, when they touched it, and what they did with it.</p>
+            </div>
+            
+            <h2 style="color: #6b73ff; margin: 2rem 0;">Why is Chain of Custody Critical?</h2>
+            
+            <div class="importance-grid">
+                <div class="importance-item">
+                    <h3>🏛️ Legal Admissibility</h3>
+                    <p>Courts require proof that evidence hasn't been tampered with. Without proper CoC, evidence may be ruled inadmissible.</p>
+                </div>
+                
+                <div class="importance-item">
+                    <h3>🔒 Integrity Verification</h3>
+                    <p>Hash values prove the evidence remains unchanged from seizure to presentation in court.</p>
+                </div>
+                
+                <div class="importance-item">
+                    <h3>📊 Accountability</h3>
+                    <p>Every person who handles evidence is documented, creating clear responsibility and preventing disputes.</p>
+                </div>
+                
+                <div class="importance-item">
+                    <h3>🔄 Reproducibility</h3>
+                    <p>Detailed documentation allows other experts to verify findings and repeat analyses if needed.</p>
+                </div>
+            </div>
+            
+            <div class="interactive-form">
+                <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">📝 Interactive CoC Generator</h2>
+                <p style="margin-bottom: 1.5rem;">Fill in the fields below to generate a properly formatted Chain of Custody entry:</p>
+                
+                <div class="form-group">
+                    <label>Received From <span class="required">*</span></label>
+                    <input type="text" id="received_from" placeholder="e.g., Detective Smith, Badge #1234" value="Detective Smith, Badge #1234">
+                </div>
+                
+                <div class="form-group">
+                    <label>Analyst Name <span class="required">*</span></label>
+                    <input type="text" id="analyst_name" placeholder="Your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label>MD5 Hash <span class="required">*</span></label>
+                    <input type="text" id="md5_hash" placeholder="32 character hexadecimal string">
+                </div>
+                
+                <div class="form-group">
+                    <label>SHA256 Hash <span class="required">*</span></label>
+                    <input type="text" id="sha256_hash" placeholder="64 character hexadecimal string">
+                </div>
+                
+                <div class="form-group">
+                    <label>Evidence Description <span class="required">*</span></label>
+                    <input type="text" id="evidence_description" placeholder="e.g., 16GB SanDisk USB drive, black" value="16GB SanDisk USB drive, black">
+                </div>
+                
+                <div class="form-group">
+                    <label>Storage Location <span class="required">*</span></label>
+                    <select id="storage_location">
+                        <option value="">Select storage location...</option>
+                        <option value="Evidence Locker A-101">Evidence Locker A-101</option>
+                        <option value="Evidence Locker B-202">Evidence Locker B-202</option>
+                        <option value="Forensic Lab Storage">Forensic Lab Storage</option>
+                        <option value="Secure Server Room">Secure Server Room</option>
+                    </select>
+                </div>
+                
+                <button class="generate-btn" onclick="generateCoC()">Generate Chain of Custody Entry</button>
+                
+                <div class="output-section" id="coc-output">
+                    <h3 style="color: #48bb78; margin-bottom: 1rem;">Generated CSV Entry:</h3>
+                    <pre id="csv-output"></pre>
+                    <button class="copy-output-btn" onclick="copyOutput()">📋 Copy to Clipboard</button>
+                </div>
+            </div>
+            
+            <div class="hash-calculator">
+                <h2 style="color: #2c3e50; margin-bottom: 1rem;">🔐 Hash Calculator (Demo)</h2>
+                <p style="margin-bottom: 1rem;">Select a file to calculate its MD5 and SHA256 hashes:</p>
+                
+                <div class="file-input-wrapper">
+                    <input type="file" id="file-input" onchange="calculateHashes()">
+                    <label for="file-input" class="file-input-label">
+                        📁 Click to select file or drag and drop here
+                    </label>
+                </div>
+                
+                <div class="hash-results" id="hash-results">
+                    <h4>Hash Values:</h4>
+                    <div>
+                        <strong>MD5:</strong>
+                        <div class="hash-value" id="md5-result">Calculating...</div>
+                    </div>
+                    <div>
+                        <strong>SHA256:</strong>
+                        <div class="hash-value" id="sha256-result">Calculating...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-section">
+                <h3>📋 Example: Complete Chain of Custody Entry</h3>
+                <pre style="background: white; padding: 1rem; border-radius: 8px; overflow-x: auto;">
+Evidence_ID,Date_Received,Time_Received,Received_From,MD5_Hash,SHA256_Hash,Analyst_Name,Case_Number,Evidence_Description,Storage_Location
+USB-2024-001,2024-03-15,14:30:00,"Detective Smith, Badge #1234",5d41402abc4b2a76b9719d911017c592,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,Jane Doe,CASE-2024-CLOUDCORE-01,"16GB SanDisk USB drive, black",Evidence Locker A-101
+                </pre>
+            </div>
+            
+            <div class="best-practices">
+                <h3>✅ Best Practices for Chain of Custody</h3>
+                <ul>
+                    <li><strong>Hash Immediately:</strong> Calculate hashes as soon as you receive evidence, before any analysis</li>
+                    <li><strong>Use Multiple Hashes:</strong> Always use at least MD5 and SHA256 for redundancy</li>
+                    <li><strong>Timestamp Everything:</strong> Record exact date and time for every action</li>
+                    <li><strong>Be Specific:</strong> Include badge numbers, serial numbers, and detailed descriptions</li>
+                    <li><strong>Never Work on Originals:</strong> Always create a forensic copy and verify hashes match</li>
+                    <li><strong>Document Transfers:</strong> Every time evidence changes hands, create a new entry</li>
+                    <li><strong>Secure Storage:</strong> Note exact physical or digital location of evidence</li>
+                    <li><strong>Regular Verification:</strong> Periodically re-hash evidence to ensure integrity</li>
+                </ul>
+            </div>
+            
+            <div class="legal-note">
+                <h3>⚖️ Legal Considerations</h3>
+                <p><strong>Remember:</strong> A single break in the chain of custody can result in evidence being ruled inadmissible in court. This could mean:</p>
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>Guilty parties going free</li>
+                    <li>Innocent people being unable to prove their innocence</li>
+                    <li>Cases being dismissed entirely</li>
+                    <li>Professional liability for the forensic examiner</li>
+                </ul>
+                <p style="margin-top: 1rem;"><em>Always err on the side of over-documentation rather than under-documentation.</em></p>
+            </div>
+            
+            <div class="concept-card">
+                <h2>Common CoC Mistakes to Avoid</h2>
+                <ul style="margin-left: 1.5rem;">
+                    <li>❌ <strong>Forgetting to hash before analysis</strong> - Always hash first!</li>
+                    <li>❌ <strong>Using only one hash algorithm</strong> - Use multiple for redundancy</li>
+                    <li>❌ <strong>Vague descriptions</strong> - "USB drive" vs "16GB SanDisk Cruzer, S/N: 123456"</li>
+                    <li>❌ <strong>Missing timestamps</strong> - Every action needs date AND time</li>
+                    <li>❌ <strong>Incomplete transfer records</strong> - Document every person who handles evidence</li>
+                    <li>❌ <strong>Working on original evidence</strong> - Always use forensic copies</li>
+                    <li>❌ <strong>Not securing evidence properly</strong> - Physical and digital security are crucial</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Set current date and time
+        window.addEventListener('load', () => {
+            const now = new Date();
+            document.getElementById('date_received').value = now.toISOString().split('T')[0];
+            document.getElementById('time_received').value = now.toTimeString().slice(0, 5);
+        });
+        
+        // Generate Chain of Custody entry
+        function generateCoC() {
+            const fields = [
+                'evidence_id', 'date_received', 'time_received', 'received_from',
+                'md5_hash', 'sha256_hash', 'analyst_name', 'case_number',
+                'evidence_description', 'storage_location'
+            ];
+            
+            const values = fields.map(field => {
+                const element = document.getElementById(field);
+                return element.value || '[REQUIRED]';
+            });
+            
+            // Check if all fields are filled
+            if (values.includes('[REQUIRED]')) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Format as CSV
+            const header = 'Evidence_ID,Date_Received,Time_Received,Received_From,MD5_Hash,SHA256_Hash,Analyst_Name,Case_Number,Evidence_Description,Storage_Location';
+            const csvLine = values.map(v => v.includes(',') ? `"${v}"` : v).join(',');
+            
+            const output = document.getElementById('coc-output');
+            const csvOutput = document.getElementById('csv-output');
+            csvOutput.textContent = header + '\n' + csvLine;
+            output.classList.add('show');
+            
+            // Scroll to output
+            output.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Copy output to clipboard
+        function copyOutput() {
+            const csvOutput = document.getElementById('csv-output').textContent;
+            navigator.clipboard.writeText(csvOutput).then(() => {
+                const button = event.target;
+                button.textContent = '✓ Copied!';
+                button.style.background = '#48bb78';
+                setTimeout(() => {
+                    button.textContent = '📋 Copy to Clipboard';
+                    button.style.background = '';
+                }, 2000);
+            });
+        }
+        
+        // Simulated hash calculation (for demo purposes)
+        async function calculateHashes() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            const results = document.getElementById('hash-results');
+            results.classList.add('show');
+            
+            // In a real implementation, you would calculate actual hashes
+            // This is a simulation for demonstration
+            setTimeout(() => {
+                // Generate pseudo-random hashes for demonstration
+                const md5 = Array(32).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+                const sha256 = Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+                
+                document.getElementById('md5-result').textContent = md5;
+                document.getElementById('sha256-result').textContent = sha256;
+                
+                // Auto-fill the hash fields in the form
+                document.getElementById('md5_hash').value = md5;
+                document.getElementById('sha256_hash').value = sha256;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>Evidence ID <span class="required">*</span></label>
+                    <input type="text" id="evidence_id" placeholder="e.g., USB-2024-001" value="USB-2024-001">
+                </div>
+                
+                <div class="form-group">
+                    <label>Case Number <span class="required">*</span></label>
+                    <input type="text" id="case_number" placeholder="e.g., CASE-2024-CLOUDCORE-01" value="CASE-2024-CLOUDCORE-01">
+                </div>
+                
+                <div class="form-group">
+                    <label>Date Received <span class="required">*</span></label>
+                    <input type="date" id="date_received">
+                </div>
+                
+                <div class="form-group">
+                    <label>Time Received <span class="required">*</span></label>
+                    <input type="time" id="time_received">
+                </div>
+                
+                <div class="form-group">
+                    <label>

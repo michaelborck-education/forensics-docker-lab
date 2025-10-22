@@ -1,12 +1,14 @@
-FROM python:2.7-alpine
+FROM ubuntu:18.04
 
 # Install system dependencies
-RUN apk add --no-cache \
-    gcc \
-    musl-dev \
+RUN apt-get update && apt-get install -y \
+    python2.7 \
+    python-pip \
+    git \
+    build-essential \
     python-dev \
-    libffi-dev \
-    git
+    libffi-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Volatility 2 from source
 RUN git clone https://github.com/volatilityfoundation/volatility.git /tmp/volatility && \

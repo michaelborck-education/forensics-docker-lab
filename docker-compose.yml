@@ -8,7 +8,6 @@ services:
   dfir:
     build: ./images/dfir-cli
     image: forensic/dfir-cli:latest
-    platform: linux/amd64
     user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
@@ -26,57 +25,12 @@ services:
   # Plaso (log2timeline) for super timelines
   plaso:
     image: log2timeline/plaso:latest
-    platform: linux/amd64
     user: "${PUID:-1000}:${PGID:-1000}"
     read_only: true
     working_dir: /cases
     volumes:
       - ./evidence:/evidence:ro
       - ./cases:/cases
-    tmpfs:
-      - /tmp
-    command: ["sleep", "infinity"]
-
-  # Volatility 3 for memory forensics (Windows 7+)
-  vol3:
-    image: sk4la/volatility3:latest
-    platform: linux/amd64
-    user: "${PUID:-1000}:${PGID:-1000}"
-    read_only: true
-    working_dir: /cases
-    volumes:
-      - ./evidence:/evidence:ro
-      - ./cases:/cases
-    tmpfs:
-      - /tmp
-    command: ["sleep", "infinity"]
-
-  # Volatility 2 for legacy Windows (XP, 2000, NT)
-  vol2:
-    build: ./images/volatility2
-    image: forensic/volatility2:latest
-    platform: linux/amd64
-    user: "${PUID:-1000}:${PGID:-1000}"
-    read_only: true
-    working_dir: /cases
-    volumes:
-      - ./evidence:/evidence:ro
-      - ./cases:/cases
-    tmpfs:
-      - /tmp
-    command: ["sleep", "infinity"]
-
-  # YARA scanner (use with ./rules)
-  yara:
-    image: blacktop/yara:latest
-    platform: linux/amd64
-    user: "${PUID:-1000}:${PGID:-1000}"
-    read_only: true
-    working_dir: /cases
-    volumes:
-      - ./evidence:/evidence:ro
-      - ./cases:/cases
-      - ./rules:/rules:ro
     tmpfs:
       - /tmp
     command: ["sleep", "infinity"]
@@ -104,20 +58,6 @@ services:
       - DISPLAY_HEIGHT=${DISPLAY_HEIGHT}
       - RUN_XTERM=no
     networks: [x11]
-
-  # Chain-of-custody helper: hashes everything under /evidence and appends to /cases/chain_of_custody.csv
-  hashlog:
-    image: python:3.12-alpine
-    platform: linux/amd64
-    user: "${PUID:-1000}:${PGID:-1000}"
-    read_only: true
-    volumes:
-      - ./evidence:/evidence:ro
-      - ./cases:/cases
-      - ./scripts:/scripts:ro
-    command: ["python", "/scripts/hashlog.py", "/evidence", "/cases/chain_of_custody.csv", "sha256"]
-    environment:
-      - COC_NOTE=initial intake
 
 networks:
   x11: {}

@@ -10,3 +10,5 @@ exit
 vol -f /evidence/memory.raw windows.info.Info
 cd ..
 exit
+/exit
+exit

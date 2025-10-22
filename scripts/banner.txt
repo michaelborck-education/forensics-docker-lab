@@ -1,0 +1,24 @@
+  ____________________________________________________________
+ /                                                           \
+|   DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY         |
+|   Cyber Security Investigation Environment                 |
+ \____________________________________________________________/
+
+  Tools Installed:
+    • Sleuth Kit (fls, icat, fsstat, tsk_recover)
+    • libewf-tools (ewfmount, ewfverify)
+    • Standard UNIX utilities
+
+  Workspace Structure:
+    📁 /evidence  → Read-only evidence storage
+    📝 /cases     → Your analysis outputs
+
+  Forensic Best Practices:
+    ⚠️  Never modify original evidence
+    ⚠️  Document all commands executed
+    ⚠️  Maintain chain of custody
+    ⚠️  Verify hashes before and after
+
+  Environment ready. Proceed with analysis...
+  ____________________________________________________________
+

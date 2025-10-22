@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 7 Lab - USB Evidence Triage (E01 Analysis)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .lab-info {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .environment-note {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .environment-note h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .download-section {
+            background: #f0f9ff;
+            border: 2px solid #0284c7;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .download-section h3 {
+            color: #0c4a6e;
+            margin-bottom: 1rem;
+        }
+        
+        .task-section {
+            margin: 2rem 0;
+        }
+        
+        .task-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .task-card.completed {
+            border-color: #48bb78;
+            background: #f0fdf4;
+        }
+        
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .task-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .command-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            position: relative;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+        
+        .checklist {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .checklist-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .checklist-item.checked {
+            background: #f0fdf4;
+            color: #065f46;
+        }
+        
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox.checked {
+            background: #48bb78;
+            border-color: #48bb78;
+        }
+        
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .triage-notes-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .notes-column {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .notes-column h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .notes-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .quick-note {
+            background: #fff8e1;
+            border-left: 4px solid #f59e0b;
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-note:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+        }
+        
+        .save-section {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .export-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(72, 187, 120, 0.3);
+        }
+        
+        .progress-tracker {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .tool-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .tool-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tool-tab:hover {
+            color: #667eea;
+        }
+        
+        .tool-tab.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tool-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+        
+        .tool-content {
+            display: none;
+        }
+        
+        .tool-content.active {
+            display: block;
+        }
+        
+        .warning-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .e01-info {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .e01-info h3 {
+            color: #2d3436;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Week 7 Lab Worksheet</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 1rem;">IMG Forensic Image Analysis</p>
+            <div class="lab-info">
+                <span>⏱️ Estimated: 90 minutes</span>
+                <span>📊 Progress: <span id="progress-text">0%</span></span>
+                <span>💾 IMG Industry Standard</span>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="environment-note">
+                <h3>🐳 Docker Forensics Lab Setup</h3>
+                <p><strong>Evidence Format:</strong> IMG (EnCase Expert Witness Format)</p>
+                <p><strong>GUI Access:</strong> Autopsy at http://localhost:8080/vnc.html</p>
+                <p><strong>Evidence Location:</strong> ./evidence/ (read-only mount)</p>
+                <p><strong>Output Location:</strong> ./cases/ (your working directory)</p>
+            </div>
+            
+            <div class="download-section">
+                <h3>📥 Step 0: Verify Evidence File</h3>
+                <p><strong>Evidence File:</strong> cloudcore_suspect_usb.E01 (Cloudcore Investigation)</p>
+                <p>This E01 file contains the forensic image from Case CLOUDCORE-2024-INS-001.</p>
+                
+                <div class="command-box">
+# Verify the E01 evidence file is present
+ls -lh evidence/cloudcore_suspect_usb.E01
+
+# Should show: cloudcore_suspect_usb.E01 (approximately 101 MB)
+                    <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+                </div>
+
+                <div class="info-box">
+                    <strong>Note:</strong> The cloudcore_suspect_usb.E01 file contains the forensic image of the seized USB device from the Cloudcore investigation (Case: CLOUDCORE-2024-INS-001). This E01 format includes embedded metadata, hash verification, and compression.
+                </div>
+            </div>
+            
+            <div class="e01-info">
+                <h3>📚 Why E01 Format?</h3>
+                <ul style="margin-left: 1.5rem;">
+                    <li><strong>Industry Standard:</strong> Expert Witness Format used by law enforcement and forensic professionals worldwide</li>
+                    <li><strong>Court Admissible:</strong> Includes built-in hash verification, metadata, and case information</li>
+                    <li><strong>Compression:</strong> Reduces storage while maintaining bit-for-bit accuracy</li>
+                    <li><strong>Tool Support:</strong> Compatible with EnCase, FTK, X-Ways, Autopsy, Sleuth Kit, and more</li>
+                    <li><strong>Integrity Checking:</strong> Internal checksums verify data hasn't been corrupted or tampered with</li>
+                </ul>
+            </div>
+            
+            <div class="progress-tracker">
+                <h3>Overall Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar">0%</div>
+                </div>
+            </div>
+            
+            <div class="task-section">
+                <div class="task-card" id="task1">
+                    <div class="task-header">
+                        <div class="task-number">1</div>
+                        <div class="task-title">Chain of Custody & Hash Verification</div>
+                    </div>
+                    
+                    <p>Establish chain of custody for the IMG evidence file.</p>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task1')">
+                            <div class="checkbox"></div>
+                            <span>Verify cloudcore_suspect_usb.E01 exists in ./evidence/</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task1')">
+                            <div class="checkbox"></div>
+                            <span>Calculate MD5 and SHA256 hashes</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task1')">
+                            <div class="checkbox"></div>
+                            <span>Create chain_of_custody.csv entry</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task1')">
+                            <div class="checkbox"></div>
+                            <span>Verify IMG internal hash with ewfverify</span>
+                        </div>
+                    </div>
+                    
+                    <div class="command-box">
+# Enter the forensic workstation
+docker compose run --rm dfir
+
+# [You are now inside the forensic lab environment - banner displays]
+
+# Calculate hashes of the E01 file
+md5sum /evidence/cloudcore_suspect_usb.E01
+sha256sum /evidence/cloudcore_suspect_usb.E01
+
+# Verify E01 internal integrity
+ewfverify /evidence/cloudcore_suspect_usb.E01
+
+# Exit the workstation
+exit
+
+# Back on your host machine - check the chain of custody log
+cat cases/chain_of_custody.csv
+                        <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+                    </div>
+                </div>
+                
+                <div class="task-card" id="task2">
+                    <div class="task-header">
+                        <div class="task-number">2</div>
+                        <div class="task-title">IMG Evidence Analysis</div>
+                    </div>
+                    
+                    <p>Analyze the IMG image using your preferred approach.</p>
+                    
+                    <div class="tool-tabs">
+                        <button class="tool-tab active" onclick="showTool('autopsy')">Autopsy GUI</button>
+                        <button class="tool-tab" onclick="showTool('sleuthkit')">Sleuth Kit CLI</button>
+                        <button class="tool-tab" onclick="showTool('combined')">Combined Approach</button>
+                    </div>
+                    
+                    <div id="autopsy" class="tool-content active">
+                        <div class="info-box">
+                            <strong>GUI Analysis with Autopsy</strong>
+                            <p>Autopsy can directly process E01 files without mounting. See README.md section "Optional: Enabling Autopsy GUI" for setup instructions.</p>
+                        </div>
+                        
+                        <div class="checklist">
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Open http://localhost:8080/vnc.html</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Create new case "UBNIST1_Analysis"</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Add cloudcore_suspect_usb.E01 as data source</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Run ingest modules (Hash Lookup, Keyword Search)</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Search keywords: "confidential", "password", "secret"</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Examine Deleted Files in the file tree</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Take screenshots of significant findings</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="sleuthkit" class="tool-content">
+                        <div class="info-box">
+                            <strong>CLI Analysis with Sleuth Kit</strong>
+                            <p>Sleuth Kit requires mounting IMG files with ewfmount first.</p>
+                        </div>
+                        
+                        <div class="checklist">
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Mount IMG with ewfmount</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>List partitions with mmls</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>List files with fls</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Identify deleted files (marked with *)</span>
+                            </div>
+                            <div class="checklist-item" onclick="toggleCheck(this, 'task2')">
+                                <div class="checkbox"></div>
+                                <span>Recover deleted files with tsk_recover</span>
+                            </div>
+                        </div>
+                        
+                        <div class="command-box">
+# Enter the forensic workstation
+docker compose run --rm dfir
+
+# [You are now inside the forensic lab environment]
+
+# Mount the E01 file (required for Sleuth Kit)
+mkdir -p /tmp/ewf
+ewfmount /evidence/cloudcore_suspect_usb.E01 /tmp/ewf
+
+# Verify mount worked
+ls /tmp/ewf   # Should show: ewf1
+
+# Check partitions in the image
+mmls /tmp/ewf/ewf1
+
+# Get file system information
+fsstat /tmp/ewf/ewf1
+
+# List all files including deleted (marked with *)
+fls -r -d /tmp/ewf/ewf1 > /cases/file_list.txt
+
+# View the file listing
+cat /cases/file_list.txt | less
+
+# Look for deleted files (marked with *)
+grep "\\*" /cases/file_list.txt
+
+# Recover all deleted files
+mkdir -p /cases/recovered
+tsk_recover /tmp/ewf/ewf1 /cases/recovered/
+
+# Extract a specific file by inode (replace [INODE] with actual number)
+icat /tmp/ewf/ewf1 [INODE] > /cases/recovered_file
+
+# Search for keywords in recovered files
+strings /cases/recovered/* | grep -i "password\|confidential\|secret"
+
+# Exit the workstation when done
+exit
+                            <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+                        </div>
+                    </div>
+                    
+                    <div id="combined" class="tool-content">
+                        <div class="info-box">
+                            <strong>Combined Approach (Recommended)</strong>
+                            <p>Use both tools to cross-verify findings for court-ready analysis.</p>
+                        </div>
+                        
+                        <p><strong>Best Practice Workflow:</strong></p>
+                        <ol style="margin-left: 1.5rem; margin-top: 1rem; line-height: 2;">
+                            <li>Start with Autopsy for visual exploration and automatic processing</li>
+                            <li>Note file paths, inode numbers, and suspicious artifacts</li>
+                            <li>Use Sleuth Kit CLI to extract specific files for detailed analysis</li>
+                            <li>Verify hash values match between both tools</li>
+                            <li>Document all findings with screenshots and command outputs</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <strong>Important:</strong> Always verify findings with multiple tools. Courts expect thorough verification and may question single-tool analysis.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="task-card" id="task3">
+                    <div class="task-header">
+                        <div class="task-number">3</div>
+                        <div class="task-title">Document Findings</div>
+                    </div>
+                    
+                    <p>Create professional documentation of your analysis.</p>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task3')">
+                            <div class="checkbox"></div>
+                            <span>Screenshot keyword search results</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task3')">
+                            <div class="checkbox"></div>
+                            <span>Document deleted files found</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task3')">
+                            <div class="checkbox"></div>
+                            <span>Record file hashes of recovered items</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task3')">
+                            <div class="checkbox"></div>
+                            <span>Note any suspicious patterns or anomalies</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleCheck(this, 'task3')">
+                            <div class="checkbox"></div>
+                            <span>Complete triage notes below</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="triage-notes-section">
+                <h2>📝 Live Triage Notes</h2>
+                <p>Document your findings in real-time. These notes auto-save and can be exported for your report.</p>
+                
+                <div class="notes-grid">
+                    <div class="notes-column">
+                        <h3>Findings & Observations</h3>
+                        <textarea class="notes-textarea" id="findings" placeholder="Document what you find:
+- Keywords found (location, context)
+- Deleted files discovered
+- File types and patterns
+- User activity indicators
+- Suspicious artifacts
+
+Example:
+[14:30] Found 'password.txt' in Recycle Bin (deleted)
+[14:35] Keyword 'confidential' found in /Documents/report.doc
+[14:40] Multiple .jpg files deleted on same date"></textarea>
+                        
+                        <div style="margin-top: 1rem;">
+                            <strong>Quick Notes (click to add):</strong>
+                            <div class="quick-note" onclick="addQuickNote('findings', '🔍 Keyword hit: ')">
+                                + Add Keyword Finding
+                            </div>
+                            <div class="quick-note" onclick="addQuickNote('findings', '🗑️ Deleted file: ')">
+                                + Add Deleted File
+                            </div>
+                            <div class="quick-note" onclick="addQuickNote('findings', '⚠️ Suspicious: ')">
+                                + Add Suspicious Activity
+                            </div>
+                            <div class="quick-note" onclick="addQuickNote('findings', '📁 File path: ')">
+                                + Add File Path
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="notes-column">
+                        <h3>Commands & Verification</h3>
+                        <textarea class="notes-textarea" id="methods" placeholder="Track your process:
+- Exact commands executed
+- Hash values verified
+- Tools and versions used
+- Cross-verification between tools
+
+Example:
+[Inside forensic workstation]
+# ewfverify /evidence/cloudcore_suspect_usb.E01
+Result: Verification successful
+MD5: fc8096c1a178f40600a7c8815087af2b
+SHA256: 6ebe35fef52afd133563a9f8a21c6b2f6e227146ffa8289b6feee5ecbe23607a"></textarea>
+                        
+                        <div style="margin-top: 1rem;">
+                            <strong>Command Templates:</strong>
+                            <div class="quick-note" onclick="addQuickNote('methods', 'Hash verified: ')">
+                                + Add Hash Verification
+                            </div>
+                            <div class="quick-note" onclick="addQuickNote('methods', 'Autopsy: ')">
+                                + Add Autopsy Action
+                            </div>
+                            <div class="quick-note" onclick="addQuickNote('methods', 'Sleuth Kit: fls ')">
+                                + Add Sleuth Kit Command
+                            </div>
+                            <div class="quick-note" onclick="addQuickNote('methods', 'Recovered: ')">
+                                + Add Recovery Note
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="save-section">
+                    <button class="save-btn" onclick="saveNotes()">💾 Save Notes Locally</button>
+                    <button class="export-btn" onclick="exportMarkdown()">📄 Export as Markdown</button>
+                    <button class="export-btn" onclick="exportCSV()">📊 Export Chain of Custody</button>
+                </div>
+                
+                <div class="info-box" style="margin-top: 1rem;">
+                    <strong>Auto-save enabled:</strong> Your notes are automatically saved to browser storage every 30 seconds.
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <h3>⚠️ Important Reminders</h3>
+                <ul style="margin-left: 1.5rem;">
+                    <li><strong>IMG files are read-only</strong> - Never modify the original evidence</li>
+                    <li><strong>Verify hashes</strong> - Use ewfverify to confirm IMG integrity</li>
+                    <li><strong>Document everything</strong> - Courts require detailed documentation</li>
+                    <li><strong>Cross-verify findings</strong> - Use multiple tools to confirm discoveries</li>
+                    <li><strong>Save outputs to /cases</strong> - This is your writable directory</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Checklist functionality
+        function toggleCheck(element, taskId) {
+            element.classList.toggle('checked');
+            element.querySelector('.checkbox').classList.toggle('checked');
+            updateProgress();
+        }
+        
+        // Update progress
+        function updateProgress() {
+            const totalCheckboxes = document.querySelectorAll('.checkbox').length;
+            const checkedBoxes = document.querySelectorAll('.checkbox.checked').length;
+            const percentage = Math.round((checkedBoxes / totalCheckboxes) * 100);
+            
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-bar').textContent = percentage + '%';
+            document.getElementById('progress-text').textContent = percentage + '%';
+        }
+        
+        // Tool tab switching
+        function showTool(toolName) {
+            const tabs = document.querySelectorAll('.tool-tab');
+            const contents = document.querySelectorAll('.tool-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(toolName).classList.add('active');
+        }
+        
+        // Copy command
+        function copyCommand(button) {
+            const commandBox = button.parentElement;
+            const text = commandBox.textContent.replace('Copy', '').trim();
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+        
+        // Add quick note
+        function addQuickNote(field, prefix) {
+            const textarea = document.getElementById(field);
+            const timestamp = new Date().toLocaleTimeString();
+            textarea.value += `\n[${timestamp}] ${prefix}`;
+            textarea.focus();
+            saveNotesAuto();
+        }
+        
+        // Save notes
+        function saveNotes() {
+            const findings = document.getElementById('findings').value;
+            const methods = document.getElementById('methods').value;
+            const timestamp = new Date().toISOString();
+            
+            const data = {
+                findings: findings,
+                methods: methods,
+                timestamp: timestamp,
+                progress: document.getElementById('progress-text').textContent
+            };
+            
+            localStorage.setItem('lab6_e01_notes', JSON.stringify(data));
+            
+            // Visual feedback
+            const button = event.target;
+            button.textContent = '✓ Saved!';
+            button.style.background = '#48bb78';
+            setTimeout(() => {
+                button.textContent = '💾 Save Notes Locally';
+                button.style.background = '';
+            }, 2000);
+        }
+        
+        // Auto-save function
+        function saveNotesAuto() {
+            const findings = document.getElementById('findings').value;
+            const methods = document.getElementById('methods').value;
+            const timestamp = new Date().toISOString();
+            
+            const data = {
+                findings: findings,
+                methods: methods,
+                timestamp: timestamp,
+                progress: document.getElementById('progress-text').textContent
+            };
+            
+            localStorage.setItem('lab6_e01_notes', JSON.stringify(data));
+        }
+        
+        // Export as Markdown
+        function exportMarkdown() {
+            const findings = document.getElementById('findings').value;
+            const methods = document.getElementById('methods').value;
+            const timestamp = new Date().toISOString();
+            
+            const markdown = `# Triage Report - Cloudcore USB Investigation
+**Date:** ${timestamp}
+**Analyst:** [Your Name]
+**Evidence:** cloudcore_suspect_usb.E01
+**Progress:** ${document.getElementById('progress-text').textContent}
+
+## Evidence Summary
+- **File:** cloudcore_suspect_usb.E01
+- **Source:** Cloudcore Inc. Investigation (CLOUDCORE-2024-INS-001)
+- **Format:** Expert Witness Format (E01)
+
+## Findings & Observations
+${findings}
+
+## Commands & Verification Methods
+${methods}
+
+## Chain of Custody
+Refer to: cases/chain_of_custody.csv
+
+## Next Steps
+- [ ] Complete detailed analysis of recovered files
+- [ ] Generate timeline of file system activity
+- [ ] Prepare final report for Assessment 1
+
+---
+*Generated from Week 7 Lab Worksheet - Updated for E01 Format*
+*IMG Industry Standard Forensic Analysis*`;
+            
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `triage_report_ubnist1_${new Date().toISOString().split('T')[0]}.md`;
+            a.click();
+        }
+        
+        // Export CSV template
+        function exportCSV() {
+            const csvContent = `Evidence_ID,Date_Received,Time_Received,Received_From,MD5_Hash,SHA256_Hash,Analyst_Name,Case_Number,Evidence_Description,Storage_Location
+UBNIST1-001,${new Date().toISOString().split('T')[0]},${new Date().toTimeString().slice(0,8)},Digital Corpora,[MD5_HASH],[SHA256_HASH],[Your Name],LAB6-2024,UBNIST1 Gen3 IMG Test Image,./evidence/
+`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chain_of_custody_ubnist1.csv';
+            a.click();
+        }
+        
+        // Load saved notes on page load
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('lab6_e01_notes');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('findings').value = data.findings || '';
+                document.getElementById('methods').value = data.methods || '';
+            }
+            
+            // Set up auto-save every 30 seconds
+            setInterval(saveNotesAuto, 30000);
+        });
+    </script>
+</body>
+</html>

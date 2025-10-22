@@ -1,12 +1,12 @@
-# Lab 2: Memory Forensics with Volatility 3 - Complete Walkthrough
+# Lab 2: Memory Forensics with Volatility 2 - Complete Walkthrough
 
 ## Overview
 
-This lab teaches you to analyze a captured memory dump from the **2009 Cloudcore Data Exfiltration Case** using Volatility 3 within a Docker container. You'll discover evidence of malicious processes, network connections, and potential data theft.
+This lab teaches you to analyze a captured memory dump from the **2009 Cloudcore Data Exfiltration Case** using the DFIR forensics container (which includes Volatility 2, Volatility 3, YARA, and other tools). You'll discover evidence of malicious processes, network connections, and potential data theft.
 
 **Time Estimate:** 90 minutes
 **Difficulty:** Intermediate
-**Tools:** Volatility 3, Docker, hashlog
+**Tools:** DFIR container (Volatility 2/3, YARA, Sleuth Kit), hashlog
 
 ---
 
@@ -39,6 +39,9 @@ docker compose ps
 
 # Verify evidence file exists
 ls -lh evidence/memory.raw
+
+# Build vol2 if needed
+docker compose build vol2
 ```
 
 ---
@@ -53,21 +56,37 @@ mkdir -p cases/Lab_2/vol_output
 
 This directory will store all Volatility plugin outputs.
 
-### 2. Verify Evidence Integrity
+### 2. Start Interactive DFIR Forensics Shell
 
-Before analyzing, establish chain of custody:
+Open an interactive shell to the main forensics container with all tools available:
 
 ```bash
-COC_NOTE="Lab 2: Memory dump analysis started" docker compose run --rm hashlog
+docker compose run --rm -it dfir /bin/bash
+```
+
+**You're now INSIDE the dfir forensics container.** All commands below run WITHOUT the `docker compose` prefix.
+
+**Available tools in this container:**
+- Sleuth Kit, TestDisk, Foremost, ewf-tools, exiftool, hashdeep, bulk_extractor
+- **Volatility 2** (use: `vol2` command for legacy Windows analysis)
+- **Volatility 3** (use: `vol` command for modern Windows analysis)
+- **YARA** (use: `yara` command for malware scanning)
+- Standard utilities: sha256sum, strings, grep, find, etc.
+
+### 3. Verify Evidence Integrity (Chain of Custody)
+
+Generate and record the SHA256 hash for chain of custody:
+
+```bash
+sha256sum /evidence/memory.raw
 ```
 
 **Expected Output:**
 ```
-Hashing /evidence...
-Added: memory.raw | SHA256: [long hash] | Lab 2: Memory dump analysis started
+a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f  /evidence/memory.raw
 ```
 
-**Important:** Copy the SHA256 hash to your `memory_report.md` file.
+**Important:** Copy this SHA256 hash to your `memory_report.md` file for chain of custody documentation.
 
 ---
 
@@ -75,21 +94,25 @@ Added: memory.raw | SHA256: [long hash] | Lab 2: Memory dump analysis started
 
 ### Step 1: Identify the Operating System Profile
 
-First, let Volatility detect the OS profile:
+First, let Volatility detect the OS profile. (You're inside the dfir container):
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.info.Info
+vol2 -f /evidence/memory.raw imageinfo
 ```
 
 **Expected Output:**
 ```
-Volatility 3 Framework ...
-Variable        Value
-Kernel Base     0x...
-DTB             0x...
-Symbols         windows/...
-Is64Bit         False
-IsPAE           True
+Volatility Foundation Volatility Framework 2.x
+INFO    : volatility.debug    : Parsing image file
+INFO    : volatility.debug    : Image Parameters
+INFO    : volatility.debug    : OS : Windows XP Service Pack 3 x86
+...
+Suggested Profile(s) : WinXPSP3x86, WinXPSP2x86
+AS Layer                 : IA32PagedMemory
+DTB                      : 0x...
+KDBG                     : 0x...
+Image Type               : MemoryDump
+Image Date               : [timestamp]
 ...
 ```
 
@@ -102,24 +125,25 @@ IsPAE           True
 
 ### Step 2: List Running Processes (pslist)
 
-Get a flat list of all running processes at the time of capture:
+Get a flat list of all running processes at the time of capture. Use the profile from Step 1:
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList > cases/Lab_2/vol_output/pslist.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pslist > /cases/Lab_2/vol_output/pslist.txt
 ```
 
 **Review the output:**
 ```bash
-cat cases/Lab_2/vol_output/pslist.txt
+cat /cases/Lab_2/vol_output/pslist.txt
 ```
 
 **Expected Output Format:**
 ```
-PID     PPID    ImageFileName           Offset(V)       Threads Handles SessionId
-4       0       System                  0x...           ...     ...     ...
+ Offset(V)  Name                    PID   PPID   Thds   Hnds Time
+---------- -------------------- ------ ------ ------ ------ ----
+0x...      System                    4      0     59    331 1970-01-01 00:00:00 UTC+0000
 ...
-1234    568     explorer.exe            0x...           ...     ...     1
-2048    1234    iexplore.exe            0x...           ...     ...     1
+0x...      explorer.exe           1234    568     12    234 2009-10-10 14:23:45 UTC+0000
+0x...      iexplore.exe           2048   1234      8    156 2009-10-10 14:25:10 UTC+0000
 ...
 ```
 
@@ -141,23 +165,23 @@ PID     PPID    ImageFileName           Offset(V)       Threads Handles SessionI
 See the parent-child relationships between processes:
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pstree.PsTree > cases/Lab_2/vol_output/pstree.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pstree > /cases/Lab_2/vol_output/pstree.txt
 ```
 
 **Review the output:**
 ```bash
-cat cases/Lab_2/vol_output/pstree.txt
+cat /cases/Lab_2/vol_output/pstree.txt
 ```
 
 **Expected Output Format:**
 ```
-PID     PPID    ImageFileName           Offset(V)       Threads Handles SessionId
-4       0       System                  0x...           ...     ...     ...
-* 368   4       smss.exe                0x...           ...     ...     ...
-** 456  368     csrss.exe               0x...           ...     ...     ...
+Name                                                  PID   PPID   Offset             Time
+System                                                  4      0 0x...     1970-01-01 00:00:00 UTC+0000
+. smss.exe                                           368      4 0x...     2009-10-10 13:45:00 UTC+0000
+.. csrss.exe                                         456    368 0x...     2009-10-10 13:45:01 UTC+0000
 ...
-* 1234  568     explorer.exe            0x...           ...     ...     1
-** 2048 1234    iexplore.exe            0x...           ...     ...     1
+. explorer.exe                                      1234    568 0x...     2009-10-10 14:00:00 UTC+0000
+.. iexplore.exe                                     2048   1234 0x...     2009-10-10 14:25:10 UTC+0000
 ```
 
 **What to look for:**
@@ -173,19 +197,19 @@ PID     PPID    ImageFileName           Offset(V)       Threads Handles SessionI
 Identify active and recent network connections:
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.netscan.NetScan > cases/Lab_2/vol_output/netscan.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 netscan > /cases/Lab_2/vol_output/netscan.txt
 ```
 
 **Review the output:**
 ```bash
-cat cases/Lab_2/vol_output/netscan.txt
+cat /cases/Lab_2/vol_output/netscan.txt
 ```
 
 **Expected Output Format:**
 ```
-Offset          Proto   LocalAddr       LocalPort       ForeignAddr     ForeignPort     State           PID     Owner
-0x...           TCPv4   192.168.1.100   49152           8.8.8.8         443             ESTABLISHED     2048    iexplore.exe
-0x...           TCPv4   192.168.1.100   49153           10.0.0.50       6667            ESTABLISHED     3456    unknown.exe
+Offset(V)      Proto   LocalAddr           LocalPort ForeignAddr         ForeignPort State            PID
+0x...          TCPv4   192.168.1.100       49152     8.8.8.8             443         ESTABLISHED      2048
+0x...          TCPv4   192.168.1.100       49153     10.0.0.50           6667        ESTABLISHED      3456
 ```
 
 **What to look for:**
@@ -209,7 +233,7 @@ Offset          Proto   LocalAddr       LocalPort       ForeignAddr     ForeignP
 If you identified a suspicious PID (e.g., 3456), list its loaded DLLs:
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.dlllist.DllList --pid 3456 > cases/Lab_2/vol_output/dlllist_3456.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 3456 > /cases/Lab_2/vol_output/dlllist_3456.txt
 ```
 
 **What to look for:**
@@ -224,7 +248,7 @@ docker compose run --rm vol3 vol -f /evidence/memory.raw windows.dlllist.DllList
 To extract the full memory space of a suspicious process for deeper analysis:
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw -o /cases/Lab_2/vol_output windows.memmap.Memmap --pid 3456 --dump
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 memdump -p 3456 -D /cases/Lab_2/vol_output
 ```
 
 **Note:** This creates large files. Only dump if you need to:
@@ -239,7 +263,7 @@ docker compose run --rm vol3 vol -f /evidence/memory.raw -o /cases/Lab_2/vol_out
 Some malware "unlinks" processes from the active process list. Check for discrepancies:
 
 ```bash
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.psscan.PsScan > cases/Lab_2/vol_output/psscan.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 psscan > /cases/Lab_2/vol_output/psscan.txt
 ```
 
 Compare `psscan.txt` with `pslist.txt`. Any process in psscan but NOT in pslist is hidden.
@@ -306,11 +330,12 @@ Fill in `cases/Lab_2/Lab2/memory_report.md` with:
 
 ### 2. Methods
 ```
-Commands executed:
-- docker compose run --rm vol3 vol -f /evidence/memory.raw windows.info.Info
-- docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList
-- docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pstree.PsTree
-- docker compose run --rm vol3 vol -f /evidence/memory.raw windows.netscan.NetScan
+Container: dfir (all-in-one DFIR forensics container)
+Commands executed (run inside: docker compose run --rm -it dfir /bin/bash):
+- vol2 -f /evidence/memory.raw imageinfo
+- vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pslist
+- vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pstree
+- vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 netscan
 ```
 
 ### 3. Findings
@@ -336,6 +361,29 @@ Summarize:
 - IRC connections suggest C2 communications
 - Findings consistent with data exfiltration scenario
 - Recommend correlation with network traffic analysis (Lab 5)
+
+---
+
+## About YARA
+
+**YARA is now integrated into the dfir container.** No need to juggle multiple containers!
+
+### Running YARA
+
+Simply run YARA from within the dfir shell:
+
+```bash
+# Start the dfir container
+docker compose run --rm -it dfir /bin/bash
+
+# Inside the dfir container, run YARA:
+yara -r /rules/malware_signatures.yar /evidence/memory.raw
+
+# Or save output to a file
+yara -r /rules/malware_signatures.yar /evidence/memory.raw > /cases/Lab_2/vol_output/yara_scan.txt
+```
+
+All your analysis happens in one unified forensics environment!
 
 ---
 
@@ -396,38 +444,44 @@ Before submitting, ensure you have:
 
 ## Going Further (Optional Extensions)
 
-If you finish early or want deeper analysis:
+If you finish early or want deeper analysis (all inside the dfir container):
 
 1. **Extract process executables:**
    ```bash
-   docker compose run --rm vol3 vol -f /evidence/memory.raw -o /cases/Lab_2/vol_output windows.pslist.PsList --dump --pid <suspicious_pid>
+   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 procdump -p <suspicious_pid> -D /cases/Lab_2/vol_output
    ```
 
 2. **Search for encryption keys in memory:**
    ```bash
-   docker compose run --rm dfir strings /evidence/memory.raw | grep -i "password\|truecrypt\|key"
+   strings /evidence/memory.raw | grep -i "password\|truecrypt\|key"
    ```
 
 3. **Check for registry persistence mechanisms:**
    ```bash
-   docker compose run --rm vol3 vol -f /evidence/memory.raw windows.registry.printkey.PrintKey --key "Software\Microsoft\Windows\CurrentVersion\Run"
+   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
    ```
 
 4. **Timeline all process creation times:**
    ```bash
-   docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList --output csv > cases/Lab_2/vol_output/pslist.csv
+   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 timeliner > /cases/Lab_2/vol_output/timeliner.txt
    ```
 
 5. **YARA scan the memory dump:**
    ```bash
-   docker compose run --rm yara yara -r /rules/malware_signatures.yar /evidence/memory.raw
+   yara -r /rules/malware_signatures.yar /evidence/memory.raw > /cases/Lab_2/vol_output/yara_scan.txt
+   ```
+
+6. **Use Sleuth Kit tools for disk analysis:**
+   ```bash
+   fls -r /evidence/disk.img
    ```
 
 ---
 
 ## Additional Resources
 
-- **Volatility 3 Documentation:** https://volatility3.readthedocs.io/
+- **Volatility 2 Documentation:** https://www.volatilityfoundation.org/documentation
+- **Volatility 2 Command Reference:** https://github.com/volatilityfoundation/volatility/wiki/Command-Reference
 - **Windows Process Baseline:** Know normal processes (System, smss, csrss, services, lsass, svchost)
 - **IRC Protocol:** Understand port 6667 and C2 communications
 - **TrueCrypt:** Full-disk/container encryption tool (discontinued, but used in 2009)
