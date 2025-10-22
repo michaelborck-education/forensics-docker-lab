@@ -10,8 +10,7 @@ scripts/
 ├── forensics-workstation.ps1  ← START HERE (PowerShell/Windows)
 ├── coc-log                     ← Use inside forensic workstation
 ├── verify_setup.sh             ← Run once to verify setup
-├── instructor/                 ← Instructor-only tools
-└── legacy/                     ← Old versions (for reference)
+└── instructor/                 ← Instructor-only tools
 ```
 
 ---
