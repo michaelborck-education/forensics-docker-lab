@@ -10,6 +10,15 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+Then use the **Autopsy GUI** as described in the steps below.
+
+---
+
 ## What to submit
 - `cases/Lab_3/autopsy_case/` directory (exported case data).  
 - `cases/Lab_3/autopsy_report.md` (template provided).

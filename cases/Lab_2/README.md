@@ -10,6 +10,13 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Mac/Linux:** `./scripts/forensics-workstation`
+**Windows:** `.\scripts\forensics-workstation.ps1`
+
+---
+
 ## What to submit
 - `cases/Lab_2/vol_output/` with plugin outputs (CSV/TXT).  
 - `cases/Lab_2/memory_report.md` (template provided).  
