@@ -152,10 +152,17 @@ All checks should pass (✓ in green).
 ./scripts/forensics-workstation
 ```
 
-**Windows PowerShell:**
-```powershell
-.\scripts\forensics-workstation.ps1
+**Windows (Command Prompt or PowerShell):**
+```batch
+scripts\forensics-workstation.bat
 ```
+
+Or if you prefer PowerShell directly:
+```powershell
+powershell -ExecutionPolicy Bypass -File "scripts\forensics-workstation.ps1"
+```
+
+> **Note:** The `.bat` file is recommended for Windows as it handles execution policy automatically. If you get an "execution policy" error, use the batch file above.
 
 You'll be prompted for your analyst name, then you're inside:
 ```
@@ -332,11 +339,21 @@ groups | grep docker  # verify
 
 ### Starting Your Forensic Session
 
+**Mac/Linux/WSL:**
 ```bash
 # Enter the immersive workstation (RECOMMENDED)
 ./scripts/forensics-workstation
 
 # Or use Docker directly (for advanced users)
+docker compose run --rm -it dfir bash
+```
+
+**Windows:**
+```batch
+REM Enter the immersive workstation (RECOMMENDED)
+scripts\forensics-workstation.bat
+
+REM Or use Docker directly (for advanced users)
 docker compose run --rm -it dfir bash
 ```
 
