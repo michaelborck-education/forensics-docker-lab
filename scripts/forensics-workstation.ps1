@@ -107,12 +107,12 @@ function Prompt-AnalystName {
 function Show-CaseMenu {
     Write-Host ""
     Write-Host "Available Cases:" -ForegroundColor $Colors.Cyan
-    Write-Host "  1) Lab 1 - USB Evidence Triage & Imaging"
-    Write-Host "  2) Lab 2 - Memory Forensics (Volatility)"
-    Write-Host "  3) Lab 3 - Disk Analysis (Autopsy)"
-    Write-Host "  4) Lab 4 - Email & Log Analysis"
-    Write-Host "  5) Lab 5 - Network Artifact Analysis"
-    Write-Host "  6) Lab 6 - Final Case Report"
+    Write-Host "  1) USB_Imaging - Evidence handling, imaging & initial triage"
+    Write-Host "  2) Memory_Forensics - Memory analysis with Volatility 2"
+    Write-Host "  3) Autopsy_GUI - Graphical forensic examination"
+    Write-Host "  4) Email_Logs - Email artifact and log analysis"
+    Write-Host "  5) Network_Analysis - Network traffic & C2 detection"
+    Write-Host "  6) Final_Report - Synthesis and professional reporting"
     Write-Host "  0) Skip case selection (all labs available)"
     Write-Host ""
 
@@ -122,7 +122,15 @@ function Show-CaseMenu {
     }
 
     if ($labChoice -match "^[1-6]$") {
-        Write-Host "✓ Lab $labChoice selected" -ForegroundColor $Colors.Green
+        $labName = switch ($labChoice) {
+            "1" { "USB_Imaging" }
+            "2" { "Memory_Forensics" }
+            "3" { "Autopsy_GUI" }
+            "4" { "Email_Logs" }
+            "5" { "Network_Analysis" }
+            "6" { "Final_Report" }
+        }
+        Write-Host "✓ $labName selected" -ForegroundColor $Colors.Green
     }
     elseif ($labChoice -ne "0") {
         Write-Host "⚠ Invalid selection, proceeding with all labs" -ForegroundColor $Colors.Yellow
