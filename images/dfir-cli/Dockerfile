@@ -35,9 +35,9 @@ RUN git clone https://github.com/volatilityfoundation/volatility.git /opt/volati
     && chmod +x /opt/volatility2/vol.py
 
 # Copy banner, entrypoint script, and coc-log utility
-COPY banner.txt /etc/banner.txt
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY ../../scripts/coc-log /usr/local/bin/coc-log
+COPY images/dfir-cli/banner.txt /etc/banner.txt
+COPY images/dfir-cli/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY scripts/coc-log /usr/local/bin/coc-log
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/coc-log
