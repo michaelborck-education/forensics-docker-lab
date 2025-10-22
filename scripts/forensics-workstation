@@ -87,12 +87,12 @@ prompt_analyst_name() {
 show_case_menu() {
     echo
     echo -e "${CYAN}Available Cases:${NC}"
-    echo "  1) Lab 1 - USB Evidence Triage & Imaging"
-    echo "  2) Lab 2 - Memory Forensics (Volatility)"
-    echo "  3) Lab 3 - Disk Analysis (Autopsy)"
-    echo "  4) Lab 4 - Email & Log Analysis"
-    echo "  5) Lab 5 - Network Artifact Analysis"
-    echo "  6) Lab 6 - Final Case Report"
+    echo "  1) USB_Imaging - Evidence handling, imaging & initial triage"
+    echo "  2) Memory_Forensics - Memory analysis with Volatility 2"
+    echo "  3) Autopsy_GUI - Graphical forensic examination"
+    echo "  4) Email_Logs - Email artifact and log analysis"
+    echo "  5) Network_Analysis - Network traffic & C2 detection"
+    echo "  6) Final_Report - Synthesis and professional reporting"
     echo "  0) Skip case selection (all labs available)"
     echo
     read -p "Select lab (0-6) [0]: " -r LAB_CHOICE
@@ -101,7 +101,14 @@ show_case_menu() {
     if [ "$LAB_CHOICE" != "0" ]; then
         case "$LAB_CHOICE" in
             1|2|3|4|5|6)
-                echo -e "${GREEN}✓ Lab $LAB_CHOICE selected${NC}"
+                case "$LAB_CHOICE" in
+                    1) echo -e "${GREEN}✓ USB_Imaging selected${NC}" ;;
+                    2) echo -e "${GREEN}✓ Memory_Forensics selected${NC}" ;;
+                    3) echo -e "${GREEN}✓ Autopsy_GUI selected${NC}" ;;
+                    4) echo -e "${GREEN}✓ Email_Logs selected${NC}" ;;
+                    5) echo -e "${GREEN}✓ Network_Analysis selected${NC}" ;;
+                    6) echo -e "${GREEN}✓ Final_Report selected${NC}" ;;
+                esac
                 ;;
             *)
                 echo -e "${YELLOW}⚠ Invalid selection, proceeding with all labs${NC}"
