@@ -25,9 +25,9 @@ REM Display banner
 echo.
 echo   +=====================================================================+
 echo   ^|                                                                     ^|
-echo   ^|     DIGITAL FORENSICS INCIDENT RESPONSE LABORATORY                 ^|
+echo   ^|     DIGITAL FORENSICS INCIDENT RESPONSE LABORATORY                  ^|
 echo   ^|                                                                     ^|
-echo   ^|           Cloudcore 2009 Data Exfiltration Investigation           ^|
+echo   ^|     Cloudcore 2009 Data Exfiltration Investigation                  ^|
 echo   ^|                                                                     ^|
 echo   +=====================================================================+
 echo.

@@ -19,9 +19,9 @@ $Blue = "Cyan"
 Write-Host ""
 Write-Host "  +=====================================================================+" -ForegroundColor $Blue
 Write-Host "  |                                                                     |" -ForegroundColor $Blue
-Write-Host "  |     DIGITAL FORENSICS INCIDENT RESPONSE LABORATORY                |" -ForegroundColor $Blue
+Write-Host "  |     DIGITAL FORENSICS INCIDENT RESPONSE LABORATORY                  |" -ForegroundColor $Blue
 Write-Host "  |                                                                     |" -ForegroundColor $Blue
-Write-Host "  |           Cloudcore 2009 Data Exfiltration Investigation          |" -ForegroundColor $Blue
+Write-Host "  |     Cloudcore 2009 Data Exfiltration Investigation                  |" -ForegroundColor $Blue
 Write-Host "  |                                                                     |" -ForegroundColor $Blue
 Write-Host "  +=====================================================================+" -ForegroundColor $Blue
 Write-Host ""
