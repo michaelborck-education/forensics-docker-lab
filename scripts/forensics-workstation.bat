@@ -32,29 +32,26 @@ echo   ^|                                                                     ^|
 echo   +=====================================================================+
 echo.
 
-REM Show case menu
-echo Available Cases:
+REM Show lab summary
+echo.
+echo Lab Environment - Available Tasks:
 echo   1 - USB_Imaging - Evidence handling and initial triage
 echo   2 - Memory_Forensics - Memory analysis with Volatility 2
 echo   3 - Autopsy_GUI - Graphical forensic examination
 echo   4 - Email_Logs - Email artifact and log analysis
 echo   5 - Network_Analysis - Network traffic and C2 detection
 echo   6 - Final_Report - Synthesis and professional reporting
-echo   0 - Skip case selection (all labs available)
+echo.
+echo Access Mode: All labs available in one environment
 echo.
 
-set /p LAB_CHOICE="Select lab (0-6) [0]: "
-if "!LAB_CHOICE!"=="" set "LAB_CHOICE=0"
+set /p CONTINUE_CHOICE="Continue to DFIR workstation? (y/n) [y]: "
+if "!CONTINUE_CHOICE!"=="" set "CONTINUE_CHOICE=y"
 
-if "!LAB_CHOICE!"=="1" echo Success: USB_Imaging selected
-if "!LAB_CHOICE!"=="2" echo Success: Memory_Forensics selected
-if "!LAB_CHOICE!"=="3" echo Success: Autopsy_GUI selected
-if "!LAB_CHOICE!"=="4" echo Success: Email_Logs selected
-if "!LAB_CHOICE!"=="5" echo Success: Network_Analysis selected
-if "!LAB_CHOICE!"=="6" echo Success: Final_Report selected
-if not "!LAB_CHOICE!"=="0" if not "!LAB_CHOICE!"=="1" if not "!LAB_CHOICE!"=="2" if not "!LAB_CHOICE!"=="3" if not "!LAB_CHOICE!"=="4" if not "!LAB_CHOICE!"=="5" if not "!LAB_CHOICE!"=="6" (
-    echo Warning: Invalid selection, proceeding with all labs
-    set "LAB_CHOICE=0"
+if /i "!CONTINUE_CHOICE!"=="n" (
+    echo Exiting without connecting
+    echo.
+    exit /b 0
 )
 
 REM Connect to workstation

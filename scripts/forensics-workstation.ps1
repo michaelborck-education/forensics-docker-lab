@@ -35,36 +35,28 @@ if ([string]::IsNullOrWhiteSpace($AnalystName)) {
     }
 }
 
-# Show available cases
+# Show lab summary
 Write-Host ""
-Write-Host "Available Cases:" -ForegroundColor $Cyan
+Write-Host "Lab Environment - Available Tasks:" -ForegroundColor $Cyan
 Write-Host "  1 - USB_Imaging - Evidence handling and initial triage"
 Write-Host "  2 - Memory_Forensics - Memory analysis with Volatility 2"
 Write-Host "  3 - Autopsy_GUI - Graphical forensic examination"
 Write-Host "  4 - Email_Logs - Email artifact and log analysis"
 Write-Host "  5 - Network_Analysis - Network traffic and C2 detection"
 Write-Host "  6 - Final_Report - Synthesis and professional reporting"
-Write-Host "  0 - Skip case selection (all labs available)"
+Write-Host ""
+Write-Host "Access Mode: All labs available in one environment" -ForegroundColor $Cyan
 Write-Host ""
 
-$labChoice = Read-Host "Select lab (0-6) [0]"
-if ([string]::IsNullOrWhiteSpace($labChoice)) {
-    $labChoice = "0"
+$continueChoice = Read-Host "Continue to DFIR workstation? (y/n) [y]"
+if ([string]::IsNullOrWhiteSpace($continueChoice)) {
+    $continueChoice = "y"
 }
 
-if ($labChoice -match "^[1-6]$") {
-    switch ($labChoice) {
-        "1" { Write-Host "Success: USB_Imaging selected" -ForegroundColor $Green }
-        "2" { Write-Host "Success: Memory_Forensics selected" -ForegroundColor $Green }
-        "3" { Write-Host "Success: Autopsy_GUI selected" -ForegroundColor $Green }
-        "4" { Write-Host "Success: Email_Logs selected" -ForegroundColor $Green }
-        "5" { Write-Host "Success: Network_Analysis selected" -ForegroundColor $Green }
-        "6" { Write-Host "Success: Final_Report selected" -ForegroundColor $Green }
-    }
-}
-elseif ($labChoice -ne "0") {
-    Write-Host "Warning: Invalid selection, proceeding with all labs" -ForegroundColor $Yellow
-    $labChoice = "0"
+if ($continueChoice -notmatch "^[Yy]$") {
+    Write-Host "Exiting without connecting" -ForegroundColor $Yellow
+    Write-Host ""
+    exit 0
 }
 
 # Connect to workstation

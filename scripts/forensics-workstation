@@ -84,37 +84,25 @@ prompt_analyst_name() {
     ANALYST_NAME_SANITIZED=$(echo "$ANALYST_NAME" | tr ' ' '_' | tr -d '[:punct:]')
 }
 
-show_case_menu() {
+show_lab_summary() {
     echo
-    echo -e "${CYAN}Available Cases:${NC}"
+    echo -e "${CYAN}Lab Environment - Available Tasks:${NC}"
     echo "  1 - USB_Imaging - Evidence handling, imaging and initial triage"
     echo "  2 - Memory_Forensics - Memory analysis with Volatility 2"
     echo "  3 - Autopsy_GUI - Graphical forensic examination"
     echo "  4 - Email_Logs - Email artifact and log analysis"
     echo "  5 - Network_Analysis - Network traffic and C2 detection"
     echo "  6 - Final_Report - Synthesis and professional reporting"
-    echo "  0 - Skip case selection (all labs available)"
     echo
-    read -p "Select lab (0-6) [0]: " -r LAB_CHOICE
-    LAB_CHOICE=${LAB_CHOICE:-0}
+    echo -e "${CYAN}Access Mode:${NC} All labs available in one environment"
+    echo
+    read -p "Continue to DFIR workstation? (y/n) [y]: " -r CONTINUE_CHOICE
+    CONTINUE_CHOICE=${CONTINUE_CHOICE:-y}
 
-    if [ "$LAB_CHOICE" != "0" ]; then
-        case "$LAB_CHOICE" in
-            1|2|3|4|5|6)
-                case "$LAB_CHOICE" in
-                    1) echo -e "${GREEN}✓ USB_Imaging selected${NC}" ;;
-                    2) echo -e "${GREEN}✓ Memory_Forensics selected${NC}" ;;
-                    3) echo -e "${GREEN}✓ Autopsy_GUI selected${NC}" ;;
-                    4) echo -e "${GREEN}✓ Email_Logs selected${NC}" ;;
-                    5) echo -e "${GREEN}✓ Network_Analysis selected${NC}" ;;
-                    6) echo -e "${GREEN}✓ Final_Report selected${NC}" ;;
-                esac
-                ;;
-            *)
-                echo -e "${YELLOW}⚠ Invalid selection, proceeding with all labs${NC}"
-                LAB_CHOICE="0"
-                ;;
-        esac
+    if [[ ! $CONTINUE_CHOICE =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}✗ Exiting without connecting${NC}"
+        echo
+        exit 0
     fi
 }
 
@@ -188,8 +176,8 @@ main() {
     # Get analyst name
     prompt_analyst_name
 
-    # Optional case selection
-    show_case_menu
+    # Show lab summary and ask to proceed
+    show_lab_summary
 
     # Connect to workstation
     connect_to_workstation
