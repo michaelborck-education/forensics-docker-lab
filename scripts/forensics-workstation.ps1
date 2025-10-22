@@ -107,13 +107,13 @@ function Prompt-AnalystName {
 function Show-CaseMenu {
     Write-Host ""
     Write-Host "Available Cases:" -ForegroundColor $Colors.Cyan
-    Write-Host "  1) USB_Imaging - Evidence handling, imaging and initial triage"
-    Write-Host "  2) Memory_Forensics - Memory analysis with Volatility 2"
-    Write-Host "  3) Autopsy_GUI - Graphical forensic examination"
-    Write-Host "  4) Email_Logs - Email artifact and log analysis"
-    Write-Host "  5) Network_Analysis - Network traffic and C2 detection"
-    Write-Host "  6) Final_Report - Synthesis and professional reporting"
-    Write-Host "  0) Skip case selection (all labs available)"
+    Write-Host "  1 - USB_Imaging - Evidence handling, imaging and initial triage"
+    Write-Host "  2 - Memory_Forensics - Memory analysis with Volatility 2"
+    Write-Host "  3 - Autopsy_GUI - Graphical forensic examination"
+    Write-Host "  4 - Email_Logs - Email artifact and log analysis"
+    Write-Host "  5 - Network_Analysis - Network traffic and C2 detection"
+    Write-Host "  6 - Final_Report - Synthesis and professional reporting"
+    Write-Host "  0 - Skip case selection (all labs available)"
     Write-Host ""
 
     $labChoice = Read-Host "Select lab (0-6) [0]"
@@ -121,7 +121,7 @@ function Show-CaseMenu {
         $labChoice = "0"
     }
 
-    if ($labChoice -match "^[1-6]$") {
+    if ($labChoice -match "^[1-6]`$") {
         $labName = switch ($labChoice) {
             "1" { "USB_Imaging" }
             "2" { "Memory_Forensics" }
@@ -130,10 +130,10 @@ function Show-CaseMenu {
             "5" { "Network_Analysis" }
             "6" { "Final_Report" }
         }
-        Write-Host "✓ $labName selected" -ForegroundColor $Colors.Green
+        Write-Host "Success: $labName selected" -ForegroundColor $Colors.Green
     }
     elseif ($labChoice -ne "0") {
-        Write-Host "⚠ Invalid selection, proceeding with all labs" -ForegroundColor $Colors.Yellow
+        Write-Host "Warning: Invalid selection, proceeding with all labs" -ForegroundColor $Colors.Yellow
         $labChoice = "0"
     }
 
