@@ -20,8 +20,8 @@ Then use the **Autopsy GUI** as described in the steps below.
 ---
 
 ## What to submit
-- `cases/Lab_3/autopsy_case/` directory (exported case data).
-- `cases/Lab_3/autopsy_report.md` - Start with: `cp templates/WORKBOOK.md cases/Lab_3/autopsy_report.md`
+- `cases/Autopsy_GUI/autopsy_case/` directory (exported case data).
+- `cases/Autopsy_GUI/autopsy_report.md` - Start with: `cp templates/WORKBOOK.md cases/Autopsy_GUI/autopsy_report.md`
 
 ---
 
@@ -35,7 +35,7 @@ docker compose up -d novnc autopsy
 
 2. **Create a new case**
 - Case name: `Lab3_<YourName>`  
-- Base directory: `/cases/Lab_3/autopsy_case`  
+- Base directory: `/cases/Autopsy_GUI/autopsy_case`  
 - Add evidence: `/evidence/usb.img` (practice image from Lab1)
 
 3. **Explore evidence**
@@ -44,7 +44,7 @@ docker compose up -d novnc autopsy
 - Hash lookup (optional).
 
 4. **Generate Autopsy report**
-Export HTML or PDF into `/cases/Lab_3/autopsy_case/export/`.
+Export HTML or PDF into `/cases/Autopsy_GUI/autopsy_case/export/`.
 
 5. **Fill in autopsy_report.md** with screenshots and notes.
 

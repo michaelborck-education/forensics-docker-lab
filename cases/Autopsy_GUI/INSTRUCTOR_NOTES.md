@@ -83,7 +83,7 @@ Created a comprehensive `WALKTHROUGH.md` to supplement the existing `README.md`.
 
 ## Files That Should Be Updated
 
-1. **cases/Lab_3/README.md**
+1. **cases/Autopsy_GUI/README.md**
    - Add browser requirements (Chrome/Firefox recommended)
    - Add: "See WALKTHROUGH.md for detailed step-by-step instructions"
    - Mention expected time: 75 minutes

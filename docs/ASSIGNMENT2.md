@@ -139,7 +139,7 @@ Objective: Analyze Windows XP memory image to identify malicious processes and d
         Network connection details with timestamps
         Any errors encountered and troubleshooting steps
 
-    💡 Hint: Save all outputs to /cases/Lab_2/vol_output/ directory for organization
+    💡 Hint: Save all outputs to /cases/Memory_Forensics/vol_output/ directory for organization
 
 Task 2: Email and Log Analysis (10 points)
 
@@ -295,14 +295,14 @@ Submit a single ZIP file named StudentID_Memory_Email_Forensics.zip containing:
 
 StudentID_Memory_Email_Forensics/
 ├── chain_of_custody.csv (updated with new evidence)
-├── Lab_2/
+├── Memory_Forensics/
 │   ├── vol_output/
 │   │   ├── pslist.txt
 │   │   ├── pstree.txt
 │   │   ├── connections.txt
 │   │   └── process_dumps/
 │   └── memory_analysis_notes.txt
-├── Lab_4/
+├── Email_Logs/
 │   ├── email_headers.txt
 │   ├── log_extracts.txt
 │   ├── correlation_timeline.csv

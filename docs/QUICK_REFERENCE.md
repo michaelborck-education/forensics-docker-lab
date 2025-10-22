@@ -57,10 +57,10 @@ coc-log "fls -r /tmp/ewf/ewf1" "Initial filesystem listing of USB evidence"
 
 ```bash
 # Inside the workstation
-cat /cases/Lab_1/analysis_log.csv
+cat /cases/USB_Imaging/analysis_log.csv
 
 # Outside the workstation
-cat cases/Lab_1/analysis_log.csv
+cat cases/USB_Imaging/analysis_log.csv
 ```
 
 ---
@@ -74,13 +74,13 @@ cat cases/Lab_1/analysis_log.csv
 git checkout instructor
 
 # View answer key for Lab 1
-cat cases/Lab_1/instructor/answer_key.md
+cat cases/USB_Imaging/instructor/answer_key.md
 
 # View instructor notes
-cat cases/Lab_1/instructor/INSTRUCTOR_NOTES.md
+cat cases/USB_Imaging/instructor/INSTRUCTOR_NOTES.md
 
 # View grading rubric
-cat cases/Lab_1/instructor/rubric.csv
+cat cases/USB_Imaging/instructor/rubric.csv
 ```
 
 ### Distributing to Students
@@ -90,22 +90,22 @@ cat cases/Lab_1/instructor/rubric.csv
 2. Never see instructor/ folders
 3. Not have access to answer keys
 
-**Verify:** `ls cases/Lab_1/` - should NOT show `instructor/` folder
+**Verify:** `ls cases/USB_Imaging/` - should NOT show `instructor/` folder
 
 ### Reviewing Student Work
 
 ```bash
 # Check student's chain of custody log
-cat cases/Lab_1/analysis_log.csv
+cat cases/USB_Imaging/analysis_log.csv
 
 # View student's output files
-ls cases/Lab_1/outputs/
+ls cases/USB_Imaging/outputs/
 
 # See which commands were executed
-grep "fls -r" cases/Lab_1/analysis_log.csv
+grep "fls -r" cases/USB_Imaging/analysis_log.csv
 
 # Verify command hashes match documented outputs
-sha256sum cases/Lab_1/outputs/*
+sha256sum cases/USB_Imaging/outputs/*
 ```
 
 ### Grading with Rubrics
@@ -173,7 +173,7 @@ coc-log "ewfverify /evidence/usb.E01" "Verify evidence integrity"
 mkdir -p /tmp/ewf
 coc-log "ewfmount /evidence/usb.E01 /tmp/ewf" "Mount E01 file"
 coc-log "fls -r /tmp/ewf/ewf1" "List all files including deleted"
-coc-log "tsk_recover -a /tmp/ewf/ewf1 /cases/Lab_1/recovered" "Recover deleted files"
+coc-log "tsk_recover -a /tmp/ewf/ewf1 /cases/USB_Imaging/recovered" "Recover deleted files"
 ```
 
 ### Lab 2 - Memory Analysis
@@ -207,9 +207,9 @@ coc-log "md5sum /cases/recovered/*" "Generate hashes of recovered files"
 | `/evidence/memory.raw` | Memory dump |
 | `/evidence/network.cap` | Network capture |
 | `/cases/` | Your writable workspace |
-| `/cases/Lab_1/` | Lab 1 outputs |
-| `/cases/Lab_1/analysis_log.csv` | Chain of custody log |
-| `/cases/Lab_1/outputs/` | Command output files |
+| `/cases/USB_Imaging/` | Lab 1 outputs |
+| `/cases/USB_Imaging/analysis_log.csv` | Chain of custody log |
+| `/cases/USB_Imaging/outputs/` | Command output files |
 | `/tmp/` | Temporary mount points |
 
 ---

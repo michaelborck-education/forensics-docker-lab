@@ -8,8 +8,8 @@
 3. **[COMMANDS.md](COMMANDS.md)** - Forensic command reference guide
 
 **Lab-specific:**
-- Each lab (cases/Lab_X/README.md) has its own detailed instructions
-- See cases/Lab_X/WALKTHROUGH.md for step-by-step guidance
+- Each lab (cases/USB_Imaging, cases/Memory_Forensics, etc.) has its own detailed instructions
+- See each lab's WALKTHROUGH.md for step-by-step guidance
 - Use QUICK_REFERENCE.md for quick syntax lookup
 
 **Useful context:**
@@ -28,9 +28,9 @@ git checkout instructor
 
 **Then read:**
 - **[docs/instructor/README.md](instructor/README.md)** - Instructor materials overview
-- **[cases/Lab_X/instructor/INSTRUCTOR_NOTES.md](../cases/)** - Teaching tips for each lab
-- **[cases/Lab_X/instructor/answer_key.md](../cases/)** - Expected findings
-- **[cases/Lab_X/instructor/rubric.csv](../cases/)** - Grading rubrics
+- **[cases/*/instructor/INSTRUCTOR_NOTES.md](../cases/)** - Teaching tips for each lab
+- **[cases/*/instructor/answer_key.md](../cases/)** - Expected findings
+- **[cases/*/instructor/rubric.csv](../cases/)** - Grading rubrics
 
 ---
 
@@ -75,14 +75,14 @@ These documents provide architectural context and historical decisions:
 ### For Students
 1. Read **SCENARIO.md** → Understand the case
 2. Run **./scripts/forensics-workstation** → Enter the lab
-3. Follow **cases/Lab_X/README.md** → Start with Lab 1
+3. Follow **cases/USB_Imaging/README.md** → Start with Lab 1
 4. Check **QUICK_REFERENCE.md** → Command syntax help
 
 ### For Instructors
 1. **`git checkout instructor`** → Access instructor materials
 2. Read **docs/instructor/README.md** → Understand branch structure
-3. Check **cases/Lab_X/instructor/INSTRUCTOR_NOTES.md** → Teaching tips
-4. Use **cases/Lab_X/instructor/rubric.csv** → Grading guidance
+3. Check **cases/*/instructor/INSTRUCTOR_NOTES.md** → Teaching tips
+4. Use **cases/*/instructor/rubric.csv** → Grading guidance
 
 ---
 

@@ -49,7 +49,7 @@
       yara -r /rules/malware.yar /evidence/
 
     • Search for patterns:
-      grep -i "password" Lab_1/*.txt
+      grep -i "password" USB_Imaging/*.txt
 
   💡 Tips:
     • Use tab-completion for file paths

@@ -106,7 +106,7 @@ In the noVNC window:
 1. **Click "Create New Case"**
 2. **Fill in case details:**
    - **Case Name:** `Lab3_<YourName>` (replace with your actual name)
-   - **Base Directory:** `/cases/Lab_3/autopsy_case`
+   - **Base Directory:** `/cases/Autopsy_GUI/autopsy_case`
    - **Case Number:** `LAB3-001`
    - **Examiner:** Your name
    - **Description:** `Cloudcore investigation - Phase 3 GUI analysis`
@@ -237,7 +237,7 @@ Once processing completes, you'll see the main analysis interface:
    - **Format:** HTML (recommended) or PDF
    - **Scope:** Entire case or specific findings
    - **Include:** Screenshots, file lists, search results
-3. **Export location:** `/cases/Lab_3/autopsy_case/export/`
+3. **Export location:** `/cases/Autopsy_GUI/autopsy_case/export/`
 4. **Wait for generation** and verify the export
 
 **Report Contents:**
@@ -303,7 +303,7 @@ These findings should correlate with:
 
 ## Completing the Report
 
-Fill in `cases/Lab_3/Lab3/autopsy_report.md` with:
+Fill in `cases/Autopsy_GUI/Lab3/autopsy_report.md` with:
 
 ### 1. Setup
 - Docker commands used
@@ -343,7 +343,7 @@ Tools and modules used:
 - Web history: [if available]
 
 ### 4. Exported Report
-- Report location: `/cases/Lab_3/autopsy_case/export/`
+- Report location: `/cases/Autopsy_GUI/autopsy_case/export/`
 - Report format: HTML/PDF
 - Key screenshots included: [list]
 - Report size: [MB]
@@ -395,7 +395,7 @@ Tools and modules used:
 
 ### Problem: "Report generation fails"
 **Solutions:**
-- Ensure case directory is writable: `chmod -R 755 cases/Lab_3/`
+- Ensure case directory is writable: `chmod -R 755 cases/Autopsy_GUI/`
 - Try HTML format instead of PDF
 - Check available disk space
 - Restart Autopsy and try again
@@ -413,10 +413,10 @@ Tools and modules used:
 
 Before submitting, ensure you have:
 
-- [ ] `cases/Lab_3/autopsy_case/` directory with:
+- [ ] `cases/Autopsy_GUI/autopsy_case/` directory with:
   - Complete case structure
   - Export folder with generated report
-- [ ] `cases/Lab_3/Lab3/autopsy_report.md` completed with all sections
+- [ ] `cases/Autopsy_GUI/Lab3/autopsy_report.md` completed with all sections
 - [ ] Screenshots documenting key findings (embedded in report)
 - [ ] Comparison analysis between GUI and CLI methods
 - [ ] Correlation notes with Labs 1-2 findings

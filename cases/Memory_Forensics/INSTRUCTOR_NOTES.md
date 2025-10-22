@@ -13,7 +13,7 @@ Created a comprehensive `WALKTHROUGH.md` to supplement the existing `README.md`.
 
 ### 2. Missing Setup Instructions
 - **Issue:** Commands output to non-existent directory
-- **Fix:** Added `mkdir -p cases/Lab_2/vol_output` step
+- **Fix:** Added `mkdir -p cases/Memory_Forensics/vol_output` step
 - **Benefit:** Students won't get "directory not found" errors
 
 ### 3. Lack of Context
@@ -82,10 +82,10 @@ Created a comprehensive `WALKTHROUGH.md` to supplement the existing `README.md`.
 
 ## Files That Should Be Updated
 
-1. **cases/Lab_2/README.md**
+1. **cases/Memory_Forensics/README.md**
    - Line 21: Change `memdump.raw` to `memory.raw`
    - Lines 33-36: Fix all command paths to `/evidence/memory.raw`
-   - Add: `mkdir -p cases/Lab_2/vol_output` before Step 2
+   - Add: `mkdir -p cases/Memory_Forensics/vol_output` before Step 2
 
 2. **Root README.md or SETUP.md**
    - Mention that Lab 2 has comprehensive walkthrough

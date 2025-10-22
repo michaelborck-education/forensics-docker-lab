@@ -237,11 +237,11 @@ docker compose run --rm dfir fls -r /evidence/usb.img
 
 ## Answer to Your Question
 
-> Do we need to make a set just for Lab_2?
+> Do we need to make a set just for Memory_Forensics?
 
 **No.** Use the root Docker setup (Debian-based) for ALL labs, but enhance it with the interactive workstation experience from the archive.
 
-> Will Alpine work for Lab_2?
+> Will Alpine work for Memory_Forensics?
 
 **No.** Alpine lacks Volatility3 and would require significant work to compile Python packages. Debian/Ubuntu is the right choice.
 

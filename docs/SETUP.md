@@ -45,10 +45,10 @@ analyst@forensics-lab:/cases$
 fls -r /evidence/usb.img
 
 # Recover deleted files
-tsk_recover -a /evidence/usb.img Lab_1/recovered/
+tsk_recover -a /evidence/usb.img USB_Imaging/recovered/
 
 # Search for patterns
-grep -i "password" Lab_1/*.txt
+grep -i "password" USB_Imaging/*.txt
 
 # Exit when done
 exit

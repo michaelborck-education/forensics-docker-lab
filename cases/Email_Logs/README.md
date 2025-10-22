@@ -27,12 +27,12 @@
 2. Extract headers from suspicious emails (look for external recipients, attachments).
 3. Identify log entries showing USB mount events.
 4. Correlate timestamps with recovered files and memory findings.
-5. Document in `email_log_report.md` - Start with: `cp templates/WORKBOOK.md cases/Lab_4/email_log_report.md`
+5. Document in `email_log_report.md` - Start with: `cp templates/WORKBOOK.md cases/Email_Logs/email_log_report.md`
 
 ---
 
 ## Deliverables
-- `cases/Lab_4/email_log_report.md` (template).  
-- Copies of suspicious email headers (`cases/Lab_4/headers.txt`).  
-- Annotated log extracts (`cases/Lab_4/log_extracts.txt`).  
+- `cases/Email_Logs/email_log_report.md` (template).  
+- Copies of suspicious email headers (`cases/Email_Logs/headers.txt`).  
+- Annotated log extracts (`cases/Email_Logs/log_extracts.txt`).  
 - Updated chain_of_custody.csv.

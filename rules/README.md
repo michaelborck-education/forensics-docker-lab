@@ -24,7 +24,7 @@ yara /rules/lab1_example.yar /evidence/usb.img
 analyst@forensics-lab:/cases$ yara /rules/lab1_example.yar /evidence/usb.img
 
 # Run against recovered files
-analyst@forensics-lab:/cases$ yara /rules/lab1_example.yar Lab_1/tsk_recover_out/
+analyst@forensics-lab:/cases$ yara /rules/lab1_example.yar USB_Imaging/tsk_recover_out/
 
 # Log to chain of custody (if assignment)
 analyst@forensics-lab:/cases$ coc-log "yara /rules/lab1_example.yar /evidence/usb.img" "Malware pattern matching"

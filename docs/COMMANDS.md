@@ -68,7 +68,7 @@ Results are appended to `cases/chain_of_custody.csv`.
 fls -r /evidence/usb.img
 
 # List with full path mactime format
-fls -r -m / /evidence/usb.img > Lab_1/fls.txt
+fls -r -m / /evidence/usb.img > USB_Imaging/fls.txt
 
 # Display partition table
 mmls /evidence/usb.img
@@ -77,39 +77,39 @@ mmls /evidence/usb.img
 fsstat /evidence/usb.img
 
 # Extract a specific file by inode
-icat /evidence/usb.img 12345 > Lab_1/recovered_file.txt
+icat /evidence/usb.img 12345 > USB_Imaging/recovered_file.txt
 ```
 
 ### Deleted File Recovery
 
 ```bash
 # Recover all allocated and unallocated files
-mkdir -p Lab_1/tsk_recover_out
-tsk_recover -a /evidence/usb.img Lab_1/tsk_recover_out
+mkdir -p USB_Imaging/tsk_recover_out
+tsk_recover -a /evidence/usb.img USB_Imaging/tsk_recover_out
 
 # View recovered files
-ls -lah Lab_1/tsk_recover_out/
+ls -lah USB_Imaging/tsk_recover_out/
 ```
 
 ### File Carving (Foremost)
 
 ```bash
 # Carve files by signature
-mkdir -p Lab_1/foremost_out
-foremost -i /evidence/usb.img -o Lab_1/foremost_out
+mkdir -p USB_Imaging/foremost_out
+foremost -i /evidence/usb.img -o USB_Imaging/foremost_out
 
 # View carved files
-ls -lah Lab_1/foremost_out/
+ls -lah USB_Imaging/foremost_out/
 ```
 
 ### Metadata Extraction
 
 ```bash
 # Extract EXIF metadata from recovered images
-exiftool Lab_1/tsk_recover_out/*.jpg
+exiftool USB_Imaging/tsk_recover_out/*.jpg
 
 # Recursive metadata extraction
-exiftool -r Lab_1/foremost_out/ > Lab_1/metadata.txt
+exiftool -r USB_Imaging/foremost_out/ > USB_Imaging/metadata.txt
 ```
 
 ---
@@ -125,13 +125,13 @@ exiftool -r Lab_1/foremost_out/ > Lab_1/metadata.txt
 docker compose run --rm vol3 vol -f /evidence/memory.raw windows.info.Info
 
 # List running processes
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList > cases/Lab_2/vol_output/pslist.txt
+docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pslist.PsList > cases/Memory_Forensics/vol_output/pslist.txt
 
 # Process tree (parent-child relationships)
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pstree.PsTree > cases/Lab_2/vol_output/pstree.txt
+docker compose run --rm vol3 vol -f /evidence/memory.raw windows.pstree.PsTree > cases/Memory_Forensics/vol_output/pstree.txt
 
 # Network connections
-docker compose run --rm vol3 vol -f /evidence/memory.raw windows.netscan.NetScan > cases/Lab_2/vol_output/netscan.txt
+docker compose run --rm vol3 vol -f /evidence/memory.raw windows.netscan.NetScan > cases/Memory_Forensics/vol_output/netscan.txt
 ```
 
 ### Advanced Memory Analysis
@@ -144,7 +144,7 @@ docker compose run --rm vol3 vol -f /evidence/memory.raw windows.dlllist.DllList
 docker compose run --rm vol3 vol -f /evidence/memory.raw windows.psscan.PsScan
 
 # Dump process memory
-docker compose run --rm vol3 vol -f /evidence/memory.raw -o /cases/Lab_2/vol_output windows.memmap.Memmap --pid 1234 --dump
+docker compose run --rm vol3 vol -f /evidence/memory.raw -o /cases/Memory_Forensics/vol_output windows.memmap.Memmap --pid 1234 --dump
 
 # Command line arguments
 docker compose run --rm vol3 vol -f /evidence/memory.raw windows.cmdline.CmdLine
@@ -157,13 +157,13 @@ docker compose run --rm vol3 vol -f /evidence/memory.raw windows.cmdline.CmdLine
 docker compose run --rm -it dfir
 
 # Search for suspicious process names
-grep -i "truecrypt\|tor\|proxy" Lab_2/vol_output/pslist.txt
+grep -i "truecrypt\|tor\|proxy" Memory_Forensics/vol_output/pslist.txt
 
 # Find IRC connections (port 6667)
-grep "6667" Lab_2/vol_output/netscan.txt
+grep "6667" Memory_Forensics/vol_output/netscan.txt
 
 # Extract process PIDs
-awk '{print $1, $7}' Lab_2/vol_output/pslist.txt | head -20
+awk '{print $1, $7}' Memory_Forensics/vol_output/pslist.txt | head -20
 ```
 
 ---
@@ -174,16 +174,16 @@ awk '{print $1, $7}' Lab_2/vol_output/pslist.txt | head -20
 
 ```bash
 # Create timeline database
-docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/usb.img
+docker compose run --rm plaso log2timeline.py /cases/USB_Imaging/timeline.plaso /evidence/usb.img
 
 # Export to CSV
-docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso > cases/Lab_1/timeline.csv
+docker compose run --rm plaso psort.py -o l2tcsv /cases/USB_Imaging/timeline.plaso > cases/USB_Imaging/timeline.csv
 
 # Export to Excel-friendly format
-docker compose run --rm plaso psort.py -o xlsx /cases/Lab_1/timeline.plaso -w /cases/Lab_1/timeline.xlsx
+docker compose run --rm plaso psort.py -o xlsx /cases/USB_Imaging/timeline.plaso -w /cases/USB_Imaging/timeline.xlsx
 
 # Filter by date range
-docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso "date > '2009-10-01 00:00:00' AND date < '2009-10-31 23:59:59'" > cases/Lab_1/october_timeline.csv
+docker compose run --rm plaso psort.py -o l2tcsv /cases/USB_Imaging/timeline.plaso "date > '2009-10-01 00:00:00' AND date < '2009-10-31 23:59:59'" > cases/USB_Imaging/october_timeline.csv
 ```
 
 ---
@@ -196,16 +196,16 @@ docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso "da
 
 ```bash
 # Case-insensitive search
-grep -i "password" Lab_1/*.txt
+grep -i "password" USB_Imaging/*.txt
 
 # Recursive search in directory
-grep -r "truecrypt" Lab_1/
+grep -r "truecrypt" USB_Imaging/
 
 # Show line numbers
-grep -n "exfiltrat" Lab_1/triage_report.md
+grep -n "exfiltrat" USB_Imaging/triage_report.md
 
 # Show context (3 lines before/after)
-grep -C 3 "suspicious" Lab_1/fls.txt
+grep -C 3 "suspicious" USB_Imaging/fls.txt
 ```
 
 ### YARA Scanning
@@ -225,13 +225,13 @@ yara -f /rules/malware.yar /evidence/memory.raw
 
 ```bash
 # Extract features (emails, URLs, credit cards, etc.)
-bulk_extractor -o Lab_1/bulk_out /evidence/usb.img
+bulk_extractor -o USB_Imaging/bulk_out /evidence/usb.img
 
 # View extracted email addresses
-cat Lab_1/bulk_out/email.txt
+cat USB_Imaging/bulk_out/email.txt
 
 # View URLs
-cat Lab_1/bulk_out/url.txt
+cat USB_Imaging/bulk_out/url.txt
 ```
 
 ---
@@ -251,10 +251,10 @@ md5sum /evidence/usb.img
 hashdeep -c sha256,md5 /evidence/usb.img
 
 # Recursive hashing
-hashdeep -r -c sha256 Lab_1/tsk_recover_out/ > Lab_1/recovered_hashes.txt
+hashdeep -r -c sha256 USB_Imaging/tsk_recover_out/ > USB_Imaging/recovered_hashes.txt
 
 # Verify hashes
-sha256sum -c Lab_1/hashes.txt
+sha256sum -c USB_Imaging/hashes.txt
 ```
 
 ---
@@ -265,16 +265,16 @@ sha256sum -c Lab_1/hashes.txt
 
 ```bash
 # Create command history log
-history > Lab_1/commands_executed.txt
+history > USB_Imaging/commands_executed.txt
 
 # Document file listings
-ls -lah Lab_1/tsk_recover_out/ > Lab_1/recovered_files_list.txt
+ls -lah USB_Imaging/tsk_recover_out/ > USB_Imaging/recovered_files_list.txt
 
 # Create evidence manifest
-find Lab_1 -type f -exec sha256sum {} \; > Lab_1/evidence_manifest.txt
+find USB_Imaging -type f -exec sha256sum {} \; > USB_Imaging/evidence_manifest.txt
 
 # Count files recovered
-find Lab_1/tsk_recover_out/ -type f | wc -l
+find USB_Imaging/tsk_recover_out/ -type f | wc -l
 ```
 
 ---
@@ -294,14 +294,14 @@ xxd /evidence/usb.img | head -100
 strings /evidence/usb.img | grep "password"
 
 # View text files with pagination
-less Lab_1/fls.txt
+less USB_Imaging/fls.txt
 
 # Edit reports
-nano Lab_1/triage_report.md
-vim Lab_1/triage_report.md
+nano USB_Imaging/triage_report.md
+vim USB_Imaging/triage_report.md
 
 # Check disk space usage
-du -sh Lab_1/*
+du -sh USB_Imaging/*
 ```
 
 ---
@@ -323,7 +323,7 @@ tshark -r evidence/network.cap -Y "irc"
 tshark -r evidence/network.cap -Y "http"
 
 # Extract HTTP objects
-tshark -r evidence/network.cap --export-objects http,Lab_5/http_objects
+tshark -r evidence/network.cap --export-objects http,Network_Analysis/http_objects
 
 # Conversation statistics
 tshark -r evidence/network.cap -q -z conv,ip

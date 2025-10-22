@@ -25,10 +25,10 @@
 1. Hash the PCAP file (record in chain_of_custody).
 2. Run tshark to list connections.
 3. Identify suspicious sessions (large transfers, odd ports).
-4. Document in `network_report.md` - Start with: `cp templates/WORKBOOK.md cases/Lab_5/network_report.md`  
+4. Document in `network_report.md` - Start with: `cp templates/WORKBOOK.md cases/Network_Analysis/network_report.md`  
 
 ---
 
 ## Deliverables
-- `cases/Lab_5/connections.txt`  
-- `cases/Lab_5/network_report.md`
+- `cases/Network_Analysis/connections.txt`  
+- `cases/Network_Analysis/network_report.md`

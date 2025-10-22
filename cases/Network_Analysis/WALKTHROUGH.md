@@ -24,7 +24,7 @@ On **December 6, 2009, 10:30 AM**, forensic analysts detected suspicious outboun
 ## Lab Setup
 
 ```bash
-mkdir -p cases/Lab_5/outputs
+mkdir -p cases/Network_Analysis/outputs
 ```
 
 ---
@@ -158,7 +158,7 @@ Document connections to previous labs:
 **Assignment:**
 ```bash
 # Document your findings
-cat > cases/Lab_5/findings.txt << 'EOF'
+cat > cases/Network_Analysis/findings.txt << 'EOF'
 Network Analysis Findings:
 - IRC C2 Connection: hunt3d.devilz.net (port 6667)
 - Botnet Channels: #s01, #sl0w3r
@@ -188,8 +188,8 @@ EOF
 ## Wrap-Up
 
 **Submit:**
-- `cases/Lab_5/analysis_log.csv` (from coc-log commands)
-- `cases/Lab_5/findings.txt` (or network_report.md)
+- `cases/Network_Analysis/analysis_log.csv` (from coc-log commands)
+- `cases/Network_Analysis/findings.txt` (or network_report.md)
 - Any exported PCAP analysis files
 
 **For Final Report (Lab 6):**

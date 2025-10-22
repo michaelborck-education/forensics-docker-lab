@@ -22,7 +22,7 @@ Synthesize all evidence from Labs 1-5 into a unified, professional investigation
 ## Lab Setup
 
 ```bash
-mkdir -p cases/Lab_6/outputs
+mkdir -p cases/Final_Report/outputs
 ```
 
 ---
@@ -34,7 +34,7 @@ mkdir -p cases/Lab_6/outputs
 **Walkthrough:**
 ```bash
 # Create master timeline from all labs
-cat > cases/Lab_6/master_timeline.txt << 'EOF'
+cat > cases/Final_Report/master_timeline.txt << 'EOF'
 2009-12-01 - Data preparation phase
   - Deleted files appear on disk (Lab 1)
   - Timestamps: 14:30-15:00 UTC
@@ -58,12 +58,12 @@ cat > cases/Lab_6/master_timeline.txt << 'EOF'
   - Physical USB device removed from workstation
   - Correlates with network exfil completion
 EOF
-cat cases/Lab_6/master_timeline.txt
+cat cases/Final_Report/master_timeline.txt
 ```
 
 **Assignment (With CoC):**
 ```bash
-coc-log "cat cases/Lab_6/master_timeline.txt" "Consolidated investigation timeline from all labs"
+coc-log "cat cases/Final_Report/master_timeline.txt" "Consolidated investigation timeline from all labs"
 ```
 
 ---
@@ -73,7 +73,7 @@ coc-log "cat cases/Lab_6/master_timeline.txt" "Consolidated investigation timeli
 Create correlation matrix showing how evidence supports the threat:
 
 ```bash
-cat > cases/Lab_6/correlation_analysis.txt << 'EOF'
+cat > cases/Final_Report/correlation_analysis.txt << 'EOF'
 EVIDENCE CORRELATION MATRIX
 ============================
 
@@ -117,7 +117,7 @@ Multi-stage insider attack:
   Step 4: Execute exfil via IRC botnet (Lab 5: network traffic)
   Step 5: Physical removal via USB (Lab 4: mount/unmount logs)
 EOF
-cat cases/Lab_6/correlation_analysis.txt
+cat cases/Final_Report/correlation_analysis.txt
 ```
 
 ---
@@ -128,7 +128,7 @@ cat cases/Lab_6/correlation_analysis.txt
 
 ```bash
 # Combine all analysis_log.csv files
-cat > cases/Lab_6/complete_chain_of_custody.csv << 'EOF'
+cat > cases/Final_Report/complete_chain_of_custody.csv << 'EOF'
 Lab,Analyst,Command,Timestamp,Hash,Evidence_File
 EOF
 
@@ -136,17 +136,17 @@ EOF
 for lab in 1 2 3 4 5; do
   if [ -f "cases/Lab_${lab}/analysis_log.csv" ]; then
     tail -n +2 "cases/Lab_${lab}/analysis_log.csv" | while read line; do
-      echo "Lab_${lab},$line" >> cases/Lab_6/complete_chain_of_custody.csv
+      echo "Lab_${lab},$line" >> cases/Final_Report/complete_chain_of_custody.csv
     done
   fi
 done
 
-cat cases/Lab_6/complete_chain_of_custody.csv
+cat cases/Final_Report/complete_chain_of_custody.csv
 ```
 
 **Assignment (With CoC):**
 ```bash
-coc-log "cat cases/Lab_6/complete_chain_of_custody.csv" "Consolidated chain of custody from all labs"
+coc-log "cat cases/Final_Report/complete_chain_of_custody.csv" "Consolidated chain of custody from all labs"
 ```
 
 ---
@@ -226,7 +226,7 @@ coc-log "cat cases/Lab_6/complete_chain_of_custody.csv" "Consolidated chain of c
 
 ## UNIFIED TIMELINE
 
-See: cases/Lab_6/master_timeline.txt
+See: cases/Final_Report/master_timeline.txt
 
 Key points:
 - 2009-12-01: Data preparation
@@ -246,7 +246,7 @@ Key points:
 - Output files preserved with SHA256 hashes
 - No modifications made to original evidence
 
-**Complete CoC:** See cases/Lab_6/complete_chain_of_custody.csv
+**Complete CoC:** See cases/Final_Report/complete_chain_of_custody.csv
 
 ---
 
@@ -305,17 +305,17 @@ See supporting documents:
 **Walkthrough:**
 ```bash
 # Copy template and customize
-cp templates/final_case_report.md cases/Lab_6/final_case_report.md
+cp templates/final_case_report.md cases/Final_Report/final_case_report.md
 
 # Edit with your findings
-nano cases/Lab_6/final_case_report.md
+nano cases/Final_Report/final_case_report.md
 ```
 
 **Assignment (With CoC):**
 ```bash
 # Log the report creation/verification
-coc-log "wc -l cases/Lab_6/final_case_report.md" "Verify final report generated"
-coc-log "head -20 cases/Lab_6/final_case_report.md" "Final report header verification"
+coc-log "wc -l cases/Final_Report/final_case_report.md" "Verify final report generated"
+coc-log "head -20 cases/Final_Report/final_case_report.md" "Final report header verification"
 ```
 
 ---
