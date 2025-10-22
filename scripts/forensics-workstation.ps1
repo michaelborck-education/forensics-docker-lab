@@ -226,7 +226,8 @@ function Main {
     Connect-ToWorkstation $AnalystName
 
     # Cleanup and goodbye
-    Write-Host "Thank you for using the Forensics Lab. All work saved to cases folder." -ForegroundColor $Colors.Cyan
+    Write-Host "Thank you for using the Forensics Lab" -ForegroundColor $Colors.Cyan
+    Write-Host "All work saved to cases folder" -ForegroundColor $Colors.Cyan
 }
 
 # Run main function
