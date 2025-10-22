@@ -183,7 +183,7 @@ function Show-Help {
     Write-Host "  .\scripts\forensics-workstation.ps1 [options]"
     Write-Host ""
     Write-Host "Options:" -ForegroundColor $Colors.Cyan
-    Write-Host "  -AnalystName <name>  Your name for case documentation"
+    Write-Host "  -AnalystName NAME    Your name for case documentation"
     Write-Host "  -Help                Show this help message"
     Write-Host ""
     Write-Host "Examples:" -ForegroundColor $Colors.Cyan
@@ -191,9 +191,9 @@ function Show-Help {
     Write-Host "  .\scripts\forensics-workstation.ps1 -AnalystName 'Alice Johnson'"
     Write-Host ""
     Write-Host "Inside the workstation:" -ForegroundColor $Colors.Cyan
-    Write-Host "  ewfverify /evidence/usb.E01"
-    Write-Host "  fls -r /evidence/usb.img"
-    Write-Host "  coc-log 'command' 'note about action'"
+    Write-Host "  ewfverify --evidence-file usb.E01"
+    Write-Host "  fls -r evidence_image"
+    Write-Host "  coc-log command note"
     Write-Host ""
     Write-Host "Exit with: exit" -ForegroundColor $Colors.Yellow
 }
@@ -226,7 +226,7 @@ function Main {
     Connect-ToWorkstation $AnalystName
 
     # Cleanup and goodbye
-    Write-Host "Thank you for using the Forensics Lab. All work saved to ./cases/" -ForegroundColor $Colors.Cyan
+    Write-Host "Thank you for using the Forensics Lab. All work saved to cases folder." -ForegroundColor $Colors.Cyan
 }
 
 # Run main function
