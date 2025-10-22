@@ -10,6 +10,25 @@
 
 ---
 
+## 🚀 Quick Start - Immersive Workstation
+
+**Get started immediately with the immersive DFIR experience:**
+
+**Mac/Linux:**
+```bash
+cd /path/to/forensics-docker-lab
+./scripts/forensics-workstation
+```
+
+**Windows PowerShell:**
+```powershell
+.\scripts\forensics-workstation.ps1
+```
+
+You'll be prompted for your analyst name, then you're ready to work.
+
+---
+
 ## What to submit
 1. **`cases/chain_of_custody.csv`** with your entries.
 2. **`cases/Lab_1/triage_report.md`** (template provided).
@@ -31,31 +50,61 @@
 
 ## Steps
 
-### 0) Build and enter the forensic workstation
-```bash
-# First time only: Build the forensic container
-docker compose build dfir
+### 0) Enter the Forensic Workstation (Immersive)
 
-# Enter the interactive forensic workstation
+**Recommended approach (hides Docker complexity):**
+
+On **Mac/Linux:**
+```bash
+./scripts/forensics-workstation
+# Enter your name when prompted
+analyst@forensics-lab:/cases$
+```
+
+On **Windows PowerShell:**
+```powershell
+.\scripts\forensics-workstation.ps1
+# Enter your name when prompted
+analyst@forensics-lab:/cases$
+```
+
+You'll see the forensic lab banner and get an interactive prompt with your analyst name. All commands below are run **inside this interactive session** (see examples in the steps).
+
+**Advanced alternative (direct Docker):**
+```bash
+docker compose build dfir
 docker compose run --rm -it dfir
 ```
 
-You'll see the forensic lab banner and get a bash prompt. All commands below can be run **inside this interactive session** (recommended) or as one-off commands (see Alternative below).
-
 ### 1) Hash baseline (integrity & intake)
-**Inside the workstation:**
+
+**Lab Walkthrough (First Time - Optional CoC):**
 ```bash
-# Exit the workstation temporarily (or open a new terminal)
-exit
+# Inside workstation
+sha256sum /evidence/usb.img
+sha256sum /evidence/usb.E01 2>/dev/null
+# Record these hashes in your notes for chain of custody
 ```
 
-**On your host:**
+**Assignment (Second Time - Required CoC Logging):**
+For the graded assignment, use the new CoC logging system to document your chain of custody automatically:
+
 ```bash
-docker compose run --rm hashlog
-# Optionally add a note
-COC_NOTE="Lab1 intake by <YourName>" docker compose run --rm hashlog
+# Inside workstation, log the hash verification command
+coc-log "sha256sum /evidence/usb.img" "Verify USB image integrity - Lab 1 intake"
+coc-log "sha256sum /evidence/usb.E01 2>/dev/null || echo 'E01 not yet created'" "Verify E01 image (if exists)"
+
+# This automatically:
+# - Records timestamp and your analyst name
+# - Captures the output (hashes)
+# - Saves output to cases/Lab_1/outputs/
+# - Logs to cases/Lab_1/analysis_log.csv
 ```
-Check `cases/chain_of_custody.csv` — confirm timestamps and SHA-256 values recorded.
+
+After running coc-log, check your analysis log:
+```bash
+cat cases/Lab_1/analysis_log.csv
+```
 
 ### 2) Create safe practice EXT4 image and simulate deletion
 > Use the container-based script (works on all platforms including Mac):
@@ -78,12 +127,9 @@ bash scripts/convert_to_e01_container.sh
 This creates **`evidence/usb.e01`** - the industry-standard E01 format used in real investigations. You can use either `usb.img` or `usb.e01` for the remaining steps.
 
 ### 3) List file system and recover deleted items
-**Re-enter the workstation:**
-```bash
-docker compose run --rm -it dfir
-```
+**Inside the workstation, run these commands:**
 
-**Inside the workstation, run:**
+For the **walkthrough** (first time):
 ```bash
 # File system listing (Sleuth Kit) - look for deleted files (marked with *)
 fls -r /evidence/usb.img
@@ -91,24 +137,41 @@ fls -r /evidence/usb.img
 # Detailed listing with full paths
 fls -r -m / /evidence/usb.img > Lab_1/fls.txt
 
-# View the listing to identify deleted files
-cat Lab_1/fls.txt | grep -E "^\*|flag\.txt|project_secrets\.zip"
-
 # Recover ALL deleted files with TSK
 mkdir -p Lab_1/tsk_recover_out
 tsk_recover -a /evidence/usb.img Lab_1/tsk_recover_out
 
 # Check what was recovered
 ls -la Lab_1/tsk_recover_out/
-cat Lab_1/tsk_recover_out/flag.txt 2>/dev/null || echo "flag.txt not recovered"
 
 # Optional: Compare with Foremost carving (file carving)
 mkdir -p Lab_1/foremost_out
 foremost -i /evidence/usb.img -o Lab_1/foremost_out
+```
 
-# Check foremost results
+For the **assignment** (second time - with CoC logging):
+```bash
+# Log your forensic analysis using coc-log for automatic chain of custody
+
+# List files with CoC logging
+coc-log "fls -r /evidence/usb.img" "Initial filesystem listing - look for deleted files"
+coc-log "fls -r -m / /evidence/usb.img" "Detailed filesystem listing with full paths"
+
+# Recover files and log
+mkdir -p Lab_1/tsk_recover_out
+coc-log "tsk_recover -a /evidence/usb.img Lab_1/tsk_recover_out" "Recover all deleted files from USB image"
+
+# File carving alternative
+mkdir -p Lab_1/foremost_out
+coc-log "foremost -i /evidence/usb.img -o Lab_1/foremost_out" "File carving with Foremost tool"
+
+# Check results
+ls -la Lab_1/tsk_recover_out/
 ls -la Lab_1/foremost_out/
+```
 
+**Then:**
+```bash
 # Exit to run Plaso (different container)
 exit
 ```
