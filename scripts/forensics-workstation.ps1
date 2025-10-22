@@ -107,11 +107,11 @@ function Prompt-AnalystName {
 function Show-CaseMenu {
     Write-Host ""
     Write-Host "Available Cases:" -ForegroundColor $Colors.Cyan
-    Write-Host "  1) USB_Imaging - Evidence handling, imaging & initial triage"
+    Write-Host "  1) USB_Imaging - Evidence handling, imaging and initial triage"
     Write-Host "  2) Memory_Forensics - Memory analysis with Volatility 2"
     Write-Host "  3) Autopsy_GUI - Graphical forensic examination"
     Write-Host "  4) Email_Logs - Email artifact and log analysis"
-    Write-Host "  5) Network_Analysis - Network traffic & C2 detection"
+    Write-Host "  5) Network_Analysis - Network traffic and C2 detection"
     Write-Host "  6) Final_Report - Synthesis and professional reporting"
     Write-Host "  0) Skip case selection (all labs available)"
     Write-Host ""
