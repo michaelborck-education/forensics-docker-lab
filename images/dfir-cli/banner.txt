@@ -1,10 +1,10 @@
-╔═════════════════════════════════════════════════════════════════╗
-║                                                                 ║
-║     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY           ║
-║                                                                 ║
-║           Cloudcore 2009 Data Exfiltration Investigation       ║
-║                                                                 ║
-╚═════════════════════════════════════════════════════════════════╝
++=====================================================================+
+|                                                                     |
+|     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY              |
+|                                                                     |
+|           Cloudcore 2009 Data Exfiltration Investigation          |
+|                                                                     |
++=====================================================================+
 
 Ready for forensic analysis. See CHEATSHEET.md for quick reference.
 Type 'exit' to end session. All work is saved to ./cases/
