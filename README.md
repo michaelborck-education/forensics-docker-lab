@@ -78,7 +78,7 @@ docker compose version
 
 ```bash
 # Navigate to this directory in terminal/command prompt
-cd /path/to/forensics-lab-week1-dfir
+cd /path/to/forensics-lab
 
 # Build the container (first time: ~2-5 minutes depending on connection)
 docker compose build
