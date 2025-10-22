@@ -87,13 +87,13 @@ prompt_analyst_name() {
 show_case_menu() {
     echo
     echo -e "${CYAN}Available Cases:${NC}"
-    echo "  1) USB_Imaging - Evidence handling, imaging and initial triage"
-    echo "  2) Memory_Forensics - Memory analysis with Volatility 2"
-    echo "  3) Autopsy_GUI - Graphical forensic examination"
-    echo "  4) Email_Logs - Email artifact and log analysis"
-    echo "  5) Network_Analysis - Network traffic and C2 detection"
-    echo "  6) Final_Report - Synthesis and professional reporting"
-    echo "  0) Skip case selection (all labs available)"
+    echo "  1 - USB_Imaging - Evidence handling, imaging and initial triage"
+    echo "  2 - Memory_Forensics - Memory analysis with Volatility 2"
+    echo "  3 - Autopsy_GUI - Graphical forensic examination"
+    echo "  4 - Email_Logs - Email artifact and log analysis"
+    echo "  5 - Network_Analysis - Network traffic and C2 detection"
+    echo "  6 - Final_Report - Synthesis and professional reporting"
+    echo "  0 - Skip case selection (all labs available)"
     echo
     read -p "Select lab (0-6) [0]: " -r LAB_CHOICE
     LAB_CHOICE=${LAB_CHOICE:-0}
