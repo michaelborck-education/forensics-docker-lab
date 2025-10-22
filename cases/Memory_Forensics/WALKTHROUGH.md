@@ -51,7 +51,7 @@ docker compose build vol2
 ### 1. Create Output Directory
 
 ```bash
-mkdir -p cases/Lab_2/vol_output
+mkdir -p cases/Memory_Forensics/vol_output
 ```
 
 This directory will store all Volatility plugin outputs.
@@ -128,12 +128,12 @@ Image Date               : [timestamp]
 Get a flat list of all running processes at the time of capture. Use the profile from Step 1:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pslist > /cases/Lab_2/vol_output/pslist.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pslist > /cases/Memory_Forensics/vol_output/pslist.txt
 ```
 
 **Review the output:**
 ```bash
-cat /cases/Lab_2/vol_output/pslist.txt
+cat /cases/Memory_Forensics/vol_output/pslist.txt
 ```
 
 **Expected Output Format:**
@@ -165,12 +165,12 @@ cat /cases/Lab_2/vol_output/pslist.txt
 See the parent-child relationships between processes:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pstree > /cases/Lab_2/vol_output/pstree.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pstree > /cases/Memory_Forensics/vol_output/pstree.txt
 ```
 
 **Review the output:**
 ```bash
-cat /cases/Lab_2/vol_output/pstree.txt
+cat /cases/Memory_Forensics/vol_output/pstree.txt
 ```
 
 **Expected Output Format:**
@@ -197,12 +197,12 @@ System                                                  4      0 0x...     1970-
 Identify active and recent network connections:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 netscan > /cases/Lab_2/vol_output/netscan.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 netscan > /cases/Memory_Forensics/vol_output/netscan.txt
 ```
 
 **Review the output:**
 ```bash
-cat /cases/Lab_2/vol_output/netscan.txt
+cat /cases/Memory_Forensics/vol_output/netscan.txt
 ```
 
 **Expected Output Format:**
@@ -233,7 +233,7 @@ Offset(V)      Proto   LocalAddr           LocalPort ForeignAddr         Foreign
 If you identified a suspicious PID (e.g., 3456), list its loaded DLLs:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 3456 > /cases/Lab_2/vol_output/dlllist_3456.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 3456 > /cases/Memory_Forensics/vol_output/dlllist_3456.txt
 ```
 
 **What to look for:**
@@ -248,7 +248,7 @@ vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 3456 > /cases/Lab_
 To extract the full memory space of a suspicious process for deeper analysis:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 memdump -p 3456 -D /cases/Lab_2/vol_output
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 memdump -p 3456 -D /cases/Memory_Forensics/vol_output
 ```
 
 **Note:** This creates large files. Only dump if you need to:
@@ -263,7 +263,7 @@ vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 memdump -p 3456 -D /cases/Lab
 Some malware "unlinks" processes from the active process list. Check for discrepancies:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 psscan > /cases/Lab_2/vol_output/psscan.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 psscan > /cases/Memory_Forensics/vol_output/psscan.txt
 ```
 
 Compare `psscan.txt` with `pslist.txt`. Any process in psscan but NOT in pslist is hidden.
@@ -321,7 +321,7 @@ These findings support the theory that the suspect:
 
 ## Completing the Report
 
-Fill in `cases/Lab_2/Lab2/memory_report.md` with:
+Fill in `cases/Memory_Forensics/Lab2/memory_report.md` with:
 
 ### 1. Evidence & Integrity
 - File name: `memory.raw`
@@ -380,7 +380,7 @@ docker compose run --rm -it dfir /bin/bash
 yara -r /rules/malware_signatures.yar /evidence/memory.raw
 
 # Or save output to a file
-yara -r /rules/malware_signatures.yar /evidence/memory.raw > /cases/Lab_2/vol_output/yara_scan.txt
+yara -r /rules/malware_signatures.yar /evidence/memory.raw > /cases/Memory_Forensics/vol_output/yara_scan.txt
 ```
 
 All your analysis happens in one unified forensics environment!
@@ -410,7 +410,7 @@ All your analysis happens in one unified forensics environment!
 **Solution:**
 ```bash
 # Ensure output directory exists and is writable
-chmod -R 755 cases/Lab_2/vol_output
+chmod -R 755 cases/Memory_Forensics/vol_output
 ```
 
 ### Problem: Commands hang or take too long
@@ -430,12 +430,12 @@ chmod -R 755 cases/Lab_2/vol_output
 
 Before submitting, ensure you have:
 
-- [ ] `cases/Lab_2/vol_output/` folder with:
+- [ ] `cases/Memory_Forensics/vol_output/` folder with:
   - `pslist.txt`
   - `pstree.txt`
   - `netscan.txt`
   - (Optional) `psscan.txt`, `dlllist_*.txt`
-- [ ] `cases/Lab_2/Lab2/memory_report.md` completed with all sections
+- [ ] `cases/Memory_Forensics/Lab2/memory_report.md` completed with all sections
 - [ ] `cases/chain_of_custody.csv` updated with memory.raw hash
 - [ ] All suspicious PIDs documented with justification
 - [ ] Correlation with case timeline noted
@@ -448,7 +448,7 @@ If you finish early or want deeper analysis (all inside the dfir container):
 
 1. **Extract process executables:**
    ```bash
-   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 procdump -p <suspicious_pid> -D /cases/Lab_2/vol_output
+   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 procdump -p <suspicious_pid> -D /cases/Memory_Forensics/vol_output
    ```
 
 2. **Search for encryption keys in memory:**
@@ -463,12 +463,12 @@ If you finish early or want deeper analysis (all inside the dfir container):
 
 4. **Timeline all process creation times:**
    ```bash
-   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 timeliner > /cases/Lab_2/vol_output/timeliner.txt
+   vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 timeliner > /cases/Memory_Forensics/vol_output/timeliner.txt
    ```
 
 5. **YARA scan the memory dump:**
    ```bash
-   yara -r /rules/malware_signatures.yar /evidence/memory.raw > /cases/Lab_2/vol_output/yara_scan.txt
+   yara -r /rules/malware_signatures.yar /evidence/memory.raw > /cases/Memory_Forensics/vol_output/yara_scan.txt
    ```
 
 6. **Use Sleuth Kit tools for disk analysis:**

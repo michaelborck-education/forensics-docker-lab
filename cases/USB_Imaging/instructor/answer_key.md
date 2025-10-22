@@ -28,11 +28,11 @@ Students should recover these deleted files from the USB image:
 
 ### File Recovery Tools Performance
 - **tsk_recover:** Should find most deleted files (project_secrets.zip, email_draft.txt, etc.)
-  - Output path: `cases/Lab_1/tsk_recover_out/`
+  - Output path: `cases/USB_Imaging/tsk_recover_out/`
   - Typical: ~4-6 files recovered depending on FAT tables
   
 - **foremost:** File carving (signature-based recovery)
-  - Output path: `cases/Lab_1/foremost_out/`
+  - Output path: `cases/USB_Imaging/foremost_out/`
   - May recover more file fragments
   - May have more false positives
 

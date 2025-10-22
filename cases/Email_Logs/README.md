@@ -25,7 +25,7 @@
 ---
 
 ## Deliverables
-- `cases/Lab_4/email_log_report.md` (template).  
-- Copies of suspicious email headers (`cases/Lab_4/headers.txt`).  
-- Annotated log extracts (`cases/Lab_4/log_extracts.txt`).  
+- `cases/Email_Logs/email_log_report.md` (template).  
+- Copies of suspicious email headers (`cases/Email_Logs/headers.txt`).  
+- Annotated log extracts (`cases/Email_Logs/log_extracts.txt`).  
 - Updated chain_of_custody.csv.

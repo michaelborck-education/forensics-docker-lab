@@ -12,9 +12,9 @@
 
 ## What to submit
 1. **`cases/chain_of_custody.csv`** with your entries.
-2. **`cases/Lab_1/triage_report.md`** (template provided).
-3. **`cases/Lab_1/timeline.csv`** (export from psort).
-4. **Recovered artifacts** folder (`cases/Lab_1/tsk_recover_out` and/or `cases/Lab_1/foremost_out`).
+2. **`cases/USB_Imaging/triage_report.md`** (template provided).
+3. **`cases/USB_Imaging/timeline.csv`** (export from psort).
+4. **Recovered artifacts** folder (`cases/USB_Imaging/tsk_recover_out` and/or `cases/USB_Imaging/foremost_out`).
 
 > Tip: Put your student ID and name in the first line of each Markdown file.
 
@@ -89,25 +89,25 @@ docker compose run --rm -it dfir
 fls -r /evidence/disk.img
 
 # Detailed listing with full paths
-fls -r -m / /evidence/disk.img > Lab_1/fls.txt
+fls -r -m / /evidence/disk.img > USB_Imaging/fls.txt
 
 # View the listing to identify deleted files
-cat Lab_1/fls.txt | grep -E "^\*|flag\.txt|project_secrets\.zip"
+cat USB_Imaging/fls.txt | grep -E "^\*|flag\.txt|project_secrets\.zip"
 
 # Recover ALL deleted files with TSK
-mkdir -p Lab_1/tsk_recover_out
-tsk_recover -a /evidence/disk.img Lab_1/tsk_recover_out
+mkdir -p USB_Imaging/tsk_recover_out
+tsk_recover -a /evidence/disk.img USB_Imaging/tsk_recover_out
 
 # Check what was recovered
-ls -la Lab_1/tsk_recover_out/
-cat Lab_1/tsk_recover_out/flag.txt 2>/dev/null || echo "flag.txt not recovered"
+ls -la USB_Imaging/tsk_recover_out/
+cat USB_Imaging/tsk_recover_out/flag.txt 2>/dev/null || echo "flag.txt not recovered"
 
 # Optional: Compare with Foremost carving (file carving)
-mkdir -p Lab_1/foremost_out
-foremost -i /evidence/disk.img -o Lab_1/foremost_out
+mkdir -p USB_Imaging/foremost_out
+foremost -i /evidence/disk.img -o USB_Imaging/foremost_out
 
 # Check foremost results
-ls -la Lab_1/foremost_out/
+ls -la USB_Imaging/foremost_out/
 
 # Exit to run Plaso (different container)
 exit
@@ -118,19 +118,19 @@ exit
 # Replace /evidence/disk.img with /evidence/disk.e01
 # Add -f ewf flag to specify E01 format
 fls -f ewf -r /evidence/disk.e01
-tsk_recover -f ewf -a /evidence/disk.e01 Lab_1/tsk_recover_out
+tsk_recover -f ewf -a /evidence/disk.e01 USB_Imaging/tsk_recover_out
 ```
 
 ### 4) Build a Plaso super-timeline and export CSV
 **On your host:**
 ```bash
-docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/disk.img
-docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso > cases/Lab_1/timeline.csv
+docker compose run --rm plaso log2timeline.py /cases/USB_Imaging/timeline.plaso /evidence/disk.img
+docker compose run --rm plaso psort.py -o l2tcsv /cases/USB_Imaging/timeline.plaso > cases/USB_Imaging/timeline.csv
 ```
-Open `cases/Lab_1/timeline.csv` in your spreadsheet tool. Identify 3–5 notable events (file creation/deletion, mount, etc.).
+Open `cases/USB_Imaging/timeline.csv` in your spreadsheet tool. Identify 3–5 notable events (file creation/deletion, mount, etc.).
 
 ### 5) Complete your triage report
-Fill in `cases/Lab_1/triage_report.md` using the template. Reference recovered files and timeline evidence.
+Fill in `cases/USB_Imaging/triage_report.md` using the template. Reference recovered files and timeline evidence.
 
 ---
 
@@ -139,8 +139,8 @@ Fill in `cases/Lab_1/triage_report.md` using the template. Reference recovered f
 If you prefer not to use the interactive workstation, you can run individual commands:
 
 ```bash
-docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/Lab_1/fls.txt
-docker compose run --rm dfir tsk_recover -a /evidence/disk.img /cases/Lab_1/tsk_recover_out
+docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/USB_Imaging/fls.txt
+docker compose run --rm dfir tsk_recover -a /evidence/disk.img /cases/USB_Imaging/tsk_recover_out
 ```
 
 **However, the interactive mode is recommended** because:
@@ -177,13 +177,13 @@ See `rubric.csv` for detail.
 2. **File system not fully processed:**
    ```bash
    # Try force recovery of all files
-   tsk_recover -a -f /evidence/disk.img Lab_1/tsk_recover_out
+   tsk_recover -a -f /evidence/disk.img USB_Imaging/tsk_recover_out
    ```
 
 3. **Using E01 format without specifying:**
    ```bash
    # Must specify E01 format
-   tsk_recover -f ewf -a /evidence/disk.e01 Lab_1/tsk_recover_out
+   tsk_recover -f ewf -a /evidence/disk.e01 USB_Imaging/tsk_recover_out
    ```
 
 ### Problem: "Permission denied" running make_practice_image.sh

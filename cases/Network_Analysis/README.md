@@ -18,7 +18,7 @@
 1. Hash the PCAP file (record in chain_of_custody).  
 2. Run tshark to list connections:  
    ```bash
-   docker run --rm -v $PWD/evidence:/evidence:ro corfr/tshark -r /evidence/network.pcap -q -z conv,tcp > cases/Lab_5/connections.txt
+   docker run --rm -v $PWD/evidence:/evidence:ro corfr/tshark -r /evidence/network.pcap -q -z conv,tcp > cases/Network_Analysis/connections.txt
    ```
 
 3. Identify suspicious sessions (large transfers, odd ports).  
@@ -27,5 +27,5 @@
 ---
 
 ## Deliverables
-- `cases/Lab_5/connections.txt`  
-- `cases/Lab_5/network_report.md`
+- `cases/Network_Analysis/connections.txt`  
+- `cases/Network_Analysis/network_report.md`

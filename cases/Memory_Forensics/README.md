@@ -11,8 +11,8 @@
 ---
 
 ## What to submit
-- `cases/Lab_2/vol_output/` with plugin outputs (CSV/TXT).  
-- `cases/Lab_2/memory_report.md` (template provided).  
+- `cases/Memory_Forensics/vol_output/` with plugin outputs (CSV/TXT).  
+- `cases/Memory_Forensics/memory_report.md` (template provided).  
 - Updated `cases/chain_of_custody.csv` including memory dump hash.
 
 ---
@@ -42,7 +42,7 @@ You'll see the forensic lab banner and get a bash prompt. **Note:** For Volatili
 ### 1) Create output directory and hash the memory dump
 **Inside the workstation:**
 ```bash
-mkdir -p Lab_2/vol_output
+mkdir -p Memory_Forensics/vol_output
 exit
 ```
 
@@ -59,13 +59,13 @@ Volatility 2 runs in its own container. First identify the profile, then run ana
 docker compose exec vol2 vol.py -f /evidence/memory.raw imageinfo
 
 # Process list
-docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 pslist > cases/Lab_2/vol_output/pslist.txt
+docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 pslist > cases/Memory_Forensics/vol_output/pslist.txt
 
 # Process tree
-docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 pstree > cases/Lab_2/vol_output/pstree.txt
+docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 pstree > cases/Memory_Forensics/vol_output/pstree.txt
 
 # Network connections (XP specific)
-docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 connections > cases/Lab_2/vol_output/connections.txt
+docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 connections > cases/Memory_Forensics/vol_output/connections.txt
 ```
 
 **Tip:** These commands can take 1-5 minutes each depending on memory dump size.
@@ -76,18 +76,18 @@ docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 co
 docker compose run --rm -it dfir
 
 # View the results
-cat Lab_2/vol_output/pslist.txt | less
-cat Lab_2/vol_output/pstree.txt | less
-cat Lab_2/vol_output/netscan.txt | less
+cat Memory_Forensics/vol_output/pslist.txt | less
+cat Memory_Forensics/vol_output/pstree.txt | less
+cat Memory_Forensics/vol_output/netscan.txt | less
 
 # Look for suspicious processes (keyloggers, unusual executables)
-grep -i keylogger Lab_2/vol_output/pslist.txt
+grep -i keylogger Memory_Forensics/vol_output/pslist.txt
 
 # Look for suspicious processes
-grep -E "(ToolKeylogger|win32dd)" Lab_2/vol_output/pslist.txt
+grep -E "(ToolKeylogger|win32dd)" Memory_Forensics/vol_output/pslist.txt
 
 # Look for network connections
-grep -v "LISTENING" Lab_2/vol_output/connections.txt
+grep -v "LISTENING" Memory_Forensics/vol_output/connections.txt
 ```
 
 ### 4) Optional: Extract suspicious process memory
@@ -96,14 +96,14 @@ If you identified a suspicious PID (e.g., 3456), dump its memory:
 **On your host:**
 ```bash
 # Dump process memory (replace <pid> with actual PID)
-docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 procdump -p <pid> -D cases/Lab_2/vol_output/
+docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 procdump -p <pid> -D cases/Memory_Forensics/vol_output/
 
 # Extract executable
-docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 procdump -p <pid> -n <executable_name>.dmp -D cases/Lab_2/vol_output/
+docker compose exec vol2 vol.py -f /evidence/memory.raw --profile=WinXPSP2x86 procdump -p <pid> -n <executable_name>.dmp -D cases/Memory_Forensics/vol_output/
 ```
 
 ### 5) Fill in memory_report.md with findings
-Use the template at `cases/Lab_2/Lab2/memory_report.md`.
+Use the template at `cases/Memory_Forensics/Lab2/memory_report.md`.
 
 **For detailed guidance**, see `WALKTHROUGH.md` in this directory.
 
@@ -111,7 +111,7 @@ Use the template at `cases/Lab_2/Lab2/memory_report.md`.
 
 ## Alternative: One-Off Commands
 
-You can run all commands as one-offs without entering the workstation, but you'll miss tab-completion and easier output review. See the original commands above, ensuring all use full paths like `cases/Lab_2/vol_output/...`
+You can run all commands as one-offs without entering the workstation, but you'll miss tab-completion and easier output review. See the original commands above, ensuring all use full paths like `cases/Memory_Forensics/vol_output/...`
 
 ---
 

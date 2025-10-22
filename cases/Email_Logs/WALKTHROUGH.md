@@ -71,7 +71,7 @@ You should now be at a command prompt inside the forensics container, similar to
 ### 2. Create Output Directory
 
 ```bash
-mkdir -p /cases/Lab_4/analysis_output
+mkdir -p /cases/Email_Logs/analysis_output
 ```
 
 This directory will store your extracted headers, log extracts, and analysis files.
@@ -129,10 +129,10 @@ Extract headers from all messages for analysis:
 
 ```bash
 # Extract all headers
-awk '/^From / {msg=1} msg && /^$/ {msg=0} msg && !/^$/ {print}' /evidence/mail.mbox > /cases/Lab_4/analysis_output/all_headers.txt
+awk '/^From / {msg=1} msg && /^$/ {msg=0} msg && !/^$/ {print}' /evidence/mail.mbox > /cases/Email_Logs/analysis_output/all_headers.txt
 
 # View the extracted headers
-cat /cases/Lab_4/analysis_output/all_headers.txt
+cat /cases/Email_Logs/analysis_output/all_headers.txt
 ```
 
 **Expected Output Format:**
@@ -171,10 +171,10 @@ Filter for emails sent to external domains:
 
 ```bash
 # Find emails with external recipients
-grep -A 10 -B 2 "exfil@personal.com" /evidence/mail.mbox > /cases/Lab_4/analysis_output/suspicious_email.txt
+grep -A 10 -B 2 "exfil@personal.com" /evidence/mail.mbox > /cases/Email_Logs/analysis_output/suspicious_email.txt
 
 # View the suspicious email
-cat /cases/Lab_4/analysis_output/suspicious_email.txt
+cat /cases/Email_Logs/analysis_output/suspicious_email.txt
 ```
 
 **Expected Finding:**
@@ -206,10 +206,10 @@ Examine USB device insertion/removal events:
 cat /evidence/logs/syslog_usb
 
 # Extract USB events with timestamps
-grep "usb" /evidence/logs/syslog_usb > /cases/Lab_4/analysis_output/usb_events.txt
+grep "usb" /evidence/logs/syslog_usb > /cases/Email_Logs/analysis_output/usb_events.txt
 
 # View extracted USB events
-cat /cases/Lab_4/analysis_output/usb_events.txt
+cat /cases/Email_Logs/analysis_output/usb_events.txt
 ```
 
 **Expected Output:**
@@ -231,10 +231,10 @@ Check mail server logs for sending activity:
 cat /evidence/logs/mail.log
 
 # Extract email sending events
-grep "TO:" /evidence/logs/mail.log > /cases/Lab_4/analysis_output/mail_events.txt
+grep "TO:" /evidence/logs/mail.log > /cases/Email_Logs/analysis_output/mail_events.txt
 
 # View extracted mail events
-cat /cases/Lab_4/analysis_output/mail_events.txt
+cat /cases/Email_Logs/analysis_output/mail_events.txt
 ```
 
 **Expected Output:**
@@ -253,7 +253,7 @@ Build a timeline of all events:
 
 ```bash
 # Create timeline file
-cat > /cases/Lab_4/analysis_output/timeline.txt << EOF
+cat > /cases/Email_Logs/analysis_output/timeline.txt << EOF
 === Cloudcore Investigation Timeline ===
 
 Dec  6 09:45:01 - USB device inserted (Vendor:1234, Product:5678)
@@ -267,7 +267,7 @@ Correlation with Previous Labs:
 EOF
 
 # View the timeline
-cat cases/Lab_4/analysis_output/timeline.txt
+cat cases/Email_Logs/analysis_output/timeline.txt
 ```
 
 ### Step 7: Advanced Analysis (Optional)
@@ -276,7 +276,7 @@ Use Python for more sophisticated analysis:
 
 ```bash
 # Create Python script for email analysis
-cat > /cases/Lab_4/analysis_output/analyze_emails.py << 'EOF'
+cat > /cases/Email_Logs/analysis_output/analyze_emails.py << 'EOF'
 #!/usr/bin/env python3
 import re
 import email
@@ -349,7 +349,7 @@ if __name__ == "__main__":
 EOF
 
 # Run the analysis
-python3 /cases/Lab_4/analysis_output/analyze_emails.py
+python3 /cases/Email_Logs/analysis_output/analyze_emails.py
 ```
 
 **Expected Output:**
@@ -444,7 +444,7 @@ By the end of this lab, you should have discovered:
 
 ## Completing the Report
 
-Fill in `cases/Lab_4/Lab4/email_log_report.md` with:
+Fill in `cases/Email_Logs/Lab4/email_log_report.md` with:
 
 ### 1. Evidence Summary
 ```
@@ -562,14 +562,14 @@ Commands Executed:
 
 Before submitting, ensure you have:
 
-- [ ] `cases/Lab_4/analysis_output/` folder with:
+- [ ] `cases/Email_Logs/analysis_output/` folder with:
   - `all_headers.txt`
   - `suspicious_email.txt`
   - `usb_events.txt`
   - `mail_events.txt`
   - `timeline.txt`
   - `analyze_emails.py` (if used)
-- [ ] `cases/Lab_4/Lab4/email_log_report.md` completed with all sections
+- [ ] `cases/Email_Logs/Lab4/email_log_report.md` completed with all sections
 - [ ] `cases/chain_of_custody.csv` updated with all evidence hashes
 - [ ] Timeline correlation with Labs 1-3 clearly documented
 - [ ] All suspicious findings highlighted and explained
@@ -589,7 +589,7 @@ If you finish early or want deeper analysis:
 2. **Log Pattern Analysis:**
    ```bash
    # Search for other suspicious log patterns
-   grep -E "(error|fail|denied|unauthorized)" /evidence/logs/* > /cases/Lab_4/analysis_output/suspicious_logs.txt
+   grep -E "(error|fail|denied|unauthorized)" /evidence/logs/* > /cases/Email_Logs/analysis_output/suspicious_logs.txt
    ```
 
 3. **Timeline Visualization:**

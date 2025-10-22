@@ -67,7 +67,7 @@ When you enter the workstation, you'll see a banner:
       yara -r /rules/malware.yar /evidence/
 
     • Search for patterns:
-      grep -i "password" Lab_1/*.txt
+      grep -i "password" USB_Imaging/*.txt
 
   💡 Tips:
     • Use tab-completion for file paths
@@ -91,10 +91,10 @@ Once inside, you can run forensic tools directly without the `docker compose run
 fls -r /evidence/disk.img
 
 # Recover deleted files
-tsk_recover -a /evidence/disk.img Lab_1/recovered/
+tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
 
 # Search for patterns
-grep -i "password" Lab_1/*.txt
+grep -i "password" USB_Imaging/*.txt
 
 # View file metadata
 exiftool evidence/encrypted_container.dat
@@ -154,10 +154,10 @@ Files created in `/cases` persist on your host machine in `./cases/`:
 
 ```bash
 # Inside workstation:
-analyst@forensics-lab:/cases$ echo "test" > Lab_1/notes.txt
+analyst@forensics-lab:/cases$ echo "test" > USB_Imaging/notes.txt
 
 # On your host machine:
-$ cat cases/Lab_1/notes.txt
+$ cat cases/USB_Imaging/notes.txt
 test
 ```
 
@@ -169,8 +169,8 @@ Your command history is saved to `cases/.bash_history` and persists across sessi
 # Inside workstation:
 analyst@forensics-lab:/cases$ history
     1  fls -r /evidence/disk.img
-    2  tsk_recover -a /evidence/disk.img Lab_1/recovered/
-    3  grep -i "password" Lab_1/*.txt
+    2  tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
+    3  grep -i "password" USB_Imaging/*.txt
 ```
 
 ### Forensic Security
@@ -204,7 +204,7 @@ Without `-it`, the terminal won't attach properly.
 echo "test" > /evidence/test.txt
 
 # Correct (writable):
-echo "test" > /cases/Lab_1/test.txt
+echo "test" > /cases/USB_Imaging/test.txt
 ```
 
 ### Problem: Commands not found
@@ -285,9 +285,9 @@ docker compose run --rm plaso psort.py -o l2tcsv /cases/timeline.plaso > cases/t
 
 2. **Do your analysis:**
    ```bash
-   fls -r /evidence/disk.img > Lab_1/fls.txt
-   tsk_recover -a /evidence/disk.img Lab_1/recovered/
-   grep -i "suspicious" Lab_1/fls.txt
+   fls -r /evidence/disk.img > USB_Imaging/fls.txt
+   tsk_recover -a /evidence/disk.img USB_Imaging/recovered/
+   grep -i "suspicious" USB_Imaging/fls.txt
    ```
 
 3. **Exit workstation:**
@@ -304,7 +304,7 @@ docker compose run --rm plaso psort.py -o l2tcsv /cases/timeline.plaso > cases/t
 5. **Re-enter workstation to review results:**
    ```bash
    docker compose run --rm -it dfir
-   cat Lab_2/vol_output/pslist.txt | less
+   cat Memory_Forensics/vol_output/pslist.txt | less
    exit
    ```
 
@@ -315,8 +315,8 @@ docker compose run --rm plaso psort.py -o l2tcsv /cases/timeline.plaso > cases/t
 3. **Save your commands** - Your history is in `cases/.bash_history`
 4. **Redirect output** - Save results: `command > output.txt`
 5. **Use less for viewing** - View large files: `cat file.txt | less`
-6. **Create directories first** - `mkdir -p Lab_1/output` before redirecting
-7. **Check your work** - `ls -la Lab_1/` to see what you've created
+6. **Create directories first** - `mkdir -p USB_Imaging/output` before redirecting
+7. **Check your work** - `ls -la USB_Imaging/` to see what you've created
 8. **Exit cleanly** - Always type `exit` to leave the workstation
 
 ## Advanced: Creating an Alias

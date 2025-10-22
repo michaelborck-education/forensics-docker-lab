@@ -82,7 +82,7 @@ Created a comprehensive `WALKTHROUGH.md` to supplement the existing `README.md`.
 
 ## Files That Should Be Updated
 
-1. **cases/Lab_4/README.md**
+1. **cases/Email_Logs/README.md**
    - Add evidence file verification commands
    - Add: "See WALKTHROUGH.md for detailed step-by-step instructions"
    - Mention expected time: 90 minutes

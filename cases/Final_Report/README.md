@@ -23,7 +23,7 @@
 ---
 
 ## Deliverables
-- `cases/Lab_6/final_case_report.md`  
+- `cases/Final_Report/final_case_report.md`  
 - Supporting artifacts (referenced in appendices).  
 
 ---
