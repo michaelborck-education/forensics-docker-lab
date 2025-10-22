@@ -27,7 +27,7 @@ docker compose up -d novnc autopsy
 2. **Create a new case**
 - Case name: `Lab3_<YourName>`  
 - Base directory: `/cases/Lab_3/autopsy_case`  
-- Add evidence: `/evidence/disk.img` (practice image from Lab1)
+- Add evidence: `/evidence/usb.img` (practice image from Lab1)
 
 3. **Explore evidence**
 - File system view (recover deleted files).  

@@ -473,7 +473,7 @@ If you finish early or want deeper analysis (all inside the dfir container):
 
 6. **Use Sleuth Kit tools for disk analysis:**
    ```bash
-   fls -r /evidence/disk.img
+   fls -r /evidence/usb.img
    ```
 
 ---

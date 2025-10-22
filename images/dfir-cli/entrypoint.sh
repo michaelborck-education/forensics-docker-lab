@@ -33,5 +33,5 @@ export TMPDIR=/tmp
 # Execute the command passed to the container
 # This allows both:
 # - Interactive: docker compose run --rm -it dfir (CMD provides /bin/bash)
-# - One-off: docker compose run --rm dfir fls /evidence/disk.img
+# - One-off: docker compose run --rm dfir fls /evidence/usb.img
 exec "$@"

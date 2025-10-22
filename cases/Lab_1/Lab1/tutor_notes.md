@@ -6,7 +6,7 @@
 
 ## Timing Guide (90 min)
 - 0–15: Chain-of-custody demo; run `hashlog` together, open CSV.
-- 15–35: Students run `scripts/make_practice_image.sh` to create `evidence/disk.img`.
+- 15–35: Students run `scripts/make_practice_image.sh` to create `evidence/usb.img`.
 - 35–60: Recovery with `tsk_recover`; sanity-check outputs; optionally `foremost`.
 - 60–80: Plaso pipeline; export `timeline.csv` and identify 3–5 events.
 - 80–90: Report wrap-up; quick QA on reproducibility & integrity.

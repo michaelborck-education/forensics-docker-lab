@@ -168,14 +168,14 @@ services:
 docker compose run --rm dfir
 
 # Now you're inside! Run commands directly:
-fls -r /evidence/disk.img
+fls -r /evidence/usb.img
 vol -f /evidence/memory.raw windows.pslist.PsList > vol_output/pslist.txt
 exit
 ```
 
 **One-Off Mode (Still supported):**
 ```bash
-docker compose run --rm dfir fls -r /evidence/disk.img
+docker compose run --rm dfir fls -r /evidence/usb.img
 ```
 
 ---

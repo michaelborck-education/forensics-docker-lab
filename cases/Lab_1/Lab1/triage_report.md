@@ -5,7 +5,7 @@
 **Case ID:** LAB1-<YourInitials>
 
 ## 1. Scope & Evidence Summary
-- Evidence source: `evidence/disk.img` (practice image)
+- Evidence source: `evidence/usb.img` (practice image)
 - Chain-of-custody reference: `cases/chain_of_custody.csv` rows from <start time> to <end time>
 - Hash algorithm: SHA-256
 - Verified baseline hash? ☐Yes / ☐No — Hash: `<value>`
@@ -14,7 +14,7 @@
 - Commands used (copy/paste exact commands):
   ```bash
   # example
-  docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/Lab1/fls.txt
+  docker compose run --rm dfir fls -r -m / /evidence/usb.img > cases/Lab1/fls.txt
   ```
 
 - Tools and versions (if relevant).

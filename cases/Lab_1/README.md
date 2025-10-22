@@ -62,7 +62,7 @@ Check `cases/chain_of_custody.csv` — confirm timestamps and SHA-256 values rec
 ```bash
 bash scripts/make_practice_image_container.sh
 ```
-This creates **`evidence/disk.img`** with multiple deleted files including:
+This creates **`evidence/usb.img`** with multiple deleted files including:
 - `flag.txt` (forensic recovery exercise)
 - `project_secrets.zip` (Cloudcore case evidence)
 - Email drafts and TrueCrypt configuration files
@@ -75,7 +75,7 @@ This creates **`evidence/disk.img`** with multiple deleted files including:
 ```bash
 bash scripts/convert_to_e01_container.sh
 ```
-This creates **`evidence/disk.e01`** - the industry-standard E01 format used in real investigations. You can use either `disk.img` or `disk.e01` for the remaining steps.
+This creates **`evidence/usb.e01`** - the industry-standard E01 format used in real investigations. You can use either `usb.img` or `usb.e01` for the remaining steps.
 
 ### 3) List file system and recover deleted items
 **Re-enter the workstation:**
@@ -86,17 +86,17 @@ docker compose run --rm -it dfir
 **Inside the workstation, run:**
 ```bash
 # File system listing (Sleuth Kit) - look for deleted files (marked with *)
-fls -r /evidence/disk.img
+fls -r /evidence/usb.img
 
 # Detailed listing with full paths
-fls -r -m / /evidence/disk.img > Lab_1/fls.txt
+fls -r -m / /evidence/usb.img > Lab_1/fls.txt
 
 # View the listing to identify deleted files
 cat Lab_1/fls.txt | grep -E "^\*|flag\.txt|project_secrets\.zip"
 
 # Recover ALL deleted files with TSK
 mkdir -p Lab_1/tsk_recover_out
-tsk_recover -a /evidence/disk.img Lab_1/tsk_recover_out
+tsk_recover -a /evidence/usb.img Lab_1/tsk_recover_out
 
 # Check what was recovered
 ls -la Lab_1/tsk_recover_out/
@@ -104,7 +104,7 @@ cat Lab_1/tsk_recover_out/flag.txt 2>/dev/null || echo "flag.txt not recovered"
 
 # Optional: Compare with Foremost carving (file carving)
 mkdir -p Lab_1/foremost_out
-foremost -i /evidence/disk.img -o Lab_1/foremost_out
+foremost -i /evidence/usb.img -o Lab_1/foremost_out
 
 # Check foremost results
 ls -la Lab_1/foremost_out/
@@ -115,16 +115,16 @@ exit
 
 **If using E01 format instead:**
 ```bash
-# Replace /evidence/disk.img with /evidence/disk.e01
+# Replace /evidence/usb.img with /evidence/usb.e01
 # Add -f ewf flag to specify E01 format
-fls -f ewf -r /evidence/disk.e01
-tsk_recover -f ewf -a /evidence/disk.e01 Lab_1/tsk_recover_out
+fls -f ewf -r /evidence/usb.e01
+tsk_recover -f ewf -a /evidence/usb.e01 Lab_1/tsk_recover_out
 ```
 
 ### 4) Build a Plaso super-timeline and export CSV
 **On your host:**
 ```bash
-docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/disk.img
+docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/usb.img
 docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso > cases/Lab_1/timeline.csv
 ```
 Open `cases/Lab_1/timeline.csv` in your spreadsheet tool. Identify 3–5 notable events (file creation/deletion, mount, etc.).
@@ -139,8 +139,8 @@ Fill in `cases/Lab_1/triage_report.md` using the template. Reference recovered f
 If you prefer not to use the interactive workstation, you can run individual commands:
 
 ```bash
-docker compose run --rm dfir fls -r -m / /evidence/disk.img > cases/Lab_1/fls.txt
-docker compose run --rm dfir tsk_recover -a /evidence/disk.img /cases/Lab_1/tsk_recover_out
+docker compose run --rm dfir fls -r -m / /evidence/usb.img > cases/Lab_1/fls.txt
+docker compose run --rm dfir tsk_recover -a /evidence/usb.img /cases/Lab_1/tsk_recover_out
 ```
 
 **However, the interactive mode is recommended** because:
@@ -169,21 +169,21 @@ See `rubric.csv` for detail.
 1. **Using wrong fls command:**
    ```bash
    # Look for files marked with * (deleted)
-   fls -r /evidence/disk.img
+   fls -r /evidence/usb.img
    
-   # NOT just: fls /evidence/disk.img (misses deleted files)
+   # NOT just: fls /evidence/usb.img (misses deleted files)
    ```
 
 2. **File system not fully processed:**
    ```bash
    # Try force recovery of all files
-   tsk_recover -a -f /evidence/disk.img Lab_1/tsk_recover_out
+   tsk_recover -a -f /evidence/usb.img Lab_1/tsk_recover_out
    ```
 
 3. **Using E01 format without specifying:**
    ```bash
    # Must specify E01 format
-   tsk_recover -f ewf -a /evidence/disk.e01 Lab_1/tsk_recover_out
+   tsk_recover -f ewf -a /evidence/usb.e01 Lab_1/tsk_recover_out
    ```
 
 ### Problem: "Permission denied" running make_practice_image.sh
@@ -194,13 +194,13 @@ See `rubric.csv` for detail.
 
 ### Problem: "Docker container can't find evidence files"
 **Solution:**
-- Ensure evidence files are in the correct location: `evidence/disk.img`
-- Check file permissions: `ls -lh evidence/disk.img`
+- Ensure evidence files are in the correct location: `evidence/usb.img`
+- Check file permissions: `ls -lh evidence/usb.img`
 - Verify Docker volume mounting in docker-compose.yml
 
 ### Problem: "Plaso timeline is empty"
 **Solutions:**
-1. Check disk image format: `file evidence/disk.img`
+1. Check disk image format: `file evidence/usb.img`
 2. Ensure sufficient disk space for timeline file
 3. Try with smaller image first to test
 

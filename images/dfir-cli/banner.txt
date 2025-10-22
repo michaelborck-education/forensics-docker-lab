@@ -31,10 +31,10 @@
 
   📚 Quick Command Examples (inside this workstation):
     • List files in disk image:
-      fls -r /evidence/disk.img
+      fls -r /evidence/usb.img
 
     • Recover deleted files:
-      tsk_recover /evidence/disk.img recovered/
+      tsk_recover /evidence/usb.img recovered/
 
     • Memory forensics (modern Windows 7+):
       vol -f /evidence/memory.raw windows.pslist.PsList

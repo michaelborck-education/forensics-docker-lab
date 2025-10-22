@@ -4,8 +4,8 @@ set -euo pipefail
 # Fixed E01 conversion using ewfacquire with correct syntax
 # This script works on Mac, Windows, and Linux via Docker
 
-IMG="evidence/disk.img"
-E01="evidence/disk.e01"
+IMG="evidence/usb.img"
+E01="evidence/usb.e01"
 
 if [[ ! -f "$IMG" ]]; then
     echo "[!] Error: $IMG not found. Run make_practice_image_simple.sh first."
@@ -44,7 +44,7 @@ else
     # Fallback: Try basic ewfacquire
     docker compose run --rm dfir bash -c "
         cd /evidence
-        ewfacquire -u disk.img
+        ewfacquire -u usb.img
     "
     
     # Check if any .e01 files were created

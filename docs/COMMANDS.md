@@ -65,19 +65,19 @@ Results are appended to `cases/chain_of_custody.csv`.
 
 ```bash
 # List all files (including deleted)
-fls -r /evidence/disk.img
+fls -r /evidence/usb.img
 
 # List with full path mactime format
-fls -r -m / /evidence/disk.img > Lab_1/fls.txt
+fls -r -m / /evidence/usb.img > Lab_1/fls.txt
 
 # Display partition table
-mmls /evidence/disk.img
+mmls /evidence/usb.img
 
 # Show file system info
-fsstat /evidence/disk.img
+fsstat /evidence/usb.img
 
 # Extract a specific file by inode
-icat /evidence/disk.img 12345 > Lab_1/recovered_file.txt
+icat /evidence/usb.img 12345 > Lab_1/recovered_file.txt
 ```
 
 ### Deleted File Recovery
@@ -85,7 +85,7 @@ icat /evidence/disk.img 12345 > Lab_1/recovered_file.txt
 ```bash
 # Recover all allocated and unallocated files
 mkdir -p Lab_1/tsk_recover_out
-tsk_recover -a /evidence/disk.img Lab_1/tsk_recover_out
+tsk_recover -a /evidence/usb.img Lab_1/tsk_recover_out
 
 # View recovered files
 ls -lah Lab_1/tsk_recover_out/
@@ -96,7 +96,7 @@ ls -lah Lab_1/tsk_recover_out/
 ```bash
 # Carve files by signature
 mkdir -p Lab_1/foremost_out
-foremost -i /evidence/disk.img -o Lab_1/foremost_out
+foremost -i /evidence/usb.img -o Lab_1/foremost_out
 
 # View carved files
 ls -lah Lab_1/foremost_out/
@@ -174,7 +174,7 @@ awk '{print $1, $7}' Lab_2/vol_output/pslist.txt | head -20
 
 ```bash
 # Create timeline database
-docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/disk.img
+docker compose run --rm plaso log2timeline.py /cases/Lab_1/timeline.plaso /evidence/usb.img
 
 # Export to CSV
 docker compose run --rm plaso psort.py -o l2tcsv /cases/Lab_1/timeline.plaso > cases/Lab_1/timeline.csv
@@ -212,7 +212,7 @@ grep -C 3 "suspicious" Lab_1/fls.txt
 
 ```bash
 # Scan with specific rule
-yara /rules/malware.yar /evidence/disk.img
+yara /rules/malware.yar /evidence/usb.img
 
 # Recursive scan
 yara -r /rules/malware.yar /evidence/
@@ -225,7 +225,7 @@ yara -f /rules/malware.yar /evidence/memory.raw
 
 ```bash
 # Extract features (emails, URLs, credit cards, etc.)
-bulk_extractor -o Lab_1/bulk_out /evidence/disk.img
+bulk_extractor -o Lab_1/bulk_out /evidence/usb.img
 
 # View extracted email addresses
 cat Lab_1/bulk_out/email.txt
@@ -242,13 +242,13 @@ cat Lab_1/bulk_out/url.txt
 
 ```bash
 # SHA-256 hash
-sha256sum /evidence/disk.img
+sha256sum /evidence/usb.img
 
 # MD5 hash
-md5sum /evidence/disk.img
+md5sum /evidence/usb.img
 
 # Multiple hashes at once
-hashdeep -c sha256,md5 /evidence/disk.img
+hashdeep -c sha256,md5 /evidence/usb.img
 
 # Recursive hashing
 hashdeep -r -c sha256 Lab_1/tsk_recover_out/ > Lab_1/recovered_hashes.txt
@@ -285,13 +285,13 @@ find Lab_1/tsk_recover_out/ -type f | wc -l
 
 ```bash
 # View file type
-file /evidence/disk.img
+file /evidence/usb.img
 
 # View hex dump
-xxd /evidence/disk.img | head -100
+xxd /evidence/usb.img | head -100
 
 # Search for strings
-strings /evidence/disk.img | grep "password"
+strings /evidence/usb.img | grep "password"
 
 # View text files with pagination
 less Lab_1/fls.txt
@@ -352,7 +352,7 @@ docker compose run --rm -it dfir
 mkdir -p Lab_X/output
 
 # 3. Run analysis commands
-fls -r /evidence/disk.img > Lab_X/fls.txt
+fls -r /evidence/usb.img > Lab_X/fls.txt
 grep -i "suspicious" Lab_X/fls.txt
 
 # 4. Document findings

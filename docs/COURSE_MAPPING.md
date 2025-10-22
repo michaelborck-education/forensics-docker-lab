@@ -43,14 +43,14 @@ Adjust for class size/time.
 ## Week 5: Data Acquisition Processes and Procedures
 - **Theory**: Imaging (dd/fls), volatile capture (Volatility prep).
 - **Readings**: Lab 1 README (acquisition script).
-- **Activities**: Full Lab 1: Create/acquire disk.img, CoC baseline.
+- **Activities**: Full Lab 1: Create/acquire usb.img, CoC baseline.
 - **Assessment 1 (20%)**: Lab 1 submission (recovery/timeline report).
 - **Duration**: 1hr theory + 2hrs lab.
 
 ## Week 6: Analysing Acquired Persistent Storage Images
 - **Theory**: Filesystem analysis, carving, metadata.
 - **Readings**: GLOSSARY.md (carving); WORKBOOK.md (Lab 3 template).
-- **Activities**: Lab 3: Autopsy on disk.img (explore deleted, keywords).
+- **Activities**: Lab 3: Autopsy on usb.img (explore deleted, keywords).
 - **Assessment**: Peer review Lab 1 reports.
 - **Duration**: 1hr theory + 2hrs lab.
 

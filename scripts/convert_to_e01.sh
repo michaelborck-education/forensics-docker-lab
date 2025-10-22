@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Script to convert disk.img to E01 format (industry standard)
+# Script to convert usb.img to E01 format (industry standard)
 # Usage: bash scripts/convert_to_e01.sh
 
-IMG="evidence/disk.img"
-E01="evidence/disk.e01"
+IMG="evidence/usb.img"
+E01="evidence/usb.e01"
 
 if [ ! -f "$IMG" ]; then
     echo "[!] Error: $IMG not found. Run make_practice_image.sh first."
@@ -21,7 +21,7 @@ ewfexport -c -t "Cloudcore Investigation - Lab 1 Practice Image" -e "Digital For
 
 echo "[*] Conversion complete!"
 echo "[*] Created: $E01"
-echo "[*] You can now use either disk.img or disk.e01 for analysis"
+echo "[*] You can now use either usb.img or usb.e01 for analysis"
 
 # Show file sizes for comparison
 echo ""

@@ -32,7 +32,7 @@ forensics-lab-week1-dfir/
 ├── entrypoint.sh                ← Container startup script
 │
 ├── evidence/                    ← READ-ONLY evidence files
-│   ├── cloudcore_suspect_usb.E01   (or disk.img - forensic image)
+│   ├── cloudcore_suspect_usb.E01   (or usb.img - forensic image)
 │   └── README.md
 │
 ├── cases/                       ← YOUR WORKSPACE (writable)

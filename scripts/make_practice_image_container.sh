@@ -5,7 +5,7 @@ set -euo pipefail
 # Creates the same enhanced practice image but uses Docker for filesystem operations
 
 mkdir -p evidence cases
-IMG="evidence/disk.img"
+IMG="evidence/usb.img"
 
 echo "[*] Creating 100MB EXT4 image at $IMG using Docker"
 dd if=/dev/zero of="$IMG" bs=1M count=100 status=progress
@@ -13,11 +13,11 @@ dd if=/dev/zero of="$IMG" bs=1M count=100 status=progress
 echo "[*] Creating and mounting filesystem in Docker container"
 docker compose run --rm dfir bash -c "
 # Create the filesystem
-mkfs.ext4 -F /evidence/disk.img
+mkfs.ext4 -F /evidence/usb.img
 
 # Create mount point and mount
 mkdir -p /mnt/practice
-mount -o loop /evidence/disk.img /mnt/practice
+mount -o loop /evidence/usb.img /mnt/practice
 
 echo '[*] Creating realistic Cloudcore investigation scenario'
 

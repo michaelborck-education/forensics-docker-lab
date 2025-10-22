@@ -4,8 +4,8 @@ set -euo pipefail
 # Simple E01 conversion using ewf-tools in a minimal container
 # This avoids the big build by using a pre-built ewf-tools image
 
-IMG="evidence/disk.img"
-E01="evidence/disk.E01"
+IMG="evidence/usb.img"
+E01="evidence/usb.E01"
 
 if [[ ! -f "$IMG" ]]; then
     echo "[!] Error: $IMG not found. Run make_practice_image_simple.sh first."
@@ -24,7 +24,7 @@ docker run --rm \
         apt-get update -qq && 
         apt-get install -y ewf-tools && 
         cd /evidence &&
-        echo 'disk.img' | ewfacquire -c case -e evidence -E examiner -M logical disk.img &&
+        echo 'usb.img' | ewfacquire -c case -e evidence -E examiner -M logical usb.img &&
         apt-get clean && rm -rf /var/lib/apt/lists/*
     "
 
