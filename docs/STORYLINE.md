@@ -31,10 +31,16 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.E01` into Autopsy via noVNC. Keyword search for sensitive data ("secret", "password", "project", "credential") yields hits in recovered files; recover file timestamps and metadata; correlate with keylogger timeline from Lab 2 (both active during same period).
 - **Key Findings:** Autopsy confirms deleted files were created/modified during period keylogger was active (02:11 onwards); database server IP 192.168.1.100 from USB secrets matches internal network; timestamp correlation shows files staged on USB before deletion; email draft about "unusual network activity" suggests Alex may have detected compromise.
 
-### Phase 4: Email and Log Correlation (2009-12-06)
-- **Activity:** Alex emails attachments to external account (`exfil@personal.com`) and inserts USB for physical transfer.
-- **Link to Labs:** Lab 4 (Email & Logs) – Parse `mail.mbox` for headers showing sent emails with ZIP attachments (08-13 09:45). Logs (`/var/log/syslog`) show USB mount events (e.g., \"New USB device found, ID 08-13 09:50\") correlating with email timestamps.
-- **Key Findings:** Email headers reveal BCC to external domain; logs confirm USB serial \"12345-ABC\" insertion right after email, suggesting staged data transfer.
+### Phase 4: Email and Log Correlation (2009-12-07)
+- **Activity:** Alex sends exfiltrated data directly to personal external email account. Email contains ZIP attachment with complete project secrets. This represents the final exfiltration phase before cleanup/covering tracks.
+- **Link to Labs:** Lab 4 (Email & Logs) – Parse `mail.mbox` for headers showing email from alex@cloudcore.com to exfil@personal.com with attached project_secrets.zip (2009-12-07 09:45:00 UTC). Verify attachment content matches USB evidence. Correlate email timestamp with USB removal and network exfiltration.
+- **Key Findings:**
+  - **Sender:** alex@cloudcore.com
+  - **Recipient:** exfil@personal.com (personal external account, not company domain)
+  - **Subject:** "Project Update" (suspicious subject line for exfiltration)
+  - **Attachment:** project_secrets.zip (matches content from USB staging)
+  - **Timestamp:** 2009-12-07 09:45:00 UTC
+  - **Significance:** Direct evidence of intentional data exfiltration to external address; matches files recovered from USB (project_secrets.txt, etc.). This is the "smoking gun" proving intent to steal data.
 
 ### Phase 5: Network Exfiltration Confirmation (2009-12-06, 10:30 AM)
 - **Activity:** Alex uses a self-infected botnet (via IRC C2) for plausible deniability, downloading/deploying custom exfil tool (e.g., ysbinstall_1000489_3.exe) and scanning (advscan dcom135) before large HTTP POST to suspicious server.
