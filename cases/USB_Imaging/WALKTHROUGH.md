@@ -135,7 +135,13 @@ total 0
 
 ---
 
-## 🗂️ Part 3: Analyze File System
+## 🗂️ Part 3: Analyze File System Structure
+
+**Why this step matters:**
+Before we can list files, we need to understand the filesystem structure. Is it FAT32? NTFS? What's the cluster size? These details affect how we recover deleted files and interpret timestamps. We also check if the drive has multiple partitions - some USB drives have hidden recovery partitions.
+
+**How we know to do this:**
+Forensic investigators follow a systematic approach: understand the storage layout → find files → recover deleted data. Skipping filesystem analysis means missing important details about how data was stored and deleted.
 
 ### Step 1: Get File System Information
 
@@ -143,33 +149,26 @@ total 0
 fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
 ```
 
-**📋 Document in analysis_log.csv:**
+**What this tells us:**
+- **File System Type:** FAT32, NTFS, exFAT, etc.
+- **Volume Label:** Name of the USB drive
+- **Cluster Size:** How data is grouped (important for recovery)
+- **Free Space:** Was the drive nearly full? (suggests rapid deletion)
+- **FAT (File Allocation Table):** Maps which clusters contain which files
+
+**Example from our evidence:**
 ```
-timestamp_utc: 2024-10-23T14:32:15Z
-analyst: [Your Name]
-command: fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
-exit_code: 0
-note: Get file system information (type, size, cluster info)
+File System Type: FAT32
+Volume Label: PRACTICE
+Cluster Size: 512
+Free Sector Count: 201538
 ```
 
-To get the timestamp, run:
-```bash
-date -u
-```
-
-### Step 2: Check Partition Table (Optional)
-
-```bash
-mmls /tmp/ewf/ewf1
-```
-
-**⚠️ Note for FAT32 USB Drives:**
-USB flash drives typically don't have partition tables - they're formatted directly as FAT32. If you see:
-```
-Cannot determine partition type
-```
-
-This is **normal and expected**. The fsstat output already told us it's FAT32 formatted.
+This tells us:
+- Simple FAT32 filesystem (older, simpler to analyze)
+- Drive was labeled "PRACTICE" (for training?)
+- Lots of free space available (~100MB free out of 200MB total)
+- Deleted files can likely be recovered
 
 **📋 Document in analysis_log.csv:**
 ```
@@ -177,24 +176,89 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
 exit_code: 0
-note: Get file system information (type, size, cluster info)
+note: Get file system information (type, size, cluster info) - Found FAT32 drive labeled 'PRACTICE'
 ```
+
+### Step 2: Check Partition Table
+
+```bash
+mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
+```
+
+**What this tells us:**
+The `mmls` command analyzes the Master Boot Record (MBR) and partition table. Professional USB drives might have:
+- Multiple partitions (data + recovery)
+- Hidden partitions (for firmware)
+- No partition table (raw FAT32, common on simple USB drives)
+
+**Why we run it:**
+An experienced investigator doesn't assume - they verify. We run mmls to:
+1. Confirm there's only ONE filesystem (not multiple partitions)
+2. Document what we found for the investigation report
+3. Ensure we're not missing hidden partitions with deleted data
+
+**Expected output for simple USB drives:**
+```
+Cannot determine partition type
+```
+
+**This is NORMAL and EXPECTED** - it means the drive is formatted directly as FAT32 with no partition table. This is actually good for us - simpler to analyze, fewer places to hide data.
+
+**📋 Document in analysis_log.csv:**
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
+exit_code: 0
+note: Check partition table - Result: No partition table (simple FAT32 USB drive, no hidden partitions)
+```
+
+**Review what you found:**
+```bash
+cat /cases/USB_Imaging/partition_table.txt
+cat /cases/USB_Imaging/filesystem_info.txt
+```
+
+**Key Questions to Ask:**
+- How much free space is on the drive?
+- Were files deleted recently (high free space = yes)?
+- Is the filesystem FAT32 or something else?
+- Are there multiple partitions?
 
 ---
 
 ## 📂 Part 4: List All Files (Including Deleted)
 
-This is the most important step. The `fls` command lists ALL files, including ones the suspect tried to delete.
+**Why this step matters:**
+This is the MOST IMPORTANT step in USB forensics. Suspects delete files thinking they're gone, but FAT32 doesn't actually erase the data - it just marks the clusters as "free". The `fls` command reads the FAT and recovers the references to deleted files BEFORE we even recover the data. This tells us:
+1. What files were on the drive (including deleted ones)
+2. Their original locations and timestamps
+3. How recently they were deleted (fragmentation level)
+4. Which files are worth recovering in detail
 
-### Step 1: List All Files
+**How we know to do this:**
+Digital forensics principle: **"A deleted file is just a file with a deleted directory entry."** The actual file data stays on disk until overwritten. By reading the filesystem tables, we can list deleted files before attempting data recovery.
+
+### Step 1: List All Files (Active and Deleted)
 
 ```bash
 fls -r -d /tmp/ewf/ewf1 > /cases/USB_Imaging/file_list.txt
 ```
 
-**Flags:**
-- `-r`: recursive (all subdirectories)
-- `-d`: show deleted files (marked with `*`)
+**What the flags do:**
+- `-r`: recursive (scan all subdirectories)
+- `-d`: show deleted files (marked with `*` in the output)
+
+**Understanding the output format:**
+```
+d/d 3:  Documents/
++ r/r 4: Documents/project.xlsx (recovered)
+- r/r 5: Documents/secret.txt (DELETED - marked with -)
+```
+- `d/d`: directory
+- `r/r`: regular file
+- `+`: allocated (active file)
+- `-`: unallocated (DELETED file) ← These are what we're hunting for!
 
 **📋 Document in analysis_log.csv:**
 ```
@@ -202,14 +266,20 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: fls -r -d /tmp/ewf/ewf1 > /cases/USB_Imaging/file_list.txt
 exit_code: 0
-note: List all files including deleted files
+note: List all files (active and deleted). The '-' prefix indicates deleted files.
 ```
 
 ### Step 2: Extract Just the Deleted Files
 
+**Why separate them:**
+It's easier to analyze if we create a focused list of ONLY the deleted files. These are the suspicious ones.
+
 ```bash
 grep "\* " /cases/USB_Imaging/file_list.txt > /cases/USB_Imaging/deleted_files.txt
 ```
+
+**What this does:**
+The grep command searches for lines starting with `*` (or containing `* ` in fls output), which marks deleted entries. We save these to a separate file for analysis.
 
 **📋 Document in analysis_log.csv:**
 ```
@@ -217,18 +287,28 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: grep "\* " /cases/USB_Imaging/file_list.txt > /cases/USB_Imaging/deleted_files.txt
 exit_code: 0
-note: Extract list of deleted files for easier review
+note: Extract deleted files for focused analysis. Patterns suggest intentional deletion.
 ```
 
 Review the deleted files:
 ```bash
 cat /cases/USB_Imaging/deleted_files.txt
+wc -l /cases/USB_Imaging/deleted_files.txt  # Count deleted files
 ```
 
-**💡 TIP:** Look for file types that might contain sensitive data:
-- `.xlsx`, `.csv`, `.json` - data files
-- `.txt`, `.docx` - documents
-- `.db`, `.pst` - databases/email
+**Forensic Analysis - What to look for:**
+Files that are INTENTIONALLY deleted (vs. accidental) often follow patterns:
+- **Data files:** `.xlsx`, `.csv`, `.json`, `.xml` - Why delete financial/project data?
+- **Documents:** `.txt`, `.docx`, `.pdf` - Confidential information?
+- **Databases:** `.db`, `.pst`, `.sqlite` - Customer records? Secrets?
+- **Archives:** `.zip`, `.rar`, `.tar` - Bundled data for exfiltration?
+- **Executables:** `.exe`, `.bat`, `.sh` - Malware? Tools?
+- **Scripts:** `.py`, `.ps1`, `.vbs` - Automation for theft/vandalism?
+
+**Red Flags for Investigation:**
+- Deleted files grouped by type (e.g., all .xlsx files deleted)
+- Large archive files (.zip) deleted
+- Multiple files deleted at same timestamp (mass deletion = cover-up?)
 
 ---
 
