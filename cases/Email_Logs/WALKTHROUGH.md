@@ -42,16 +42,63 @@ ls -lh evidence/
 
 ## 📧 Part 1: Chain of Custody - Hash Email Evidence
 
+**CRITICAL:** Before analyzing ANY evidence, calculate and document hash values. This proves the evidence hasn't been tampered with.
+
+### Step 1: Calculate MD5 Hash
+
 ```bash
-sha256sum /evidence/mail.mbox
 md5sum /evidence/mail.mbox
 ```
 
-**📋 Document in chain_of_custody.csv:**
+**Example Output:**
+```
+83a0f673cada8bb15d22dcfbc4cfba18  /evidence/mail.mbox
+```
+
+**📋 Document in cases/Email_Logs/chain_of_custody.csv:**
 - Evidence_ID: EMAIL-001
-- SHA256_Hash: (paste hash)
+- MD5_Hash: (paste the hash from above)
+- SHA256_Hash: (you'll add this next)
 - Analyst_Name: (your name)
-- Evidence_Description: Mailbox file (mail.mbox) containing email evidence
+- Date_Received: (today's date)
+
+### Step 2: Calculate SHA256 Hash
+
+```bash
+sha256sum /evidence/mail.mbox
+```
+
+**Example Output:**
+```
+45ae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a  /evidence/mail.mbox
+```
+
+**📋 Update chain_of_custody.csv:**
+- Add the SHA256_Hash value above
+
+**Why document hashes?**
+- **Integrity verification:** Proves evidence hasn't been modified or corrupted
+- **Legal admissibility:** Courts require hash verification for digital evidence
+- **Reproducibility:** Other investigators can verify they're analyzing the same evidence
+- **Chain of custody:** Documents the starting point of analysis
+
+**📋 Document in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: md5sum /evidence/mail.mbox
+exit_code: 0
+note: Chain of custody - calculated MD5 hash of mail.mbox: 83a0f673cada8bb15d22dcfbc4cfba18
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: sha256sum /evidence/mail.mbox
+exit_code: 0
+note: Chain of custody - calculated SHA256 hash of mail.mbox: 45ae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a
+```
 
 ---
 
