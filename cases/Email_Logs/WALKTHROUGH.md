@@ -276,6 +276,154 @@ note: EVIDENCE ANALYSIS - Email from alex@cloudcore.com to exfil@personal.com, S
 
 ---
 
+## 🐍 Part 5b: Alternative - Automated Analysis with Python Script
+
+**Two Approaches to Email Analysis:**
+
+Forensic investigators have two tools available:
+1. **Manual Unix commands** (Parts 2-5): Learn how email works, understand each field, detective-like
+2. **Automated Python script** (this section): Fast, systematic, good for large datasets
+
+### Which Approach When?
+
+| Scenario | Unix Commands | Python Script |
+|----------|---------------|---------------|
+| **Learning/Training** | ✓ Better | - |
+| **Understanding email structure** | ✓ Better | - |
+| **Large mailbox (1000+ emails)** | - | ✓ Better |
+| **Quick triage** | - | ✓ Better |
+| **Detailed court analysis** | ✓ Better | - |
+| **Finding patterns across many emails** | - | ✓ Better |
+| **First principles forensics** | ✓ Better | - |
+
+### Option A: Keep Manual Unix Analysis (Recommended for Learning)
+
+You've already done this in Parts 2-5. The manual approach is excellent for understanding email structure and teaches forensic thinking.
+
+**Pros:**
+- ✓ Learn exactly how email files work
+- ✓ Understand each field (From, To, Date, Subject, Attachments)
+- ✓ See the evidence directly (detective-like approach)
+- ✓ Easy to explain in court ("I examined each email individually")
+- ✓ No script dependencies or assumptions
+- ✓ Full transparency (jury sees the actual analysis)
+
+**Cons:**
+- ✗ Time-consuming for large mailboxes (1000+ emails)
+- ✗ Manual extraction prone to human error
+- ✗ Difficult to find patterns across many emails
+- ✗ Not scalable to enterprise environments
+
+### Option B: Use Python Script for Faster Analysis (Optional)
+
+If you want to see an automated alternative, here's a Python script that does similar analysis programmatically:
+
+**Script location:** `/cases/Email_Logs/analyse_emails.py`
+
+**What the script does:**
+```python
+# Parse mbox file
+# Extract From, To, Subject, Date fields
+# Detect suspicious patterns:
+#   - External recipients (personal.com, external.com)
+#   - Suspicious subjects (project, secret, etc.)
+# Print formatted report
+```
+
+**Run the script:**
+
+```bash
+# Make sure you're in the cases folder
+cd /cases/Email_Logs
+
+# Run the analysis script
+python3 analyse_emails.py
+```
+
+**Expected output:**
+```
+=== Email Analysis ===
+Total emails: 3
+
+Email 1:
+  From: admin@cloudcore.com
+  To: team@cloudcore.com
+  Subject: Daily System Backup Complete
+  Date: Mon,  7 Dec 2009 08:00:00 +0000
+
+Email 2:
+  From: hr@cloudcore.com
+  To: all@cloudcore.com
+  Subject: Holiday Reminder
+  Date: Mon,  7 Dec 2009 08:30:00 +0000
+
+Email 3:
+  From: alex@cloudcore.com
+  To: exfil@personal.com
+  Subject: Project Update
+  Date: Mon,  7 Dec 2009 09:45:00 +0000
+  ⚠️  SUSPICIOUS: External recipient detected
+  ⚠️  SUSPICIOUS: Potentially sensitive subject
+```
+
+**📋 Document in analysis_log.csv (if you run the script):**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: python3 analyse_emails.py
+exit_code: 0
+note: COMPARISON - Ran automated analysis script to verify manual findings and demonstrate automated approach
+```
+
+**Pros of Script Approach:**
+- ✓ Fast analysis of large mailboxes
+- ✓ Consistent pattern detection (no human variation)
+- ✓ Easy to modify for different keywords
+- ✓ Can scale to 10,000+ emails
+- ✓ Good for initial triage of enterprise environments
+
+**Cons of Script Approach:**
+- ✗ Requires understanding Python code
+- ✗ Script assumptions might miss evidence
+- ✗ Black box approach (jury doesn't see how detection works)
+- ✗ May miss sophisticated attacks (relies on keyword matching)
+- ✗ Requires verification with manual analysis anyway
+
+### Recommendation for This Lab:
+
+**For Students:**
+Use the manual Unix approach (Parts 2-5) because:
+1. Learn how email evidence actually works
+2. Develop forensic intuition and pattern recognition
+3. Can explain each step to a jury
+4. No dependencies on script assumptions
+
+**In Real Forensic Work:**
+Use BOTH approaches:
+1. **First:** Python script for fast triage of large dataset
+2. **Second:** Manual analysis of suspicious emails identified by script
+3. **Third:** Manual Unix commands to verify script findings and document evidence
+4. **Finally:** Expert testimony based on manual analysis
+
+### Try It Yourself (Optional):
+
+If you want to see the automated approach in action:
+
+```bash
+# You've already done manual analysis (Parts 2-5)
+# Optionally, run the script to compare:
+python3 /cases/Email_Logs/analyse_emails.py
+
+# You should see the same suspicious email (Email 3) flagged
+# Now you can appreciate why the manual approach found it:
+# - External recipient (personal.com)
+# - Suspicious subject (Project Update)
+# - This matches what the script detected
+```
+
+---
+
 ## 📋 Part 6: Analyze System Logs (Optional)
 
 If log files exist, analyze them:
