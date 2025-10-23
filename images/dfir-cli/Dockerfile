@@ -14,7 +14,7 @@ RUN apt-get update && \
       exiftool \
       hashdeep \
       yara \
-      python2.7 \
+      python2.7 python2.7-dev \
       python3 python3-pip python3-venv \
       less file procps \
       vim nano \
