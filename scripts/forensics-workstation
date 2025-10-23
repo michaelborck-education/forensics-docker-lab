@@ -30,129 +30,129 @@ DOCKER_COMPOSE_CMD="docker compose"
 #################################################################################
 
 print_banner() {
-    echo
-    echo -e "${BLUE}"
-    echo "  +=====================================================================+"
-    echo "  |                                                                     |"
-    echo "  |     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY              |"
-    echo "  |                                                                     |"
-    echo "  |           Cyber Security Investigation Environment                |"
-    echo "  |                                                                     |"
-    echo "  +=====================================================================+"
-    echo -e "${NC}"
+  echo
+  echo -e "${BLUE}"
+  echo "  +=====================================================================+"
+  echo "  |                                                                     |"
+  echo "  |     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY                |"
+  echo "  |                                                                     |"
+  echo "  |    Cyber Security Investigation Environment                         |"
+  echo "  |                                                                     |"
+  echo "  +=====================================================================+"
+  echo -e "${NC}"
 }
 
 check_docker() {
-    if ! command -v docker &> /dev/null; then
-        echo -e "${RED}✗ Error: Docker is not installed or not in PATH${NC}"
-        echo "  Please install Docker Desktop from https://www.docker.com/products/docker-desktop"
-        exit 1
-    fi
+  if ! command -v docker &>/dev/null; then
+    echo -e "${RED}✗ Error: Docker is not installed or not in PATH${NC}"
+    echo "  Please install Docker Desktop from https://www.docker.com/products/docker-desktop"
+    exit 1
+  fi
 
-    if ! docker info > /dev/null 2>&1; then
-        echo -e "${RED}✗ Error: Docker daemon is not running${NC}"
-        echo "  Please start Docker Desktop and try again"
-        exit 1
-    fi
+  if ! docker info >/dev/null 2>&1; then
+    echo -e "${RED}✗ Error: Docker daemon is not running${NC}"
+    echo "  Please start Docker Desktop and try again"
+    exit 1
+  fi
 }
 
 check_evidence_files() {
-    if [ ! -f "$PROJECT_ROOT/evidence/usb.img" ] && [ ! -f "$PROJECT_ROOT/evidence/usb.E01" ]; then
-        echo -e "${YELLOW}⚠ Warning: No evidence files found in evidence/ directory${NC}"
-        echo "  Expected: usb.img or usb.E01"
-        echo "  Students should copy evidence files from OneDrive to evidence/ folder"
-        echo
-        read -p "Continue anyway? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            exit 0
-        fi
+  if [ ! -f "$PROJECT_ROOT/evidence/usb.img" ] && [ ! -f "$PROJECT_ROOT/evidence/usb.E01" ]; then
+    echo -e "${YELLOW}⚠ Warning: No evidence files found in evidence/ directory${NC}"
+    echo "  Expected: usb.img or usb.E01"
+    echo "  Students should copy evidence files from OneDrive to evidence/ folder"
+    echo
+    read -p "Continue anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      exit 0
     fi
+  fi
 }
 
 prompt_analyst_name() {
+  if [ -z "$ANALYST_NAME" ]; then
+    echo -e "${CYAN}Forensic Analyst Login${NC}"
+    read -p "Enter analyst name (for case documentation): " ANALYST_NAME
+
     if [ -z "$ANALYST_NAME" ]; then
-        echo -e "${CYAN}Forensic Analyst Login${NC}"
-        read -p "Enter analyst name (for case documentation): " ANALYST_NAME
-
-        if [ -z "$ANALYST_NAME" ]; then
-            ANALYST_NAME="analyst"
-        fi
+      ANALYST_NAME="analyst"
     fi
+  fi
 
-    # Sanitize analyst name for use in environment variable
-    ANALYST_NAME_SANITIZED=$(echo "$ANALYST_NAME" | tr ' ' '_' | tr -d '[:punct:]')
+  # Sanitize analyst name for use in environment variable
+  ANALYST_NAME_SANITIZED=$(echo "$ANALYST_NAME" | tr ' ' '_' | tr -d '[:punct:]')
 }
 
 show_lab_summary() {
-    echo
-    echo -e "${CYAN}Lab Environment - Available Tasks:${NC}"
-    echo "  1 - USB_Imaging - Evidence handling, imaging and initial triage"
-    echo "  2 - Memory_Forensics - Memory analysis with Volatility 2"
-    echo "  3 - Autopsy_GUI - Graphical forensic examination"
-    echo "  4 - Email_Logs - Email artifact and log analysis"
-    echo "  5 - Network_Analysis - Network traffic and C2 detection"
-    echo "  6 - Final_Report - Synthesis and professional reporting"
-    echo
-    echo -e "${CYAN}Access Mode:${NC} All labs available in one environment"
-    echo
-    read -p "Continue to DFIR workstation? (y/n) [y]: " -r CONTINUE_CHOICE
-    CONTINUE_CHOICE=${CONTINUE_CHOICE:-y}
+  echo
+  echo -e "${CYAN}Lab Environment - Available Tasks:${NC}"
+  echo "  1 - USB_Imaging - Evidence handling, imaging and initial triage"
+  echo "  2 - Memory_Forensics - Memory analysis with Volatility 2"
+  echo "  3 - Autopsy_GUI - Graphical forensic examination"
+  echo "  4 - Email_Logs - Email artifact and log analysis"
+  echo "  5 - Network_Analysis - Network traffic and C2 detection"
+  echo "  6 - Final_Report - Synthesis and professional reporting"
+  echo
+  echo -e "${CYAN}Access Mode:${NC} All labs available in one environment"
+  echo
+  read -p "Continue to DFIR workstation? (y/n) [y]: " -r CONTINUE_CHOICE
+  CONTINUE_CHOICE=${CONTINUE_CHOICE:-y}
 
-    if [[ ! $CONTINUE_CHOICE =~ ^[Yy]$ ]]; then
-        echo -e "${YELLOW}✗ Exiting without connecting${NC}"
-        echo
-        exit 0
-    fi
+  if [[ ! $CONTINUE_CHOICE =~ ^[Yy]$ ]]; then
+    echo -e "${YELLOW}✗ Exiting without connecting${NC}"
+    echo
+    exit 0
+  fi
 }
 
 connect_to_workstation() {
-    echo
-    echo -e "${BLUE}Connecting to DFIR Workstation...${NC}"
-    sleep 1
-    echo -e "${CYAN}Initializing forensic environment...${NC}"
-    sleep 1
-    echo -e "${GREEN}✓ Connection established${NC}"
-    sleep 1
-    echo
+  echo
+  echo -e "${BLUE}Connecting to DFIR Workstation...${NC}"
+  sleep 1
+  echo -e "${CYAN}Initializing forensic environment...${NC}"
+  sleep 1
+  echo -e "${GREEN}✓ Connection established${NC}"
+  sleep 1
+  echo
 
-    # Build the docker compose command with analyst name
-    cd "$PROJECT_ROOT"
+  # Build the docker compose command with analyst name
+  cd "$PROJECT_ROOT"
 
-    # Export analyst name as environment variable for the container
-    export ANALYST_NAME="$ANALYST_NAME"
+  # Export analyst name as environment variable for the container
+  export ANALYST_NAME="$ANALYST_NAME"
 
-    # Run the interactive container with the analyst name passed in
-    # The entrypoint script will use this to customize the prompt
-    $DOCKER_COMPOSE_CMD run --rm \
-        --env "ANALYST_NAME=$ANALYST_NAME_SANITIZED" \
-        -it dfir bash
+  # Run the interactive container with the analyst name passed in
+  # The entrypoint script will use this to customize the prompt
+  $DOCKER_COMPOSE_CMD run --rm \
+    --env "ANALYST_NAME=$ANALYST_NAME_SANITIZED" \
+    -it dfir bash
 
-    # Container has exited
-    echo
-    echo -e "${CYAN}Disconnecting from DFIR Workstation...${NC}"
-    sleep 1
-    echo -e "${GREEN}✓ Session ended${NC}"
+  # Container has exited
+  echo
+  echo -e "${CYAN}Disconnecting from DFIR Workstation...${NC}"
+  sleep 1
+  echo -e "${GREEN}✓ Session ended${NC}"
 }
 
 show_help() {
-    echo -e "${CYAN}Usage:${NC}"
-    echo "  ./scripts/forensics-workstation [analyst_name]"
-    echo
-    echo -e "${CYAN}Examples:${NC}"
-    echo "  ./scripts/forensics-workstation"
-    echo "  ./scripts/forensics-workstation 'Alice Johnson'"
-    echo "  ./scripts/forensics-workstation analyst1"
-    echo
-    echo -e "${CYAN}Inside the workstation:${NC}"
-    echo "  Command examples:"
-    echo "    ewfverify /evidence/usb.E01"
-    echo "    fls -r /evidence/usb.img"
-    echo "    coc-log 'command' 'note about action'"
-    echo
-    echo "  Exit with: exit"
-    echo
-    echo -e "${YELLOW}For more information, see: docs/README.md${NC}"
+  echo -e "${CYAN}Usage:${NC}"
+  echo "  ./scripts/forensics-workstation [analyst_name]"
+  echo
+  echo -e "${CYAN}Examples:${NC}"
+  echo "  ./scripts/forensics-workstation"
+  echo "  ./scripts/forensics-workstation 'Alice Johnson'"
+  echo "  ./scripts/forensics-workstation analyst1"
+  echo
+  echo -e "${CYAN}Inside the workstation:${NC}"
+  echo "  Command examples:"
+  echo "    ewfverify /evidence/usb.E01"
+  echo "    fls -r /evidence/usb.img"
+  echo "    coc-log 'command' 'note about action'"
+  echo
+  echo "  Exit with: exit"
+  echo
+  echo -e "${YELLOW}For more information, see: docs/README.md${NC}"
 }
 
 #################################################################################
@@ -160,30 +160,30 @@ show_help() {
 #################################################################################
 
 main() {
-    # Handle help flag
-    if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
-        show_help
-        exit 0
-    fi
+  # Handle help flag
+  if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    show_help
+    exit 0
+  fi
 
-    # Print welcome banner
-    print_banner
+  # Print welcome banner
+  print_banner
 
-    # System checks
-    check_docker
-    check_evidence_files
+  # System checks
+  check_docker
+  check_evidence_files
 
-    # Get analyst name
-    prompt_analyst_name
+  # Get analyst name
+  prompt_analyst_name
 
-    # Show lab summary and ask to proceed
-    show_lab_summary
+  # Show lab summary and ask to proceed
+  show_lab_summary
 
-    # Connect to workstation
-    connect_to_workstation
+  # Connect to workstation
+  connect_to_workstation
 
-    # Cleanup and goodbye
-    echo -e "${CYAN}Thank you for using the Forensics Lab. All work saved to ./cases/${NC}"
+  # Cleanup and goodbye
+  echo -e "${CYAN}Thank you for using the Forensics Lab. All work saved to ./cases/${NC}"
 }
 
 # Run main function
