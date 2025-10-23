@@ -401,7 +401,7 @@ icat /tmp/ewf/ewf1 1715 > /cases/USB_Imaging/extracted_by_icat/project_secrets_b
 icat /tmp/ewf/ewf1 15 > /cases/USB_Imaging/extracted_by_icat/_lag.txt
 ```
 
-**Step A2: Inspect Content**
+**Step A2: Inspect Content and Document**
 
 Now read the extracted files:
 
@@ -412,6 +412,33 @@ echo -e "\n=== FLAG BACKUP ===" && cat /cases/USB_Imaging/extracted_by_icat/flag
 echo -e "\n=== PROJECT SECRETS BACKUP ===" && cat /cases/USB_Imaging/extracted_by_icat/project_secrets_backup.txt
 echo -e "\n=== LAG FILE ===" && cat /cases/USB_Imaging/extracted_by_icat/_lag.txt
 ```
+
+**📋 Document EVERY command in analysis_log.csv:**
+
+For each icat extraction:
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: icat /tmp/ewf/ewf1 375 > /cases/USB_Imaging/extracted_by_icat/project_secrets.txt
+exit_code: 0
+note: Extracted deleted file (inode 375) - project_secrets.txt
+```
+
+For each cat command:
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: cat /cases/USB_Imaging/extracted_by_icat/project_secrets.txt
+exit_code: 0
+note: Viewed extracted content - contains [BRIEF SUMMARY: what was in file]
+```
+
+**Why document every command?**
+- **Reproducibility:** Another investigator can run the exact same commands
+- **Chain of Custody:** Proves what you did and when you did it
+- **Verification:** Someone can verify your output matches theirs
+- **Court admissibility:** Shows systematic, documented methodology
+- **Peer review:** Colleagues can audit your investigative steps
 
 **Advantages of icat approach:**
 - ✓ Fast (no bulk recovery overhead)
@@ -452,7 +479,7 @@ find /cases/USB_Imaging/recovered_files -type f | wc -l
 find /cases/USB_Imaging/recovered_files -name "*secret*" -o -name "*flag*" -o -name "*email*"
 ```
 
-**Step B3: Inspect Text Files**
+**Step B3: Inspect Text Files and Document**
 
 Once you find the recovered files, use standard Linux tools:
 
@@ -472,9 +499,49 @@ grep -r "credential" /cases/USB_Imaging/recovered_files/
 file /cases/USB_Imaging/recovered_files/*/*.txt
 ```
 
+**📋 Document EVERY command in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered_files
+exit_code: 0
+note: Bulk recovery of all deleted files to recovered_files directory
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: find /cases/USB_Imaging/recovered_files -name "*secret*" -o -name "*flag*"
+exit_code: 0
+note: Located suspicious recovered files matching deleted items from fls output
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: cat /cases/USB_Imaging/recovered_files/*/project_secrets.txt
+exit_code: 0
+note: Viewed recovered file content - [SUMMARY of what was in file]
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: grep -r "password\|credential\|secret" /cases/USB_Imaging/recovered_files/
+exit_code: 0
+note: Keyword search in recovered files - found [X] matches containing sensitive terms
+```
+
 **Step B4: Safe Analysis of Unknown Files**
 
 If you find binary files (`.exe`, `.bin`, `.dll`), use `strings` to safely extract readable text:
+
+**Why this step matters:**
+Binary executables and DLLs contain compiled machine code that's unreadable as plain text. However, they usually contain embedded strings (API names, URLs, error messages, passwords) that the malware uses. The `strings` command extracts these readable portions WITHOUT executing the binary - a safe forensic analysis technique.
+
+**How we know to do this:**
+Malware analysis requires examining binary files for evidence of malicious intent (C2 domains, exfiltration targets, hardcoded credentials). Using `strings` is the industry-standard safe approach - it avoids executing or opening the binary in tools that might trigger activation.
 
 ```bash
 # Safe text extraction from binary
@@ -483,6 +550,30 @@ strings /cases/USB_Imaging/recovered_files/*/*.exe | grep -i "password\|api\|url
 # Better than opening them with cat
 cat /cases/USB_Imaging/recovered_files/*/*.exe  # DON'T DO THIS - binary garbage
 ```
+
+**📋 Document EVERY strings command in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: strings /cases/USB_Imaging/recovered_files/*/*.exe | grep -i "password\|api\|url"
+exit_code: 0
+note: Extracted readable strings from binary files - safe analysis without execution
+```
+
+**What strings does:**
+- Scans binary file for ASCII/Unicode text sequences
+- Extracts all readable strings separated by non-printable characters
+- Searches those strings with grep for keywords of interest
+- Safe: Never executes the binary, just reads memory layout
+
+**What to look for in binary analysis:**
+- **C2 domains:** IP addresses, hostnames, domains (exfiltration targets)
+- **API calls:** Windows API names (WINAPI.dll, KERNEL32.dll functions)
+- **File operations:** Paths being accessed, registry keys being modified
+- **Network ports:** Common C2 ports (6667 for IRC, 8080 for HTTP)
+- **Encoded data:** Base64, hex strings that might be encrypted payloads
+- **Credentials:** Hardcoded usernames, passwords, API keys
 
 **Advantages of tsk_recover approach:**
 - ✓ Comprehensive (gets everything, not just what you know about)
@@ -592,6 +683,16 @@ In this lab, since we found text files, we already read them with `icat` + `cat`
 
 ### Step 1: Search the Raw Image for Keywords
 
+**Why this step matters:**
+While we already extracted known deleted files, keyword searching finds evidence we might have missed:
+- Files we didn't notice in the fls listing
+- Fragments of deleted data still scattered on disk
+- Hidden or obfuscated content
+- System files containing evidence (temporary files, cache, logs)
+
+**How we know to do this:**
+Comprehensive forensic analysis requires searching the entire image, not just known files. Malware often leaves traces in unexpected places (temp directories, slack space, unallocated clusters). Keyword searching casts a wide net to catch evidence we might otherwise overlook.
+
 **Optional:** If you want to do a comprehensive keyword search across the entire USB drive (including unallocated space):
 
 ```bash
@@ -614,8 +715,14 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: strings /tmp/ewf/ewf1 | grep -iE "password|confidential|secret|flag|credential" > /cases/USB_Imaging/keyword_search.txt
 exit_code: 0
-note: Comprehensive keyword search for sensitive data across entire image
+note: Comprehensive keyword search across entire image - found [X] matches in deleted/slack space
 ```
+
+**What to look for:**
+- **Repeated keywords:** Same password/credential in multiple locations suggests importance
+- **Contextual data:** See what surrounds the keyword (email addresses, usernames, URLs)
+- **File paths:** Where was the data originally? What was the intent?
+- **Timestamps:** When was data written/modified? (forensic timeline)
 
 ### Step 2: Review Results (Optional)
 
@@ -626,10 +733,29 @@ wc -l /cases/USB_Imaging/keyword_search.txt
 head -30 /cases/USB_Imaging/keyword_search.txt
 ```
 
+**📋 Document in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: wc -l /cases/USB_Imaging/keyword_search.txt
+exit_code: 0
+note: Counted keyword search results - found [X] total matches
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: head -30 /cases/USB_Imaging/keyword_search.txt
+exit_code: 0
+note: Reviewed top keyword matches - [describe patterns found]
+```
+
 **What to look for:**
 - Repeated keywords (suggests multiple references to same data)
 - Context around keywords (what sensitive data is mentioned?)
 - File paths or email addresses in the results
+- Patterns indicating exfiltration (URLs, IP addresses, command structures)
 
 ### Step 3: Summary - Text vs. Binary Files
 
