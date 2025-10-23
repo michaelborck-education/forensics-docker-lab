@@ -481,17 +481,66 @@ find /cases/USB_Imaging/recovered_files -name "*secret*" -o -name "*flag*" -o -n
 
 **Step B3: Inspect Text Files and Document**
 
-**Critical Principle:** In forensics, you must be PRECISE about which files you analyze. Never use wildcards (`*`) in court evidence - document the exact file paths. Here's how professionals do it:
+**Professional Methodology - Two Phase Approach:**
 
-**Step B3a: Find the recovered files**
+In real forensic work on large datasets, you'll use **wildcards for initial discovery**, then **exact paths for final evidence**. Here's the proper workflow:
 
-First, locate exactly which files were recovered:
+---
+
+### **Phase 1: Initial Triage with Wildcards (Fast Scanning)**
+
+**Why use wildcards initially?**
+- Large recovered datasets can have thousands of files
+- Need to quickly identify which files are relevant
+- Wildcards let you scan patterns without examining every file individually
+
+**Quick scan for files of interest:**
 
 ```bash
+# Initial triage - OK to use wildcards for discovery
+cat /cases/USB_Imaging/recovered_files/*/project_secrets.txt
+cat /cases/USB_Imaging/recovered_files/*/email_draft.txt
+
+# Quick grep across many files
+grep -r "password" /cases/USB_Imaging/recovered_files/
+grep -r "credential" /cases/USB_Imaging/recovered_files/
+
+# Find all text files quickly
 find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
 ```
 
-This gives you the **exact paths** to document. You should see something like:
+**This phase helps you:**
+- Understand what's in the dataset
+- Identify which specific files contain evidence
+- Plan your detailed analysis (Phase 2)
+- Document your investigation approach
+
+**📋 You CAN use shorthand in analysis_log.csv for triage:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: grep -r "password" /cases/USB_Imaging/recovered_files/
+exit_code: 0
+note: TRIAGE - Initial keyword scan identified password references in project_secrets.txt and email_draft.txt
+```
+
+---
+
+### **Phase 2: Detailed Evidence Analysis with EXACT PATHS (Court-Ready)**
+
+Once you've identified which files matter, switch to **precise paths** for your actual evidence analysis. This is what goes in your final report and expert testimony.
+
+**Step B3a: Document the exact files you'll analyze**
+
+From Phase 1, you identified these files of interest:
+
+```bash
+# List the exact paths you plan to examine in detail
+find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
+```
+
+Expected output:
 ```
 /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 /cases/USB_Imaging/recovered_files/tmp/email_draft.txt
@@ -499,19 +548,9 @@ This gives you the **exact paths** to document. You should see something like:
 /cases/USB_Imaging/recovered_files/tmp/project_secrets_backup.txt
 ```
 
-**📋 Document this find command in analysis_log.csv:**
+**Step B3b: Examine each file with EXACT paths (no wildcards!)**
 
-```
-timestamp_utc: [run date -u]
-analyst: [Your Name]
-command: find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
-exit_code: 0
-note: Located all recovered text files - identified 4 files of interest
-```
-
-**Step B3b: View each file with EXACT paths (no wildcards!)**
-
-Now examine each file using its **complete, precise path**:
+Now analyze each identified file using its **complete, precise path**:
 
 ```bash
 cat /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
@@ -520,14 +559,14 @@ cat /cases/USB_Imaging/recovered_files/tmp/flag_backup.txt
 cat /cases/USB_Imaging/recovered_files/tmp/project_secrets_backup.txt
 ```
 
-**📋 Document EVERY file examined in analysis_log.csv:**
+**📋 Document EVERY file examined in analysis_log.csv with EXACT PATH:**
 
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: cat /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 exit_code: 0
-note: Examined recovered file - Contains Cloudcore confidential source code, database credentials (db_user=alex_doe, db_pass=TempPass_2009!), and client MegaCorp data
+note: EVIDENCE ANALYSIS - Examined recovered file (inode 375) - Contains Cloudcore confidential source code, database credentials (db_user=alex_doe, db_pass=TempPass_2009!), and client MegaCorp data
 ```
 
 ```
@@ -535,7 +574,7 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: cat /cases/USB_Imaging/recovered_files/tmp/email_draft.txt
 exit_code: 0
-note: Examined recovered file - Email from Alex Doe to Sarah Connor concerning security, database credentials, unusual network activity
+note: EVIDENCE ANALYSIS - Examined recovered file (inode 663) - Email from Alex Doe to Sarah Connor concerning security, database credentials, unusual network activity
 ```
 
 ```
@@ -543,7 +582,7 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: cat /cases/USB_Imaging/recovered_files/tmp/flag_backup.txt
 exit_code: 0
-note: Examined recovered file - Contains training flag confirming successful file recovery technique
+note: EVIDENCE ANALYSIS - Examined recovered file (inode 669) - Contains training flag confirming successful file recovery technique
 ```
 
 ```
@@ -551,57 +590,53 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: cat /cases/USB_Imaging/recovered_files/tmp/project_secrets_backup.txt
 exit_code: 0
-note: Examined recovered file - Duplicate of project_secrets.txt, indicates intentional backup before deletion
+note: EVIDENCE ANALYSIS - Examined recovered file (inode 1715) - Duplicate of project_secrets.txt, indicates intentional backup before deletion
 ```
 
-**Why be this precise?**
-- **Court admissibility:** Defense can challenge if you say "examined a file" but didn't specify which one
-- **Reproducibility:** Another investigator must be able to repeat and verify **exact** same analysis
-- **Peer review:** Colleagues need to see which specific files contained evidence
-- **Chain of custody:** Document exactly what evidence you handled and when
-- **Avoids ambiguity:** If multiple files matched a pattern, wildcards hide which you actually analyzed
+**Why Phase 2 requires exact paths:**
+- **Court admissibility:** Defense will ask "which specific file?" - wildcards don't answer this
+- **Reproducibility:** Another investigator must examine the **exact** same files
+- **Peer review:** Colleagues need to verify **which specific files** contained what evidence
+- **Chain of custody:** Document precisely which evidence you handled and when
+- **Avoids ambiguity:** Exact paths prove you didn't cherry-pick data or miss files
 
-**Step B3c: Optional - Keyword search within recovered files**
+**Step B3c: Keyword search with exact paths**
 
-If needed, search for specific terms in the recovered text files:
+For final evidence analysis, search specific files:
 
 ```bash
 grep -i "password" /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 grep -i "credential" /cases/USB_Imaging/recovered_files/tmp/email_draft.txt
 ```
 
-**📋 Document keyword searches in analysis_log.csv:**
+**📋 Document keyword searches with exact paths:**
 
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: grep -i "password" /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 exit_code: 0
-note: Found embedded database password in recovered file - db_pass field contains 'TempPass_2009!'
+note: EVIDENCE ANALYSIS - Found embedded database password: db_pass=TempPass_2009!
 ```
 
-**Step B3d: Examine file metadata and types**
-
-View file information and timestamps:
+**Step B3d: Examine file metadata with exact paths**
 
 ```bash
 file /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 file /cases/USB_Imaging/recovered_files/tmp/email_draft.txt
 ```
 
-**📋 Document file analysis in analysis_log.csv:**
+**📋 Document file analysis:**
 
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: file /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 exit_code: 0
-note: File type analysis - confirmed as ASCII text file, no compression or encoding
+note: EVIDENCE ANALYSIS - File type confirmed as ASCII text (no compression/encoding). Inode 375, matches fls output.
 ```
 
 **Step B4: Safe Analysis of Unknown Files**
-
-**Critical Principle:** Again, use EXACT file paths - never wildcards!
 
 If you find binary files (`.exe`, `.bin`, `.dll`), use `strings` to safely extract readable text:
 
@@ -611,47 +646,69 @@ Binary executables and DLLs contain compiled machine code that's unreadable as p
 **How we know to do this:**
 Malware analysis requires examining binary files for evidence of malicious intent (C2 domains, exfiltration targets, hardcoded credentials). Using `strings` is the industry-standard safe approach - it avoids executing or opening the binary in tools that might trigger activation.
 
-**Step B4a: Find all binary files first**
+---
+
+### **Phase 1: Initial Binary Discovery with Wildcards**
+
+**Quick scan to find what binary files exist:**
 
 ```bash
+# Initial discovery - OK to use wildcards
 find /cases/USB_Imaging/recovered_files -type f \( -name "*.exe" -o -name "*.dll" -o -name "*.bin" \)
+
+# Quick scan of all binaries
+strings /cases/USB_Imaging/recovered_files/*/*.exe | head -50
+strings /cases/USB_Imaging/recovered_files/*/*.dll | grep -i "C2\|server\|command"
 ```
 
-This gives you exact paths. If you find binaries, proceed with Step B4b.
-
-**📋 Document this search in analysis_log.csv:**
+**📋 Triage documentation:**
 
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: find /cases/USB_Imaging/recovered_files -type f \( -name "*.exe" -o -name "*.dll" -o -name "*.bin" \)
+command: find /cases/USB_Imaging/recovered_files -type f \( -name "*.exe" -o -name "*.dll" \)
 exit_code: 0
-note: Searched for binary files - found [X] executable files or binaries
+note: TRIAGE - Located binary files for analysis
 ```
 
-**Step B4b: Analyze each binary with EXACT paths**
+---
 
-For each binary file found, extract strings safely:
+### **Phase 2: Detailed Binary Analysis with EXACT PATHS**
+
+Once you've identified which binaries are relevant, analyze them with exact paths:
+
+**Step B4a: Document which binaries you'll analyze**
+
+From your triage, identify specific binaries of interest. For example:
 
 ```bash
-# Example: if you found a file at this exact path
+# See what binaries you found
+find /cases/USB_Imaging/recovered_files -type f -name "*.exe"
+```
+
+**Step B4b: Analyze EACH binary with EXACT path**
+
+For each binary file, extract strings and search for evidence:
+
+```bash
+# Example of RIGHT way - EXACT path, specific analysis
 strings /cases/USB_Imaging/recovered_files/some/path/malware.exe | grep -i "password\|api\|url"
 strings /cases/USB_Imaging/recovered_files/another/path/tool.dll | grep -i "command\|server\|connect"
 ```
 
-**Never do this:**
+**Example of WRONG way - Don't do this:**
 ```bash
 strings /cases/USB_Imaging/recovered_files/*/*.exe | grep -i "password"  # TOO VAGUE!
 ```
 
-**📋 Document EACH binary analysis with EXACT path in analysis_log.csv:**
+**📋 Document EACH binary analysis with EXACT path:**
 
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: strings /cases/USB_Imaging/recovered_files/some/path/malware.exe | grep -i "password\|api\|url"
 exit_code: 0
-note: Extracted readable strings from malware.exe - found C2 domain "attacker.com", embedded credentials
+note: EVIDENCE ANALYSIS - Extracted readable strings from malware.exe - found C2 domain "attacker.com", embedded credentials (user=admin, pass=xyz123)
 ```
 
 **What strings does:**
@@ -944,6 +1001,8 @@ The evidence you recovered here will be referenced in later labs!
 
 ## 📝 Summary - Quick Command Reference
 
+### **Professional Two-Phase Approach:**
+
 ```bash
 # INSIDE the workstation:
 
@@ -981,47 +1040,85 @@ cat /cases/USB_Imaging/extracted_by_icat/email_draft.txt
 mkdir -p /cases/USB_Imaging/recovered_files
 tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered_files
 
-# STEP 1: Find recovered files (get exact paths)
+# === PHASE 1: TRIAGE with wildcards (OK for discovery) ===
+# Quick scan to understand what's in the dataset
+grep -r "password" /cases/USB_Imaging/recovered_files/
+find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
+cat /cases/USB_Imaging/recovered_files/*/project_secrets.txt  # Triage only
+
+# === PHASE 2: EVIDENCE ANALYSIS with EXACT PATHS (Court-ready) ===
+# Once you know which files matter, analyze with precision
+
+# STEP 1: Find exact paths
 find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
 
-# STEP 2: View each file using EXACT PATH (no wildcards!)
+# STEP 2: View each file using EXACT PATH (NO wildcards for evidence!)
 cat /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 cat /cases/USB_Imaging/recovered_files/tmp/email_draft.txt
 cat /cases/USB_Imaging/recovered_files/tmp/flag_backup.txt
 cat /cases/USB_Imaging/recovered_files/tmp/project_secrets_backup.txt
 
-# STEP 3: Keyword search with EXACT paths
+# STEP 3: Keyword search with EXACT paths (for evidence)
 grep -i "password" /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
 grep -i "credential" /cases/USB_Imaging/recovered_files/tmp/email_draft.txt
 
-# STEP 4: Examine binary files (if found) - EXACT paths only!
-find /cases/USB_Imaging/recovered_files -type f \( -name "*.exe" -o -name "*.dll" \)
+# STEP 4: Binary file analysis (two phases)
+# Phase 1 triage: Quick scan
+find /cases/USB_Imaging/recovered_files -type f -name "*.exe"
+strings /cases/USB_Imaging/recovered_files/*/*.exe | head -20  # Triage only
+
+# Phase 2 evidence: Exact paths
 strings /cases/USB_Imaging/recovered_files/some/path/malware.exe | grep -i "password"
 
 # ===== EXIT =====
 exit
 ```
 
-**CRITICAL PRINCIPLES - No Wildcards in Forensics:**
-- ✗ **WRONG:** `cat /cases/USB_Imaging/recovered_files/*/project_secrets.txt`
-- ✓ **RIGHT:** `cat /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt`
+---
 
-**Why:**
-- Court admissibility: Defense can challenge vague analysis
-- Reproducibility: Other investigators need exact same paths
-- Peer review: Colleagues need to verify exact files examined
-- Chain of custody: Document precisely what you handled
-- Avoids ambiguity: Multiple matches hide which file you actually analyzed
+### **Understanding the Two-Phase Approach:**
 
-**Key Points:**
-- **Always find first:** Use `find` to locate exact file paths
-- **Then examine:** Use those exact paths with `cat`, `grep`, `strings`
-- **Document each:** Every file analyzed gets a separate analysis_log.csv entry
-- **Avoid wildcards:** They hide which files you actually looked at
-- **For text files:** Use `cat` with exact paths
-- **For binary files:** Use `strings` with exact paths
-- **Always verify:** View content to confirm extraction worked
+| Phase | Use | Commands | Documentation |
+|-------|-----|----------|----------------|
+| **PHASE 1: Triage** | Fast scanning of large datasets | `grep -r`, `cat /*/file`, `strings /*/*.exe` | Shorthand OK: "TRIAGE - found X matches" |
+| **PHASE 2: Evidence** | Precise analysis for reports/court | `cat /exact/path/file`, `grep /exact/path/file` | DETAILED: Document exact path, findings |
+
+**When to use wildcards:**
+- ✓ Initial discovery on large recovered dataset (thousands of files)
+- ✓ Finding which files contain what evidence
+- ✓ Planning your detailed analysis
+- ✓ Understanding the investigation landscape
+
+**When to use exact paths:**
+- ✓ Documenting findings for final report
+- ✓ Analyzing files that will appear in evidence
+- ✓ Creating expert testimony
+- ✓ Anything that goes in analysis_log.csv as EVIDENCE ANALYSIS
+- ✓ Peer review and court presentation
 
 ---
 
-**Remember:** In forensics, precision = credibility. Document EVERYTHING with exact paths!
+### **Key Principles for Forensic Documentation:**
+
+**Triage Phase (Wildcards OK):**
+```bash
+grep -r "password" /cases/USB_Imaging/recovered_files/
+# Note in log: "TRIAGE - Found password references"
+```
+
+**Evidence Phase (Exact Paths Required):**
+```bash
+grep -i "password" /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
+# Note in log: "EVIDENCE ANALYSIS - Found password: db_pass=TempPass_2009!"
+```
+
+**Remember:**
+- **Triage = Exploration** (wildcards acceptable, fast discovery)
+- **Evidence = Documentation** (exact paths required, court-ready)
+- **Mark your log entries** with "TRIAGE" or "EVIDENCE ANALYSIS" to show the difference
+- **Final report** only uses EVIDENCE ANALYSIS phase results
+- **Other investigators** should be able to reproduce EVIDENCE ANALYSIS exactly
+
+---
+
+**Remember:** Wildcards aren't forbidden—they're just tools for initial exploration. Precision comes in the final analysis and documentation!
