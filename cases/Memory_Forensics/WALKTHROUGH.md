@@ -307,51 +307,51 @@ cat /cases/Memory_Forensics/dlllist_280.txt
 
 ---
 
-## 🎯 Part 6: Search for Hidden Processes (Advanced)
+## 🎯 Part 6: Verify Hidden Processes (Analysis of Previous Output)
 
 **Why this step matters:**
-Sophisticated malware uses rootkit techniques to hide from the process list. `pslist` only shows processes in the Windows process list, but `psscan` scans memory for all PROCESS structures, even ones deliberately hidden.
+Sophisticated malware uses rootkit techniques to hide from the process list. `pslist` only shows processes in the Windows process list, but `psscan` scans memory for all PROCESS structures, even ones deliberately hidden. By comparing the two, we can detect if malware is actively concealing itself.
 
 **How we know to do this:**
-Advanced malware analysis requires checking for hidden processes. If a process is in psscan but NOT in pslist, the malware is actively hiding itself from detection.
+Advanced malware analysis requires checking for hidden processes. If a process is in psscan but NOT in pslist, the malware is actively hiding itself from detection - a sign of sophisticated rootkit activity.
 
-Some malware "hides" by removing itself from the process list. Check for hidden processes:
+**Reusing Previous Output:**
+
+You already ran psscan earlier. Let's analyze those results:
 
 ```bash
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 psscan > /cases/Memory_Forensics/psscan.txt
+# Review the psscan output you already collected
+cat /cases/Memory_Forensics/psscan.txt
+
+# Compare process counts
+echo "Processes in pslist:"
+grep -c "^0x" /cases/Memory_Forensics/pslist.txt
+
+echo "Processes in psscan:"
+grep -c "^0x" /cases/Memory_Forensics/psscan.txt
 ```
 
 **📋 Document in analysis_log.csv:**
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 psscan > /cases/Memory_Forensics/psscan.txt
+command: Analysis of psscan output (previously collected)
 exit_code: 0
-note: Scan for all processes including hidden ones
+note: Compare pslist vs psscan to detect hidden processes
 ```
 
-**✅ Feedback - Command Success Indicators:**
-- Output shows many processes with memory addresses (Offset(P))
-- Should list 30+ processes
-- Format has columns: Offset(P), Name, PID, PPID, PDB, Time created
-
-Review and compare with pslist:
-
-```bash
-cat /cases/Memory_Forensics/psscan.txt
-
-# Count processes
-wc -l /cases/Memory_Forensics/pslist.txt
-wc -l /cases/Memory_Forensics/psscan.txt
-```
+**✅ Expected Output:**
+- Both pslist and psscan should show ~33 processes
+- If they match exactly, no processes are hidden
+- If psscan shows MORE processes than pslist, some are hidden
 
 **What to look for:**
 - **Hidden Processes:** If psscan shows MORE processes than pslist, some are hidden
-- **Compare outputs:** Look for process names in psscan that don't appear in pslist
-- **Timing anomalies:** Processes with exit times are suspect (process terminated and hidden)
+- **Compare process names:** Look for processes in psscan that don't appear in pslist
+- **Timing anomalies:** Processes with exit times but still in memory
 
 **Key Finding in This Case:**
-In this evidence, psscan and pslist show the same processes - the attacker didn't hide the keylogger. This is less sophisticated malware.
+In this evidence, psscan and pslist show the same processes - the attacker didn't hide the keylogger. This indicates **less sophisticated malware**. A more advanced attacker would use rootkit techniques to hide the keylogger from detection.
 
 ---
 
