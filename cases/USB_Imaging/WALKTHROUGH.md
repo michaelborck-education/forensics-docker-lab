@@ -312,6 +312,50 @@ Files that are INTENTIONALLY deleted (vs. accidental) often follow patterns:
 
 ---
 
+## 📊 Analysis of Actual Evidence
+
+In this lab's evidence, you should find these deleted files:
+
+```
+r/r * 375:      home/alex/Documents/project_secrets.txt
+r/r * 378:      home/alex/Documents/._project_secrets.txt
+r/r * 663:      tmp/email_draft.txt
+r/r * 666:      tmp/._email_draft.txt
+r/r * 669:      tmp/flag_backup.txt
+r/r * 672:      tmp/._flag_backup.txt
+r/r * 1715:     tmp/project_secrets_backup.txt
+r/r * 1719:     tmp/._project_secrets_backup.txt
+r/r * 15:       _lag.txt
+r/r * 17:       ._flag.txt
+```
+
+Plus Apple system files (`.fseventsd` directory and related files).
+
+**What this tells us:**
+
+1. **Suspicious pattern:** Multiple files with "secrets" and "flag" in the name - INTENTIONAL DELETION
+   - `project_secrets.txt` - Clearly sensitive data
+   - `project_secrets_backup.txt` - Backup copy (thorough deletion attempt?)
+   - `flag_backup.txt` - Flag file (CTF/training context)
+   - `email_draft.txt` - Correspondence evidence
+
+2. **Backup files:** Two versions of project_secrets suggests deliberate staging/copying before deletion
+
+3. **Timeline hypothesis:** User copied files (`project_secrets_backup.txt`), created drafts (`email_draft.txt`), then deleted everything to hide tracks
+
+4. **Mac artifacts:** The `._*` files are macOS metadata files (timestamps, icons) - user was likely on a Mac and exported to USB
+
+5. **Root directory file:** `_lag.txt` (possibly `flag.txt` with first character corrupted) - added to curiosity
+
+**Questions for your investigation:**
+- What's in these deleted files? (recover them in Part 5)
+- When were they deleted? (check timestamps in recovered files)
+- Does the filename `flag.txt` relate to captured credentials? Secrets?
+- Why multiple backups? Paranoia about losing data vs. trying to hide it?
+- Does the timeline match other evidence (memory dump, email logs)?
+
+---
+
 ## 📤 Part 5: Recover Deleted Files
 
 ### Step 1: Bulk Recovery
