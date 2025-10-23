@@ -54,7 +54,7 @@ sha256sum /evidence/memory.raw
 
 **Example Output:**
 ```
-a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f  /evidence/memory.raw
+91df773dd3316d447661085715344e3aa58b136815698e2cc03dbffc777a9e1b  /evidence/memory.raw
 ```
 
 **📋 Document in cases/Memory_Forensics/chain_of_custody.csv:**
@@ -108,6 +108,12 @@ cat /cases/Memory_Forensics/imageinfo.txt
 
 ### Step 1: Basic Process List (pslist)
 
+**Why this step matters:**
+When a computer is compromised, attackers often install malware or hacking tools. By examining the running processes, we can identify what was active on the system at the time of memory capture. This is our first "What was running?" investigation.
+
+**How we know to do this:**
+Malware analysis best practices require process listing as the first step. Volatility's `pslist` plugin shows all processes that were in the Windows process list at capture time.
+
 ```bash
 vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 pslist > /cases/Memory_Forensics/pslist.txt
 ```
@@ -129,14 +135,29 @@ Review the output:
 cat /cases/Memory_Forensics/pslist.txt
 ```
 
+**✅ Feedback - Command Success Indicators:**
+- You should see output with multiple columns: `Offset(V)`, `Name`, `PID`, `PPID`, `Thds`, etc.
+- You should see familiar Windows processes like: System, csrss.exe, services.exe, explorer.exe, svchost.exe
+- Timestamps should match the memory dump date (2009-12-05)
+
 **What to look for:**
 - **Normal system processes:** System, smss.exe, csrss.exe, services.exe, lsass.exe, svchost.exe, explorer.exe
-- **User processes:** iexplore.exe, firefox.exe, chrome.exe
-- **⚠️ SUSPICIOUS:** TrueCrypt.exe, unusual process names (misspellings like "svch0st.exe"), processes in temp directories
+- **User processes:** iexplore.exe, firefox.exe, chrome.exe, Office applications
+- **⚠️ SUSPICIOUS:**
+  - Unusual process names (misspellings like "svch0st.exe" instead of "svchost.exe")
+  - Processes in TEMP directories
+  - Keyloggers or monitoring tools
+  - Processes with truncated names (name field cut off)
 
-**Key Finding in This Case:** Look for **TrueCrypt.exe** - this is encryption software used to encrypt/hide data!
+**Key Finding in This Case:** Look for **ToolKeylogger.e** - this appears to be a keylogger (PID 280, parent explorer.exe). This is malicious!
 
 ### Step 2: Process Tree (pstree)
+
+**Why this step matters:**
+Understanding process relationships reveals how malware was launched. Normally, explorer.exe spawns user programs. If we see unusual parents (like cmd.exe spawning notepad.exe or explorer.exe spawning system tools), this indicates suspicious activity.
+
+**How we know to do this:**
+Process trees are critical for understanding attack chains. A malicious executable spawned from an unexpected parent process is a red flag.
 
 Shows parent-child relationships between processes:
 
@@ -159,14 +180,27 @@ Review:
 cat /cases/Memory_Forensics/pstree.txt
 ```
 
+**✅ Feedback - Command Success Indicators:**
+- Output shows a tree structure with indentation (dots: `.`, `..`, `...`)
+- Normal boot sequence: System → smss.exe → csrss.exe + winlogon.exe → services.exe
+- explorer.exe (PID 168) is the parent of most user processes
+- Should have 30+ processes listed
+
 **What to look for:**
-- Unusual parent-child relationships (e.g., Word spawning cmd.exe)
-- Orphaned processes (processes with no parent)
+- Unusual parent-child relationships (e.g., explorer.exe spawning keyloggers, cmd.exe spawning svchost.exe)
+- Orphaned processes (processes with invalid parent PIDs)
 - Multiple instances of normally-single processes
+- **Key Finding:** ToolKeylogger.e (PID 280) is a child of explorer.exe - suspicious!
 
 ---
 
 ## 🌐 Part 4: Network Connections (netscan)
+
+**Why this step matters:**
+Network connections reveal command & control (C2) communication with attackers, data exfiltration, or lateral movement. Malware often "phones home" to receive instructions or send stolen data.
+
+**How we know to do this:**
+Network forensics is essential in incident response. Looking for suspicious ports (especially IRC port 6667/6668 for botnets) helps identify active compromise.
 
 Identify active and recent network connections at the time of memory capture.
 
@@ -189,7 +223,15 @@ Review:
 cat /cases/Memory_Forensics/netscan.txt
 ```
 
-**What to look for:**
+**⚠️ Known Issue - Windows XP Profile:**
+The `netscan` plugin may not support Windows XP profiles. If you get an error like:
+```
+ERROR: This command does not support the profile WinXPSP3x86
+```
+
+This is **normal** - netscan is primarily for Windows Vista and later. Document this in your analysis log and move to the next step.
+
+**What to look for (if command succeeds):**
 - **Suspicious ports:**
   - 6667, 6668 (IRC - Command & Control communications)
   - 445, 139 (SMB - often used for lateral movement)
@@ -199,11 +241,11 @@ cat /cases/Memory_Forensics/netscan.txt
 
 **Example suspicious finding:**
 ```
-If you see: PID 3456 connecting to 8.8.8.8:6667 (IRC port)
-This suggests: That process is receiving commands via IRC
+If you see: PID 280 (ToolKeylogger.e) connecting to 192.168.1.100:445 (SMB)
+This suggests: The keylogger is exfiltrating data over SMB protocol
 ```
 
-### Optional: Extract IRC connections only
+### Optional: Extract IRC connections only (if netscan succeeded)
 
 ```bash
 grep -i "6667\|6668" /cases/Memory_Forensics/netscan.txt > /cases/Memory_Forensics/irc_connections.txt
@@ -233,6 +275,12 @@ note: List DLLs loaded by PID 3456 (TrueCrypt)
 
 ## 🎯 Part 6: Search for Hidden Processes (Advanced)
 
+**Why this step matters:**
+Sophisticated malware uses rootkit techniques to hide from the process list. `pslist` only shows processes in the Windows process list, but `psscan` scans memory for all PROCESS structures, even ones deliberately hidden.
+
+**How we know to do this:**
+Advanced malware analysis requires checking for hidden processes. If a process is in psscan but NOT in pslist, the malware is actively hiding itself from detection.
+
 Some malware "hides" by removing itself from the process list. Check for hidden processes:
 
 ```bash
@@ -248,12 +296,28 @@ exit_code: 0
 note: Scan for all processes including hidden ones
 ```
 
-Compare with pslist:
+**✅ Feedback - Command Success Indicators:**
+- Output shows many processes with memory addresses (Offset(P))
+- Should list 30+ processes
+- Format has columns: Offset(P), Name, PID, PPID, PDB, Time created
+
+Review and compare with pslist:
 
 ```bash
-# Processes in psscan but NOT in pslist = hidden processes
-diff <(grep "^0x" /cases/Memory_Forensics/pslist.txt) <(grep "^0x" /cases/Memory_Forensics/psscan.txt)
+cat /cases/Memory_Forensics/psscan.txt
+
+# Count processes
+wc -l /cases/Memory_Forensics/pslist.txt
+wc -l /cases/Memory_Forensics/psscan.txt
 ```
+
+**What to look for:**
+- **Hidden Processes:** If psscan shows MORE processes than pslist, some are hidden
+- **Compare outputs:** Look for process names in psscan that don't appear in pslist
+- **Timing anomalies:** Processes with exit times are suspect (process terminated and hidden)
+
+**Key Finding in This Case:**
+In this evidence, psscan and pslist show the same processes - the attacker didn't hide the keylogger. This is less sophisticated malware.
 
 ---
 
@@ -289,18 +353,33 @@ You should have created these files in `cases/Memory_Forensics/`:
 Before moving to the next lab, answer these questions:
 
 1. **OS Profile:** What operating system and version?
-2. **Processes Found:**
-   - Is TrueCrypt.exe present?
-   - List any suspicious processes and their PIDs
-3. **Network Activity:**
-   - Are there IRC connections (port 6667/6668)?
-   - To which IP addresses?
-   - Which processes own these connections?
-4. **Hidden Processes:**
-   - Did you find any processes in psscan but NOT in pslist?
-5. **Timeline:**
-   - When was the memory dump captured?
-   - Does this align with the known incident date?
+   - Expected: Windows XP SP3 (WinXPSP3x86)
+
+2. **Malicious Processes Found:**
+   - What suspicious processes did you identify?
+   - **Key Finding:** ToolKeylogger.e (PID 280) is a keylogger
+   - Parent process: explorer.exe (PID 168)
+   - Why is this suspicious? Keyloggers capture user keystrokes - this is malicious!
+
+3. **Process Relationships:**
+   - How was the keylogger launched?
+   - Is it running under a normal user process (explorer.exe)?
+   - What other processes are suspicious?
+
+4. **Network Activity:**
+   - Does netscan work on this Windows XP image?
+   - If yes: Are there IRC connections (port 6667/6668)?
+   - If no: Document the limitation and continue
+
+5. **Hidden Processes:**
+   - Are there more processes in psscan than in pslist?
+   - Are any processes deliberately hidden?
+   - In this case: The keylogger is visible (not hidden) - less sophisticated
+
+6. **Timeline:**
+   - When was the memory dump captured? (2009-12-05 18:47:28 UTC)
+   - When were suspicious processes started? (2009-12-05 02:11:23 UTC)
+   - Time delta: How long was the attacker active before capture?
 
 ---
 
