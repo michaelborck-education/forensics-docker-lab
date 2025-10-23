@@ -22,6 +22,12 @@ services:
       - /usr/local/lib/python3.13/dist-packages/volatility3/symbols:uid=1000,gid=1000
     stdin_open: true                # Keep STDIN open for interactive sessions
     tty: true                       # Allocate pseudo-TTY for interactive sessions
+    devices:                        # Enable FUSE for ewfmount and xmount
+      - /dev/fuse
+    cap_add:                        # Add capabilities for FUSE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor=unconfined        # Required for FUSE on some systems
     # Note: No 'command' specified - uses Dockerfile CMD (/bin/bash) by default
 
   # Plaso (log2timeline) for super timelines
