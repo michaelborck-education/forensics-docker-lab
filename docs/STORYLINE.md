@@ -15,15 +15,15 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Link to Labs:** Lab 1 (Imaging & Triage) – Establish chain-of-custody for `usb.img`, recover deleted artifacts using Sleuth Kit and Foremost, build initial Plaso timeline showing file creation/deletion events around 12-05 14:30-15:00.
 - **Key Findings:** Deleted file contained partial project notes; timeline shows mount at `/mnt/usb` followed by deletion to hide tracks.
 
-### Phase 2: Memory Capture and Process Analysis (2009-12-05, 10:00 AM)
-- **Activity:** Alex runs TrueCrypt to create an encrypted container for `project_secrets.zip`, spawning processes for hiding data (e.g., under explorer.exe), and initiates network staging.
-- **Link to Labs:** Lab 2 (Memory Forensics) – Analyse `evidence/memory.ram` (M57 scenario dump) with Volatility 3. Plugins (pslist/pstree) reveal TrueCrypt.exe (PID ~1000+, parent explorer.exe) for encryption; netscan shows localhost SMB/RPC and outbound connections (e.g., port 445) prepping data transfer. Dump process memory to extract strings like volume paths or IPs.
-- **Key Findings:** TrueCrypt process tree indicates data concealment (hidden volumes for exfil prep); netscan detects external outbound (e.g., 192.168.1.100 suspect IP) linking to later network phase—correlates to Lab 1 deletion as staging hidden tracks.
+### Phase 2: Malware Installation and Memory Analysis (2009-12-05, 02:11 AM)
+- **Activity:** Previously, a keylogger (ToolKeylogger.exe) was installed to capture credentials and sensitive data. The malware runs silently under explorer.exe with internet connectivity to exfiltrate captured keystrokes to an attacker server.
+- **Link to Labs:** Lab 2 (Memory Forensics) – Analyse `evidence/memory.raw` (Windows XP SP3 memory dump) with Volatility 2. Plugins (pslist/pstree) reveal ToolKeylogger.e (PID 280, parent explorer.exe) running malicious keylogger; dlllist shows loaded keylogging DLL and internet libraries (WININET.dll, urlmon.dll, iertutil.dll) for remote data exfiltration. psscan verifies the process is not hidden (visible in process list). Process started at 2009-12-05 02:11:23 UTC.
+- **Key Findings:** Keylogger process tree shows malicious code spawned from normal user processes; loaded internet libraries prove data exfiltration capability; malware was active for 16+ hours before memory capture (18:47:28), capturing keystrokes and potentially passwords throughout the day. This is the mechanism for credential theft enabling later data access.
 
 ### Phase 3: GUI Exploration and Deep Dive (2009-12-05, Afternoon)
-- **Activity:** Full filesystem walkthrough identifies metadata anomalies (e.g., modified timestamps on `/home/alex/Documents/secrets/`).
-- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.img` into Autopsy via noVNC. Keyword search for \"secret\" yields metadata hits; recover thumbnails of USB drive icons.
-- **Key Findings:** Autopsy reports confirm file modifications post-deletion; hash lookups match known good artifacts.
+- **Activity:** Full filesystem and disk analysis reveals the timeline of file operations and hidden data. USB evidence is analyzed for data staging and removal.
+- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.img` into Autopsy via noVNC. Keyword search for sensitive data (\"secret\", \"password\", \"project\") yields metadata hits; recover file timestamps and deleted artifacts; correlate with keylogger timeline from Lab 2.
+- **Key Findings:** Autopsy reports confirm file operations during the time keylogger was active; deleted files and USB mount timeline correlate with keylogger capturing credentials; hash analysis identifies staging of sensitive files.
 
 ### Phase 4: Email and Log Correlation (2009-12-06)
 - **Activity:** Alex emails attachments to external account (`exfil@personal.com`) and inserts USB for physical transfer.
