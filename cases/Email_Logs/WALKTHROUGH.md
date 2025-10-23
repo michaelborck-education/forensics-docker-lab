@@ -136,12 +136,43 @@ Review the headers:
 cat /cases/Email_Logs/email_headers.txt
 ```
 
-**What to look for:**
-- **External addresses:** Emails to domains outside company (hotmail.com, gmail.com, yahoo.com, etc.)
-- **Personal accounts:** Names like "exfil@", "backup@", "archive@" on external domains
-- **Timing patterns:** Batch of suspicious emails at specific time? Correlation with other incidents?
-- **Subject line disguises:** Innocent-sounding subjects ("Project Update", "Backup", "Archive") hiding true intent
-- **Attachment indicators:** Words like "attached", "zip", "backup" in subject or body
+**Expected Output:**
+```
+From: admin@cloudcore.com Mon Dec  7 08:00:00 2009
+Date: Mon,  7 Dec 2009 08:00:00 +0000
+From: admin@cloudcore.com
+To: team@cloudcore.com
+Subject: Daily System Backup Complete
+From: hr@cloudcore.com Mon Dec  7 08:30:00 2009
+Date: Mon,  7 Dec 2009 08:30:00 +0000
+From: hr@cloudcore.com
+To: all@cloudcore.com
+Subject: Holiday Reminder
+From: alex@cloudcore.com Mon Dec  7 09:45:00 2009
+Date: Mon,  7 Dec 2009 09:45:00 +0000
+From: alex@cloudcore.com
+To: exfil@personal.com
+Subject: Project Update
+```
+
+**🔍 Analysis Hints - What to look for:**
+
+1. **Identify normal emails:** Which emails are routine company business?
+   - Answer: Emails 1 & 2 (admin backups, HR announcements)
+
+2. **Spot the suspicious email:** Which email stands out?
+   - Answer: Email 3 - alex@cloudcore.com sending to **exfil@personal.com** (external personal account = RED FLAG)
+
+3. **Red flag indicators:**
+   - **External addresses:** Notice `exfil@personal.com` - NOT a company domain
+   - **Personal account naming:** "exfil@" explicitly suggests "exfiltration"
+   - **Innocent subject disguise:** "Project Update" hides true intent (actual intent: data theft)
+   - **Timing pattern:** Dec 7, 09:45 - same day as other incidents
+
+4. **Follow-up questions:**
+   - What's in the "Project Update" attachment?
+   - Why would an engineer email code to a personal email address?
+   - Is exfil@personal.com linked to the suspect or external party?
 
 ---
 
@@ -178,10 +209,46 @@ wc -l /cases/Email_Logs/email_keywords.txt
 head -20 /cases/Email_Logs/email_keywords.txt
 ```
 
-**Expected findings:**
-- Look for emails mentioning "backup", "export", "zip", "archive" (exfiltration indicators)
-- Look for external domain references (non-company email addresses)
-- Look for acknowledgement of confidentiality ("I know this is sensitive...")
+**Expected Output:**
+```
+7 /cases/Email_Logs/email_keywords.txt
+From: admin@cloudcore.com Mon Dec  7 08:00:00 2009
+From: admin@cloudcore.com
+Subject: Daily System Backup Complete
+Routine backup logs attached. No issues.
+To: exfil@personal.com
+Attached: project_secrets.zip
+(Contents: Sensitive code - exfiltrated)
+```
+
+**🔍 Analysis Hints:**
+
+1. **Count interpretation:** 7 lines of keyword matches from 3 emails
+   - This is relatively low - means only a few emails have suspicious keywords
+   - The presence of multiple keywords in one email is more suspicious than scattered occurrences
+
+2. **Analyze keyword matches:**
+   - **"backup"** found in Email 1 (routine admin task - benign)
+   - **"exfil@"** found in Email 3 (THE RED FLAG - personal external account)
+   - **"project_secrets"** found in Email 3 (confirms sensitive data being sent)
+   - **"Sensitive code"** in Email 3 (explicit acknowledgment that it's sensitive!)
+
+3. **Most suspicious finding:** Email 3 contains MULTIPLE red flags:
+   - External recipient (exfil@personal.com)
+   - Project secrets in subject
+   - Attachment explicitly labeled "Sensitive code - exfiltrated"
+   - Use of word "exfil" (common abbreviation for exfiltration)
+
+4. **Pattern recognition:**
+   - Compare with USB findings: project_secrets.zip matches project_secrets.txt recovered from USB
+   - This email IS the exfiltration method
+   - Timeline: Same date (Dec 7, 09:45) as other suspicious activity
+
+5. **Key insight:**
+   - The person who wrote this email ACKNOWLEDGES the data is sensitive
+   - Sending to "exfil@personal.com" (not a typo - intentional account name)
+   - This proves INTENT and KNOWLEDGE of wrongdoing
+   - Strong evidence for prosecution
 
 ---
 
@@ -199,25 +266,50 @@ Individual email extraction is standard practice before detailed evidence analys
 
 Extract complete emails for detailed analysis:
 
+**Note:** The split command syntax varies by platform:
+
+**On Linux (inside Docker container - recommended):**
 ```bash
-# Split mailbox into individual emails
-split -p "^From " /evidence/mail.mbox /cases/Email_Logs/email_
+# Split mailbox into individual emails using GNU split
+split --separator="^From " /evidence/mail.mbox /cases/Email_Logs/email_
+```
+
+**On macOS/BSD (if running locally):**
+```bash
+# BSD split doesn't support --separator, use awk instead
+awk '/^From /{filename=++count} {print > "/cases/Email_Logs/email_"filename}' /evidence/mail.mbox
+```
+
+For this lab, we'll use the **Linux version** (you're in Docker):
+
+```bash
+split --separator="^From " /evidence/mail.mbox /cases/Email_Logs/email_
 ```
 
 List extracted emails:
 
 ```bash
-ls -lh /cases/Email_Logs/email_* | head -20
+ls -lh /cases/Email_Logs/email_*
 ```
 
 **📋 Document in analysis_log.csv:**
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: split -p "^From " /evidence/mail.mbox /cases/Email_Logs/email_
+command: split --separator="^From " /evidence/mail.mbox /cases/Email_Logs/email_
 exit_code: 0
 note: Extract individual emails from mailbox for detailed analysis
 ```
+
+**Expected output:**
+```
+email_0
+email_1
+email_2
+email_3
+```
+
+(3 emails total = 3 files + 1 empty header file)
 
 ---
 
@@ -333,11 +425,13 @@ If you want to see an automated alternative, here's a Python script that does si
 **Run the script:**
 
 ```bash
-# Make sure you're in the cases folder
-cd /cases/Email_Logs
+# Run the analysis script (from anywhere in the workstation)
+python3 /cases/Email_Logs/analyse_emails.py
+```
 
-# Run the analysis script
-python3 analyse_emails.py
+**Note:** The script path in the original code may need to be fixed. The script should open `/evidence/mail.mbox` using the absolute path or from the correct directory. If you get a "FileNotFoundError", edit the script to use:
+```python
+with open("/evidence/mail.mbox", 'r') as f:  # absolute path
 ```
 
 **Expected output:**
