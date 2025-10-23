@@ -34,7 +34,9 @@ Check that the USB image exists:
 ls -lh evidence/
 ```
 
-You should see `usb.img` or `usb.E01` (~100-800 MB depending on your setup).
+You should see `usb.E01` (Encase Evidence File format, ~100-800 MB).
+
+**Note:** If you see `usb.img` instead, the analysis process is the same - just substitute `usb.E01` in the commands below.
 
 ---
 
@@ -68,12 +70,12 @@ You'll see:
 ### Step 1: Calculate MD5 Hash
 
 ```bash
-md5sum /evidence/usb.img
+md5sum /evidence/usb.E01
 ```
 
 **Example Output:**
 ```
-fc8096c1a178f40600a7c8815087af2b  /evidence/usb.img
+6a4ae5319e4c1757793dec70d5746703  /evidence/usb.E01
 ```
 
 **📋 Document in cases/USB_Imaging/chain_of_custody.csv:**
@@ -86,12 +88,12 @@ fc8096c1a178f40600a7c8815087af2b  /evidence/usb.img
 ### Step 2: Calculate SHA256 Hash
 
 ```bash
-sha256sum /evidence/usb.img
+sha256sum /evidence/usb.E01
 ```
 
 **Example Output:**
 ```
-6ebe35fef52afd133563a9f8a21c6b2f6e227146ffa8289b6feee5ecbe23607a  /evidence/usb.img
+49a0bc914cc6f02bdb96e20c1081755ddb5ee7a653e60f088b6d680e07f722b2  /evidence/usb.E01
 ```
 
 **📋 Update chain_of_custody.csv:**
@@ -109,10 +111,10 @@ E01/IMG files are compressed forensic formats. We need to "mount" them to access
 mkdir -p /tmp/ewf
 ```
 
-### Step 2: Mount the E01/IMG File
+### Step 2: Mount the E01 File
 
 ```bash
-ewfmount /evidence/usb.img /tmp/ewf
+ewfmount /evidence/usb.E01 /tmp/ewf
 ```
 
 **No output = success!** Verify it worked:
@@ -121,7 +123,13 @@ ewfmount /evidence/usb.img /tmp/ewf
 ls -lh /tmp/ewf/
 ```
 
-You should see `ewf1` (the virtual raw disk image).
+You should see `ewf1` (the virtual raw disk image) with size ~100M.
+
+**✅ Expected Output:**
+```
+total 0
+-r--r--r-- 1 root root 100M Oct 23 21:55 ewf1
+```
 
 **⚠️ IMPORTANT:** From now on, ALL commands use `/tmp/ewf/ewf1`, NOT the original image file.
 
@@ -149,19 +157,27 @@ To get the timestamp, run:
 date -u
 ```
 
-### Step 2: Check Partition Table
+### Step 2: Check Partition Table (Optional)
 
 ```bash
-mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
+mmls /tmp/ewf/ewf1
 ```
+
+**⚠️ Note for FAT32 USB Drives:**
+USB flash drives typically don't have partition tables - they're formatted directly as FAT32. If you see:
+```
+Cannot determine partition type
+```
+
+This is **normal and expected**. The fsstat output already told us it's FAT32 formatted.
 
 **📋 Document in analysis_log.csv:**
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
+command: fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
 exit_code: 0
-note: List partition table to see all partitions/volumes
+note: Get file system information (type, size, cluster info)
 ```
 
 ---
@@ -374,16 +390,18 @@ The evidence you recovered here will be referenced in later labs!
 # INSIDE the workstation:
 
 # Hash verification
-md5sum /evidence/usb.img
-sha256sum /evidence/usb.img
+md5sum /evidence/usb.E01
+sha256sum /evidence/usb.E01
 
-# Mount
+# Mount E01 evidence file
 mkdir -p /tmp/ewf
-ewfmount /evidence/usb.img /tmp/ewf
+ewfmount /evidence/usb.E01 /tmp/ewf
+
+# Verify mount succeeded
+ls -lh /tmp/ewf/ewf1
 
 # File system analysis
 fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
-mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
 
 # List files (all + deleted)
 fls -r -d /tmp/ewf/ewf1 > /cases/USB_Imaging/file_list.txt
