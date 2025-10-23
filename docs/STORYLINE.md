@@ -11,9 +11,15 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Initial Actions:** Alex copies sensitive files (e.g., `project_secrets.zip`) to a workstation for staging.
 
 ### Phase 1: Local Preparation and Deletion (2009-12-01 to 12-05)
-- **Disk Activity:** Files are created and mounted (visible in EXT4 timestamps). Deleted files like `flag.txt` (placeholder for secrets) are recovered via carving.
-- **Link to Labs:** Lab 1 (Imaging & Triage) – Establish chain-of-custody for `usb.img`, recover deleted artifacts using Sleuth Kit and Foremost, build initial Plaso timeline showing file creation/deletion events around 12-05 14:30-15:00.
-- **Key Findings:** Deleted file contained partial project notes; timeline shows mount at `/mnt/usb` followed by deletion to hide tracks.
+- **Disk Activity:** Files are created and mounted on USB drive (FAT32, labeled "PRACTICE"). Sensitive files including source code with embedded credentials are deleted to hide tracks.
+- **Link to Labs:** Lab 1 (USB Imaging & Triage) – Establish chain-of-custody for `usb.E01`, recover deleted artifacts using Sleuth Kit (fls, icat, tsk_recover), analyze filesystem structure and recover file content.
+- **Key Findings:**
+  - **project_secrets.txt (inode 375):** Cloudcore proprietary source code with hardcoded database credentials (db_host=192.168.1.100, db_user=alex_doe, db_pass=TempPass_2009!) and client data (MegaCorp Inc. project details)
+  - **email_draft.txt (inode 663):** Email from Alex Doe to Sarah Connor expressing security concerns about database credentials and unusual network activity from development server
+  - **flag_backup.txt (inode 669):** Recovery confirmation flag
+  - **project_secrets_backup.txt (inode 1715):** Duplicate copy of project_secrets.txt, indicating deliberate backup before deletion
+  - **Timeline:** Multiple deleted files with "secrets" and "flag" in names suggest intentional data staging and destruction
+  - **Significance:** Database credentials in source code would allow unauthorized access to backend systems; email draft suggests Alex was aware of security issues and network compromise
 
 ### Phase 2: Malware Installation and Memory Analysis (2009-12-05, 02:11 AM)
 - **Activity:** Previously, a keylogger (ToolKeylogger.exe) was installed to capture credentials and sensitive data. The malware runs silently under explorer.exe with internet connectivity to exfiltrate captured keystrokes to an attacker server.
@@ -21,9 +27,9 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Key Findings:** Keylogger process tree shows malicious code spawned from normal user processes; loaded internet libraries prove data exfiltration capability; malware was active for 16+ hours before memory capture (18:47:28), capturing keystrokes and potentially passwords throughout the day. This is the mechanism for credential theft enabling later data access.
 
 ### Phase 3: GUI Exploration and Deep Dive (2009-12-05, Afternoon)
-- **Activity:** Full filesystem and disk analysis reveals the timeline of file operations and hidden data. USB evidence is analyzed for data staging and removal.
-- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.img` into Autopsy via noVNC. Keyword search for sensitive data (\"secret\", \"password\", \"project\") yields metadata hits; recover file timestamps and deleted artifacts; correlate with keylogger timeline from Lab 2.
-- **Key Findings:** Autopsy reports confirm file operations during the time keylogger was active; deleted files and USB mount timeline correlate with keylogger capturing credentials; hash analysis identifies staging of sensitive files.
+- **Activity:** Automated forensic tools (Autopsy) perform deeper analysis of USB evidence. GUI-based keyword searching confirms presence of sensitive data and correlates timeline with keylogger activity.
+- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.E01` into Autopsy via noVNC. Keyword search for sensitive data ("secret", "password", "project", "credential") yields hits in recovered files; recover file timestamps and metadata; correlate with keylogger timeline from Lab 2 (both active during same period).
+- **Key Findings:** Autopsy confirms deleted files were created/modified during period keylogger was active (02:11 onwards); database server IP 192.168.1.100 from USB secrets matches internal network; timestamp correlation shows files staged on USB before deletion; email draft about "unusual network activity" suggests Alex may have detected compromise.
 
 ### Phase 4: Email and Log Correlation (2009-12-06)
 - **Activity:** Alex emails attachments to external account (`exfil@personal.com`) and inserts USB for physical transfer.
