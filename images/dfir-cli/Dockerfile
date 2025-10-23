@@ -22,7 +22,7 @@ RUN apt-get update && \
       grep findutils \
       git \
       build-essential python3-dev \
-      && pip3 install --no-cache-dir --break-system-packages \
+      && pip3 install --no-cache-dir \
          volatility3 \
          pycryptodome \
          distorm3 \
