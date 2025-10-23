@@ -356,78 +356,207 @@ Plus Apple system files (`.fseventsd` directory and related files).
 
 ---
 
-## 📤 Part 5: Recover Deleted Files
+## 📤 Part 5: Extract and Inspect Deleted File Content
 
-### Step 1: Bulk Recovery
+**Why this step matters:**
+Now that we know WHICH files were deleted, we need to READ their content. Deleted files still exist on disk - we just need to extract them using their inode numbers. This is where you find the actual evidence: what secrets were stolen? What credentials were compromised? What was the attacker planning?
+
+**How we know to do this:**
+The `icat` command (inode cat) reads file data directly from disk using the inode number reported by `fls`. This bypasses the filesystem's "deleted" flag and recovers the actual file content before it gets overwritten.
+
+### Step 1: Extract Deleted Files Using icat
+
+From your `file_list.txt`, you identified these suspicious deleted files:
+- Inode 375: `home/alex/Documents/project_secrets.txt`
+- Inode 663: `tmp/email_draft.txt`
+- Inode 669: `tmp/flag_backup.txt`
+- Inode 1715: `tmp/project_secrets_backup.txt`
+- Inode 15: `_lag.txt`
+
+Let's extract each one. Create a directory to store extracted content:
 
 ```bash
-mkdir -p /cases/USB_Imaging/recovered
-tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered
+mkdir -p /cases/USB_Imaging/extracted_deleted_files
+```
+
+**Extract project_secrets.txt (inode 375):**
+
+```bash
+icat /tmp/ewf/ewf1 375 > /cases/USB_Imaging/extracted_deleted_files/project_secrets.txt
+cat /cases/USB_Imaging/extracted_deleted_files/project_secrets.txt
+```
+
+**What you should see:** The actual secrets that were deleted. This is prime evidence!
+
+**Extract email_draft.txt (inode 663):**
+
+```bash
+icat /tmp/ewf/ewf1 663 > /cases/USB_Imaging/extracted_deleted_files/email_draft.txt
+cat /cases/USB_Imaging/extracted_deleted_files/email_draft.txt
+```
+
+**What this reveals:** Who was the user planning to send this to? What was the message? Was it exfiltration attempt?
+
+**Extract flag_backup.txt (inode 669):**
+
+```bash
+icat /tmp/ewf/ewf1 669 > /cases/USB_Imaging/extracted_deleted_files/flag_backup.txt
+cat /cases/USB_Imaging/extracted_deleted_files/flag_backup.txt
+```
+
+**Extract project_secrets_backup.txt (inode 1715):**
+
+```bash
+icat /tmp/ewf/ewf1 1715 > /cases/USB_Imaging/extracted_deleted_files/project_secrets_backup.txt
+cat /cases/USB_Imaging/extracted_deleted_files/project_secrets_backup.txt
+```
+
+**Extract _lag.txt (inode 15):**
+
+```bash
+icat /tmp/ewf/ewf1 15 > /cases/USB_Imaging/extracted_deleted_files/_lag.txt
+cat /cases/USB_Imaging/extracted_deleted_files/_lag.txt
 ```
 
 **📋 Document in analysis_log.csv:**
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered
+command: icat /tmp/ewf/ewf1 [inode] > /cases/USB_Imaging/extracted_deleted_files/[filename]
 exit_code: 0
-note: Bulk recover all files (active and deleted) to recovered/ folder
+note: Extracted deleted file content using inode numbers from fls output
 ```
 
-### Step 2: Explore Recovered Files
+### Step 2: Analyze Extracted Content
+
+**Key Questions to Answer:**
+
+1. **project_secrets.txt:** What sensitive information was deleted?
+2. **email_draft.txt:** Who was it addressed to? What was the purpose?
+3. **flag_backup.txt:** What does this "flag" contain? (Training context? Credentials? Passphrase?)
+4. **project_secrets_backup.txt:** Why was there a backup copy? Paranoia or preparation?
+5. **_lag.txt:** What's this file? Is it a corrupted filename?
+
+**Documentation:**
+
+For each file, create a brief summary in your analysis notes:
 
 ```bash
-ls -R /cases/USB_Imaging/recovered | head -50
+cat > /cases/USB_Imaging/extracted_analysis.txt << 'EOF'
+EXTRACTED DELETED FILE ANALYSIS
+================================
+
+1. project_secrets.txt (inode 375):
+   Content: [paste what you found]
+   Significance: [sensitive data, credentials, business secrets?]
+
+2. email_draft.txt (inode 663):
+   Content: [paste what you found]
+   Significance: [who was it for? exfiltration attempt? communication?]
+
+3. flag_backup.txt (inode 669):
+   Content: [paste what you found]
+   Significance: [what does "flag" mean in this context?]
+
+4. project_secrets_backup.txt (inode 1715):
+   Content: [paste what you found]
+   Significance: [duplicate of project_secrets? intentional redundancy?]
+
+5. _lag.txt (inode 15):
+   Content: [paste what you found]
+   Significance: [corrupted filename? flag.txt with first char missing?]
+
+INVESTIGATION SUMMARY:
+- Pattern of deletion: [all related to secrets/flags - intentional?]
+- Timeline: [when were these created vs. deleted?]
+- Connection to case: [links to memory forensics, email, network evidence?]
+EOF
 ```
 
-**⚠️ CAUTION:** In real forensics, be VERY careful opening recovered files - they might contain malware. Use `strings` and `grep` for safe text extraction:
+Save this file:
 
 ```bash
-# List all text strings from a file (safe)
-strings /cases/USB_Imaging/recovered/suspicious_file.exe
+cat /cases/USB_Imaging/extracted_analysis.txt
+```
 
-# Search for keywords in text files
-grep -i "password" /cases/USB_Imaging/recovered/*.txt
+**📋 Document in analysis_log.csv:**
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: Analyzed extracted deleted files for investigative significance
+exit_code: 0
+note: Found [X] text files with evidence of [describe pattern]
 ```
 
 ---
 
 ## 🔍 Part 6: Keyword Searching
 
-Search the entire image for keywords related to your case.
+**Why this step matters:**
+Keyword searching is a safety and efficiency tool. In real forensics, you might have thousands of deleted files. You can't manually read each one. Keyword search helps you:
+1. Find files containing specific evidence (passwords, credit cards, classified markings)
+2. Safely analyze binary files without opening them (executables, PDFs, images)
+3. Identify patterns across the entire drive (multiple references to same suspect)
 
-### Step 1: Search the Raw Image
+**When to use `strings` vs. direct reading:**
+- **strings command:** For binary files (`.exe`, `.dll`, `.bin`) where you need to extract readable text from compiled code
+- **Direct reading (cat/less):** For text files (`.txt`, `.csv`, `.json`) where you want to see actual content
+
+In this lab, since we found text files, we already read them with `icat` + `cat`. But let's also show keyword searching for completeness.
+
+### Step 1: Search the Raw Image for Keywords
+
+**Optional:** If you want to do a comprehensive keyword search across the entire USB drive (including unallocated space):
 
 ```bash
-strings /tmp/ewf/ewf1 | grep -iE "password|confidential|client|admin" > /cases/USB_Imaging/keyword_search.txt
+strings /tmp/ewf/ewf1 | grep -iE "password|confidential|secret|flag|credential" > /cases/USB_Imaging/keyword_search.txt
 ```
 
-**Flags:**
-- `-i`: case-insensitive search
-- `-E`: extended regex (allows `|` for OR)
+**What this does:**
+- `strings`: Extracts all readable text strings from the entire image (active files + deleted data + slack space)
+- `grep -iE`: Searches for keywords (case-insensitive, with OR operator `|`)
 
-**📋 Document in analysis_log.csv:**
+**Flags:**
+- `-i`: case-insensitive search (PASSWORD = password = PassWord)
+- `-E`: extended regex (allows `|` for OR logic)
+
+**⚠️ Note:** This search might include a lot of false positives (system files, metadata). For text files, direct extraction with `icat` (Part 5) is more reliable.
+
+**📋 Document in analysis_log.csv (if you run this):**
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: strings /tmp/ewf/ewf1 | grep -iE "password|confidential|client|admin" > /cases/USB_Imaging/keyword_search.txt
+command: strings /tmp/ewf/ewf1 | grep -iE "password|confidential|secret|flag|credential" > /cases/USB_Imaging/keyword_search.txt
 exit_code: 0
-note: Search entire image for sensitive keywords
+note: Comprehensive keyword search for sensitive data across entire image
 ```
 
-### Step 2: Count Results
+### Step 2: Review Results (Optional)
+
+If you ran the keyword search:
 
 ```bash
 wc -l /cases/USB_Imaging/keyword_search.txt
+head -30 /cases/USB_Imaging/keyword_search.txt
 ```
 
-How many hits did you find? Large numbers might indicate significant evidence.
+**What to look for:**
+- Repeated keywords (suggests multiple references to same data)
+- Context around keywords (what sensitive data is mentioned?)
+- File paths or email addresses in the results
 
-### Step 3: Review Results
+### Step 3: Summary - Text vs. Binary Files
 
-```bash
-head -20 /cases/USB_Imaging/keyword_search.txt
-```
+**For this evidence (text files):**
+- We extracted content directly with `icat` ✓ (More reliable)
+- We read with `cat` ✓ (Straightforward)
+- Keyword searching is optional (already found sensitive files by name)
+
+**For real-world evidence (mixed binary/text):**
+- Use `strings` on `.exe`, `.dll`, `.bin` files (safer than opening them)
+- Use `icat` + `cat` on `.txt`, `.csv`, `.json` files
+- Use `strings` + `grep` for pattern matching across entire image
+- Use specialized tools for images, databases, archives
 
 ---
 
@@ -513,36 +642,53 @@ The evidence you recovered here will be referenced in later labs!
 ```bash
 # INSIDE the workstation:
 
-# Hash verification
+# ===== CHAIN OF CUSTODY =====
 md5sum /evidence/usb.E01
 sha256sum /evidence/usb.E01
 
-# Mount E01 evidence file
+# ===== MOUNT EVIDENCE =====
 mkdir -p /tmp/ewf
 ewfmount /evidence/usb.E01 /tmp/ewf
-
-# Verify mount succeeded
 ls -lh /tmp/ewf/ewf1
 
-# File system analysis
+# ===== ANALYZE FILESYSTEM =====
 fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
+mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
 
-# List files (all + deleted)
+# ===== LIST ALL FILES (including deleted) =====
 fls -r -d /tmp/ewf/ewf1 > /cases/USB_Imaging/file_list.txt
-
-# Extract deleted file list
 grep "\* " /cases/USB_Imaging/file_list.txt > /cases/USB_Imaging/deleted_files.txt
 
-# Recover files
-mkdir -p /cases/USB_Imaging/recovered
-tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered
+# ===== EXTRACT DELETED FILE CONTENT (using icat + inode) =====
+mkdir -p /cases/USB_Imaging/extracted_deleted_files
 
-# Keyword search
-strings /tmp/ewf/ewf1 | grep -i "keyword" > /cases/USB_Imaging/keyword_search.txt
+# Extract suspicious files by inode number
+icat /tmp/ewf/ewf1 375 > /cases/USB_Imaging/extracted_deleted_files/project_secrets.txt
+cat /cases/USB_Imaging/extracted_deleted_files/project_secrets.txt
 
-# Exit workstation
+icat /tmp/ewf/ewf1 663 > /cases/USB_Imaging/extracted_deleted_files/email_draft.txt
+cat /cases/USB_Imaging/extracted_deleted_files/email_draft.txt
+
+icat /tmp/ewf/ewf1 669 > /cases/USB_Imaging/extracted_deleted_files/flag_backup.txt
+cat /cases/USB_Imaging/extracted_deleted_files/flag_backup.txt
+
+icat /tmp/ewf/ewf1 1715 > /cases/USB_Imaging/extracted_deleted_files/project_secrets_backup.txt
+cat /cases/USB_Imaging/extracted_deleted_files/project_secrets_backup.txt
+
+icat /tmp/ewf/ewf1 15 > /cases/USB_Imaging/extracted_deleted_files/_lag.txt
+cat /cases/USB_Imaging/extracted_deleted_files/_lag.txt
+
+# ===== KEYWORD SEARCH (optional, for binary files or pattern matching) =====
+strings /tmp/ewf/ewf1 | grep -iE "password|secret|flag" > /cases/USB_Imaging/keyword_search.txt
+
+# ===== EXIT =====
 exit
 ```
+
+**Key Points:**
+- Use `icat` + inode to extract specific deleted files (most reliable for text)
+- Use `strings` for binary files or comprehensive searches
+- Always check `cat` output after extraction to verify content recovered
 
 ---
 
