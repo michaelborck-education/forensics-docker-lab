@@ -1043,7 +1043,7 @@ After completing this lab:
 1. **Analyze the recovered files** in detail
 2. **Calculate hashes** of key recovered files
 3. **Document your findings** in your lab report
-4. **Proceed to Memory_Forensics** (Lab 2) when ready
+4. **Proceed to Memory_Forensics** when ready
 
 The evidence you recovered here will be referenced in later labs!
 

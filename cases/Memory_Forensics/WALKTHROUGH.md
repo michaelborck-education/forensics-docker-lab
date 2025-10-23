@@ -502,10 +502,10 @@ After completing this lab:
 
 1. **Review all output files** and identify key findings
 2. **Correlate with other labs:**
-   - Did you find TrueCrypt? Check Lab 1 for encrypted containers
-   - Did you find IRC connections? Check Lab 5 network traffic
+   - Did you find TrueCrypt? Check USB_Imaging for encrypted containers
+   - Did you find IRC connections? Check Network_Analysis for network traffic
 3. **Document findings in your report**
-4. **Proceed to Autopsy_GUI (Lab 3)** when ready
+4. **Proceed to Autopsy_GUI** when ready
 
 ---
 

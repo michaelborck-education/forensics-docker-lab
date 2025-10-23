@@ -622,19 +622,19 @@ Compare email timestamps with evidence from other labs:
 cat > /cases/Email_Logs/correlation_timeline.txt << 'EOF'
 CORRELATION WITH OTHER LABS
 
-Lab 1 (USB Imaging) Findings:
-- Files deleted: [date/time from Lab 1]
+USB_Imaging Findings:
+- Files deleted: [date/time from USB_Imaging analysis]
 - Timestamps of suspicious files:
 
-Lab 2 (Memory Forensics) Findings:
+Memory_Forensics Findings:
 - Memory dump captured: [timestamp]
 - TrueCrypt running: [yes/no]
 
-Lab 4 (Email_Logs) Findings:
+Email_Logs Findings:
 - Emails sent: [dates/times]
 - To external address: [yes/no]
 
-Lab 5 (Network Analysis) Findings:
+Network_Analysis Findings:
 - Network capture date: [when]
 - Suspicious traffic detected: [what/when]
 
@@ -716,7 +716,7 @@ After this lab:
 1. Review all extracted emails
 2. Identify most suspicious communications
 3. Document sender/recipient patterns
-4. Proceed to Network_Analysis (Lab 5) when ready
+4. Proceed to Network_Analysis when ready
 
 Network traffic analysis will corroborate email findings!
 

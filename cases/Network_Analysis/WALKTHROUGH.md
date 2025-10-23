@@ -350,8 +350,8 @@ tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields 
   - Check which internal computer (192.168.1.100?) was infected
   - Identify external IRC server (geoIP lookup for location)
 - **Correlate with other evidence:**
-  - Memory Forensics (Lab 2): Find IRC malware process
-  - Disk (Lab 1): Find IRC malware executable
+  - Memory_Forensics: Find IRC malware process
+  - USB_Imaging: Find IRC malware executable
 
 Review results:
 
@@ -662,9 +662,9 @@ note: Network timeline - attack window [START time] to [END time]. First C2: [ti
 
 | Evidence Type | Lab | What to Look For | Network Match |
 |---|---|---|---|
-| **Memory (Lab 2)** | Memory_Forensics | ToolKeylogger.exe process, TrueCrypt.exe | Running during C2 timeframe? |
-| **Email (Lab 4)** | Email_Logs | Email exfil@personal.com sent time | Email sent just before data transfer? |
-| **Disk (Lab 1)** | USB_Imaging | Suspicious files created/deleted times | Files match exfil data size/timing? |
+| **Memory_Forensics** | Memory_Forensics | ToolKeylogger.exe process, TrueCrypt.exe | Running during C2 timeframe? |
+| **Email_Logs** | Email_Logs | Email exfil@personal.com sent time | Email sent just before data transfer? |
+| **USB_Imaging** | USB_Imaging | Suspicious files created/deleted times | Files match exfil data size/timing? |
 
 **Detailed correlation checks:**
 
@@ -677,7 +677,7 @@ Found: [yes/no]
   - When: [timestamp from network timeline]
   - From: [internal IP from network]
   - To: [IRC server IP]
-  - Correlates to Lab 2 (Memory)?
+  - Correlates to Memory_Forensics?
     * Keylogger process running at same time? [yes/no]
     * Process PID: [___]
     * Timestamps match? [yes/no]
@@ -690,13 +690,13 @@ Found: [yes/no]
   - To: [external IP]
   - Source files: [which files]
 
-Correlate to Lab 4 (Email)?
+Correlate to Email_Logs?
   - Email to exfil@personal.com sent when? [timestamp]
   - Email subject: [___]
   - Attachments match exfil data? [size/timing]
   - Interpretation: Files stolen then emailed out = premeditated theft
 
-Correlate to Lab 1 (Disk)?
+Correlate to USB_Imaging?
   - Suspicious files found: project_secrets.txt, email_draft.txt
   - Created when? [timestamp]
   - Modified when? [timestamp]
@@ -706,12 +706,12 @@ Correlate to Lab 1 (Disk)?
 
 === OVERALL TIMELINE ===
 Construct unified timeline:
-  [Date/Time] - Event 1: Files created on disk (Lab 1)
-  [Date/Time] - Event 2: Keylogger installed (Lab 2)
-  [Date/Time] - Event 3: C2 connection established (Lab 5 network)
-  [Date/Time] - Event 4: Data exfiltrated (Lab 5 network)
-  [Date/Time] - Event 5: Email sent to attacker (Lab 4)
-  [Date/Time] - Event 6: Suspicious files deleted (Lab 1)
+  [Date/Time] - Event 1: Files created on disk (USB_Imaging)
+  [Date/Time] - Event 2: Keylogger installed (Memory_Forensics)
+  [Date/Time] - Event 3: C2 connection established (Network_Analysis)
+  [Date/Time] - Event 4: Data exfiltrated (Network_Analysis)
+  [Date/Time] - Event 5: Email sent to attacker (Email_Logs)
+  [Date/Time] - Event 6: Suspicious files deleted (USB_Imaging)
 
 === CONCLUSION ===
 Is the attack coordinated across multiple systems? [yes/no]
@@ -728,11 +728,11 @@ EOF
 
 **Strong evidence correlation:**
 ```
-Disk (Lab 1): project_secrets.txt created Dec 7
-Memory (Lab 2): Keylogger running process Dec 7
-Network (Lab 5): IRC C2 connection Dec 7, 8:45 AM
-Network (Lab 5): 245MB exfil to external IP Dec 7, 9:15 AM
-Email (Lab 4): Email sent Dec 7, 9:45 AM to attacker
+USB_Imaging: project_secrets.txt created Dec 7
+Memory_Forensics: Keylogger running process Dec 7
+Network_Analysis: IRC C2 connection Dec 7, 8:45 AM
+Network_Analysis: 245MB exfil to external IP Dec 7, 9:15 AM
+Email_Logs: Email sent Dec 7, 9:45 AM to attacker
 
 INTERPRETATION: Coordinated attack
 - Files prepared/vulnerable days before
@@ -747,10 +747,10 @@ CONCLUSION: Overwhelming evidence of deliberate data theft
 
 **Weak correlation (accidental vs. attack):**
 ```
-Disk (Lab 1): Normal files, nothing suspicious
-Memory (Lab 2): Keylogger found, but only active 1 hour
-Network (Lab 5): Small data transfer (2MB), inconsistent times
-Email (Lab 4): No external emails
+USB_Imaging: Normal files, nothing suspicious
+Memory_Forensics: Keylogger found, but only active 1 hour
+Network_Analysis: Small data transfer (2MB), inconsistent times
+Email_Logs: No external emails
 
 INTERPRETATION: Could be accident
 - Small files, small transfer = might be legitimate
@@ -854,9 +854,9 @@ Document your complete network findings in a summary report:
    ```
 
 7. **Correlation with other evidence:**
-   - Lab 1 (Disk) findings match: [yes/no]
-   - Lab 2 (Memory) findings match: [yes/no]
-   - Lab 4 (Email) findings match: [yes/no]
+   - USB_Imaging findings match: [yes/no]
+   - Memory_Forensics findings match: [yes/no]
+   - Email_Logs findings match: [yes/no]
    - Overall strength of case: [weak/moderate/strong/overwhelming]
 
 **Example summary template:**
@@ -886,9 +886,9 @@ KEY FINDINGS:
    - malware.com (payload staging)
 
 4. CORRELATED EVIDENCE:
-   - Lab 1: Files deleted from disk Dec 8 (cleanup)
-   - Lab 2: ToolKeylogger.exe running during C2 window
-   - Lab 4: Email to exfil@personal.com Dec 7 09:45
+   - USB_Imaging: Files deleted from disk Dec 8 (cleanup)
+   - Memory_Forensics: ToolKeylogger.exe running during C2 window
+   - Email_Logs: Email to exfil@personal.com Dec 7 09:45
    - All evidence coordinated = PLANNED ATTACK
 
 CONCLUSION: Overwhelming evidence of deliberate data theft

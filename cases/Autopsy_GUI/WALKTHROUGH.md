@@ -41,13 +41,13 @@ In a real investigation, a forensic technician would:
    - **FTK (Forensic Toolkit)** (AccessData) - Premium, most comprehensive
    - **EnCase** (Guidance Software) - Industry standard, expensive
    - **X-Ways Forensics** - German tool, very powerful
-   - **SANS SIFT/Sleuth Kit** - Command-line (what we used in Lab 1)
+   - **SANS SIFT/Sleuth Kit** - Command-line (what we used in USB_Imaging)
    - **OSForensics** - Budget-friendly option
 
 ### In This Lab
 
 We're using **Autopsy** to:
-- Load the USB disk image captured in Lab 1
+- Load the USB disk image from USB_Imaging analysis
 - Perform GUI-based evidence analysis
 - Demonstrate how professionals accelerate investigations
 - Show automated timeline and keyword features
@@ -178,7 +178,7 @@ In the Autopsy GUI:
    - Autopsy will mount and analyze the image
 
 3. **Browse to:** `/evidence/usb.img`
-   - This is the USB image from Lab 1
+   - This is the USB image from USB_Imaging
    - Autopsy will read it in read-only mode (safe)
 
 4. **Next** through prompts (use defaults)
@@ -381,11 +381,11 @@ In forensic practice:
 - **GUI tools** (Autopsy) automate the process, easier to navigate but can miss edge cases
 - **Best practice:** Use both for validation and completeness
 
-Compare your Autopsy results with Lab 1 (USB_Imaging CLI analysis):
+Compare your Autopsy results with USB_Imaging (CLI analysis):
 
-1. **Open CLI outputs from Lab 1:**
+1. **Open CLI outputs from USB_Imaging:**
    - Navigate to: `cases/USB_Imaging/`
-   - Review files created in Lab 1:
+   - Review files created in USB_Imaging analysis:
      - `deleted_files.txt` - Files recovered with icat
      - `filesystem_structure.txt` - Directory listing with fls
      - `keyword_search.txt` - Manual grep results
@@ -396,12 +396,12 @@ Compare your Autopsy results with Lab 1 (USB_Imaging CLI analysis):
      - Large differences suggest missed evidence or misconfiguration
 
    - **Deleted files:**
-     - Lab 1 recovered: `project_secrets.txt`, `email_draft.txt`, `flag_backup.txt`, etc.
+     - USB_Imaging recovered: `project_secrets.txt`, `email_draft.txt`, `flag_backup.txt`, etc.
      - Autopsy should show same files marked as [Deleted] in timeline
      - If Autopsy misses deleted files, its ingest modules may not have completed
 
    - **Keywords found:**
-     - Lab 1: `password`, `confidential`, `secret` matches in files
+     - USB_Imaging: `password`, `confidential`, `secret` matches in files
      - Autopsy: Same keywords should appear in search results
      - Compare context around matches (same file, same line)
 
@@ -410,17 +410,17 @@ Compare your Autopsy results with Lab 1 (USB_Imaging CLI analysis):
    COMPARISON RESULTS
 
    Deleted files recovered:
-   - Lab 1 (CLI):  4 files via icat
+   - USB_Imaging (CLI):  4 files via icat
    - Autopsy GUI:  4 files in timeline [Deleted] marker
    - MATCH: ✓ Yes
 
    Keyword search "password":
-   - Lab 1 (CLI):  Found in project_secrets.txt, email_draft.txt
+   - USB_Imaging (CLI):  Found in project_secrets.txt, email_draft.txt
    - Autopsy GUI:  Same files, Autopsy adds additional context
    - MATCH: ✓ Yes
 
    Timeline analysis:
-   - Lab 1 (CLI):  Timestamps from istat output
+   - USB_Imaging (CLI):  Timestamps from istat output
    - Autopsy GUI:  Visual timeline showing color-coded events
    - MATCH: ✓ Yes, same timestamps, easier visualization in GUI
    ```
@@ -485,12 +485,12 @@ Document your complete findings in a summary file. This becomes your official re
 
 1. **Total files analyzed:**
    - Count from Autopsy summary
-   - Compare with Lab 1 fls output
+   - Compare with USB_Imaging fls output
    - Should match or be very close
 
 2. **Deleted files found:**
    - Count from Autopsy timeline
-   - Compare with Lab 1 icat recovery
+   - Compare with USB_Imaging icat recovery
    - Document file names, sizes, timestamps
 
 3. **Suspicious keywords:**
@@ -508,7 +508,7 @@ Document your complete findings in a summary file. This becomes your official re
    - Evidence of intent or wrongdoing
    - Direct proof points
 
-6. **Comparison to Lab 1:**
+6. **Comparison to USB_Imaging:**
    - What did CLI find that GUI missed (or vice versa)?
    - Did both tools validate each other?
    - Any surprising differences?
@@ -531,7 +531,7 @@ Timeline Findings:
 - 2009-12-07: Multiple files deleted (10 PM) - possible cleanup
 - 2009-12-08: USB accessed after deletion
 
-Validated by Lab 1?: YES
+Validated by USB_Imaging?: YES
 - Same deleted files recovered in both CLI and GUI
 - Keyword search matches CLI grep results
 - Timeline timestamps match istat output
@@ -593,10 +593,10 @@ Conclusion: GUI analysis confirms CLI findings and provides easier visualization
 After this lab:
 
 1. **Review your findings:** Did Autopsy find the expected evidence?
-2. **Compare with Lab 1:** Do GUI results match CLI analysis?
+2. **Compare with USB_Imaging:** Do GUI results match CLI analysis?
 3. **Document discrepancies:** If findings differ, why? (tool limitation vs. new discovery)
 4. **Prepare report:** Compile summary of all findings for presentation
-5. **Proceed to Lab 4:** When ready, move on to Email_Logs analysis
+5. **Proceed to Email_Logs:** When ready, move on to Email analysis
 
 **Key question:** Did GUI analysis reveal anything CLI missed? This validates your methodology.
 
@@ -649,7 +649,7 @@ This lab teaches you how professional investigators use GUI tools. In real pract
    - Compare multiple evidence sources
 
 3. **Validation (Cross-verification):** Compare findings across tools
-   - *This is what Lab 1 (CLI) vs Lab 3 (GUI) does*
+   - *This is what USB_Imaging (CLI) vs Autopsy_GUI (GUI) does*
    - If both find the same evidence = high confidence
    - If they differ = investigate discrepancy
 
@@ -662,4 +662,4 @@ This lab teaches you how professional investigators use GUI tools. In real pract
 
 ---
 
-**Remember:** Autopsy is powerful, but it's not a magic bullet. Always validate automated results with manual analysis and cross-reference with other evidence sources. The combination of CLI analysis (Lab 1) and GUI analysis (Lab 3) gives you the complete picture.
+**Remember:** Autopsy is powerful, but it's not a magic bullet. Always validate automated results with manual analysis and cross-reference with other evidence sources. The combination of CLI analysis (USB_Imaging) and GUI analysis (Autopsy_GUI) gives you the complete picture.
