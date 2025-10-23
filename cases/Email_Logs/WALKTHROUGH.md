@@ -496,11 +496,6 @@ If you want to see an automated alternative, here's a Python script that does si
 python3 /cases/Email_Logs/analyse_emails.py
 ```
 
-**Note:** The script path in the original code may need to be fixed. The script should open `/evidence/mail.mbox` using the absolute path or from the correct directory. If you get a "FileNotFoundError", edit the script to use:
-```python
-with open("/evidence/mail.mbox", 'r') as f:  # absolute path
-```
-
 **Expected output:**
 ```
 === Email Analysis ===

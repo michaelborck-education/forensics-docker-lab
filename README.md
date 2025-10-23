@@ -8,8 +8,11 @@
 This is a comprehensive hands-on digital forensics course where you will conduct a real-world style investigation of a data exfiltration incident at Cloudcore Inc. You'll work through 6 progressive labs using professional forensic tools in a containerized environment to analyze evidence, recover deleted files, perform memory analysis, and produce professional incident response reports.
 
 **Case:** CLOUDCORE-2009-INS-001 - Data Exfiltration Investigation
+
 **Environment:** Docker-based forensic workstation
+
 **Tools:** Sleuth Kit, Volatility, Autopsy GUI, Plaso, YARA, and more
+
 **Duration:** 6 progressive labs (one per week, ~8-10 hours each)
 
 ---
