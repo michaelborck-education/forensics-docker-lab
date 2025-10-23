@@ -253,23 +253,57 @@ grep -i "6667\|6668" /cases/Memory_Forensics/netscan.txt > /cases/Memory_Forensi
 
 ---
 
-## 🔐 Part 5: DLL Analysis (Optional)
+## 🔐 Part 5: DLL Analysis - Examine Suspicious Process Libraries
 
-If you found a suspicious PID, see what libraries it loaded:
+**Why this step matters:**
+Malware reveals its purpose through the libraries (DLLs) it loads. A keylogger needs keyboard hooks (USER32.dll), and if it exfiltrates data, it needs internet libraries (WININET.dll, urlmon.dll). By examining loaded DLLs, we can confirm the malware's functionality.
+
+**How we know to do this:**
+DLL analysis is standard malware reverse engineering. The DLLs a process loads tell us:
+- What APIs it uses
+- What capabilities it has
+- Whether it's designed for persistence, exfiltration, or keylogging
+
+Analyze the suspicious keylogger we found:
 
 ```bash
-# Example: If you found TrueCrypt at PID 3456
-vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 3456 > /cases/Memory_Forensics/dlllist_3456.txt
+vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 280 > /cases/Memory_Forensics/dlllist_280.txt
 ```
+
+**Replace `280` with the PID of your suspicious process.**
 
 **📋 Document in analysis_log.csv:**
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 3456 > /cases/Memory_Forensics/dlllist_3456.txt
+command: vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 280 > /cases/Memory_Forensics/dlllist_280.txt
 exit_code: 0
-note: List DLLs loaded by PID 3456 (TrueCrypt)
+note: List DLLs loaded by PID 280 (ToolKeylogger.e keylogger)
 ```
+
+Review:
+
+```bash
+cat /cases/Memory_Forensics/dlllist_280.txt
+```
+
+**✅ Feedback - Command Success Indicators:**
+- Output shows executable path: `C:\Program Files\XP Advanced\ToolKeylogger.exe`
+- Output shows command line that launched it
+- Should list 40+ DLLs
+- Format has columns: Base, Size, LoadCount, LoadTime, Path
+
+**What to look for:**
+- **Keylogging indicators:** USER32.dll, KERNEL32.dll (for API hooking)
+- **Internet connectivity:** WININET.dll, urlmon.dll, iertutil.dll (for C2 or data exfiltration)
+- **Persistence:** Registry DLLs, file system libraries
+- **Custom/suspicious DLLs:** Any DLL from non-standard locations like Program Files folders
+
+**Key Finding in This Case:**
+- **Executable:** ToolKeylogger.exe from "C:\Program Files\XP Advanced\"
+- **Supporting DLL:** ToolKeyloggerDLL.dll (the actual keylogging code)
+- **Internet libraries:** Loaded WININET, urlmon, iertutil - this keylogger sends data to an attacker!
+- **Conclusion:** This is a fully functional keylogger with internet communication capability
 
 ---
 
