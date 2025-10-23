@@ -35,6 +35,14 @@ RUN git clone https://github.com/volatilityfoundation/volatility.git /opt/volati
     && ln -s /opt/volatility2/vol.py /usr/local/bin/vol2 \
     && chmod +x /opt/volatility2/vol.py
 
+# Install Python 2.7 dependencies for Volatility 2
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py && \
+    python2.7 get-pip.py && \
+    rm get-pip.py && \
+    pip install --no-cache-dir \
+      pycryptodome \
+      distorm3
+
 # Copy banner, entrypoint script, and coc-log utility
 COPY images/dfir-cli/banner.txt /etc/banner.txt
 COPY images/dfir-cli/entrypoint.sh /usr/local/bin/entrypoint.sh
