@@ -7,6 +7,56 @@
 
 ---
 
+## 📸 Context: How Evidence is Captured (In Real Forensic Practice)
+
+**Important Context:** In this lab, you're analyzing a **pre-captured evidence image** (`usb.E01`). In real forensic investigations, the imaging process is critical and happens BEFORE analysis.
+
+### Real-World Evidence Capture Process
+
+In a real incident response, a forensic technician would:
+
+1. **Physical Evidence Handling:**
+   - Seize the USB device from the suspect
+   - Document chain of custody (who touched it, when, why)
+   - Use a **write blocker** (hardware device) to prevent accidental modification
+   - Connect write-blocked USB to forensic workstation
+
+2. **Image Acquisition (Industry Standard Tools):**
+   - **Encase** (AccessData) - Creates `.E01` format (what we have)
+   - **Forensic Toolkit (FTK) Imager** (Accessdata) - Windows/Linux GUI
+   - **dd command** (free, Linux) - Raw copy with hash verification
+   - **ddrescue** (GNU) - With error recovery for damaged drives
+   - All tools calculate MD5/SHA256 hashes DURING capture for integrity verification
+
+3. **Verification:**
+   - Hash the original evidence
+   - Hash the acquired image
+   - Verify hashes match exactly (proves no corruption during copy)
+   - Store original evidence in secure chain-of-custody
+
+4. **Documentation:**
+   - When captured, by whom, from what device
+   - Make and model of device
+   - Serial number of device
+   - Hash of original
+   - Hash of image
+   - Any errors or issues during capture
+
+### In This Lab
+
+We've **skipped the capture phase** and provided you with a pre-captured image (`usb.E01`). This lets you focus on:
+- Analysis skills
+- Forensic reasoning
+- Evidence interpretation
+
+But remember: In real forensics, the imaging step is CRITICAL because:
+- ✓ Write blockers prevent accidental modification
+- ✓ Hashing proves evidence integrity
+- ✓ Chain of custody documents who handled evidence
+- ✓ Professional tools ensure complete data capture (including bad sectors)
+
+---
+
 ## 📋 Pre-Lab Setup
 
 ### 1. Copy Templates to Your Lab Folder

@@ -7,6 +7,73 @@
 
 ---
 
+## 📸 Context: How Email and Logs are Captured (In Real Forensic Practice)
+
+**Important Context:** In this lab, you're analyzing a **pre-captured email mailbox** (`mail.mbox`) and system logs. In real incident response, email and logs are extracted from live systems using forensically sound methods.
+
+### Real-World Email & Log Capture Process
+
+In a real incident response, a forensic technician would:
+
+1. **Email Acquisition:**
+   - Access email server (with proper authorization/warrant)
+   - Export mailbox to standard format (mbox, PST, EML)
+   - Tools used:
+     - **Microsoft Outlook** - Export to PST format
+     - **Google Vault** / **Microsoft Discovery** - Cloud email export
+     - **pst-parser** (open source) - PST/OST file extraction
+     - **mail server tools** - Native export from Exchange, Gmail, etc.
+   - Capture with metadata: Sender, Recipient, Date, Subject, Attachments, Headers
+   - Hash the exported mailbox file
+
+2. **System Log Acquisition:**
+   - Export logs from target system:
+     - **Windows:** Event Viewer export (EVTX format) or text export
+     - **Linux:** /var/log files (syslog, auth, kern.log, etc.)
+   - Tools used:
+     - **wevtutil** (Windows) - Event log export
+     - **rsync/tar** (Linux) - Preserve permissions and timestamps
+     - **FTK Imager** - Can extract logs from disk images
+     - **Splunk/ELK** - Export from centralized logging
+   - Document log sources and date ranges captured
+
+3. **Verification:**
+   - Hash each exported file
+   - Verify date ranges and completeness
+   - Check for truncation or missing entries
+   - Document any access controls or filtering applied
+
+4. **Documentation:**
+   - When captured, by whom, from what system
+   - Email server type and version
+   - Date range of emails and logs
+   - Hash of exported files
+   - Any filtering or access restrictions
+   - Completeness verification
+
+### In This Lab
+
+We've **skipped the export/capture phase** and provided you with:
+- Pre-captured email mailbox (`mail.mbox` in standard mbox format)
+- Analyzed email evidence from the Cloudcore incident
+
+This lets you focus on:
+- Email analysis
+- Evidence interpretation
+- Timeline correlation
+- Investigating data exfiltration
+
+But remember: In real forensics, email capture is CRITICAL because:
+- ✓ Email servers can be modified (cover-up attempts)
+- ✓ Hashing proves email integrity during export
+- ✓ Chain of custody documents access to email system
+- ✓ Professional tools preserve email headers and metadata
+- ✓ Missing this step = evidence could be challenged in court
+
+**Note:** This lab uses a simplified mbox format. Real email systems vary widely (Exchange, Gmail, Office 365, etc.) and require different extraction methods.
+
+---
+
 ## 📋 Pre-Lab Setup
 
 ### 1. Copy Templates to Your Lab Folder

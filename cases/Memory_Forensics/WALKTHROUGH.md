@@ -7,6 +7,61 @@
 
 ---
 
+## 📸 Context: How Memory Dumps are Captured (In Real Forensic Practice)
+
+**Important Context:** In this lab, you're analyzing a **pre-captured memory dump** (`memory.raw`). In real incident response, capturing RAM is time-critical and must be done before shutting down the system.
+
+### Real-World Memory Capture Process
+
+In a real incident response, a forensic technician would:
+
+1. **Live System Acquisition (Time-Critical):**
+   - Respond to incident while system is still running
+   - Connect via network OR USB (depending on network accessibility)
+   - Capture memory BEFORE powering down system
+   - Power down = loss of all volatile data (RAM)
+
+2. **Memory Capture Tools (Industry Standard):**
+   - **Volatility 2/3** - Can create memory dumps (in addition to analyzing them)
+   - **FTK Imager** (Accessdata) - GUI tool for Windows memory capture
+   - **winpmem** - Windows memory acquisition (open source)
+   - **LiME** (Linux Memory Extractor) - Linux kernel module for RAM capture
+   - **DumpIt** - Windows memory dumper
+   - All tools calculate hashes during capture
+
+3. **Verification:**
+   - Hash the captured memory file
+   - Document the hash
+   - Verify captured size matches installed RAM
+   - Check for memory errors or truncation
+
+4. **Documentation:**
+   - When captured, by whom, on what system
+   - System OS and version
+   - Total RAM captured
+   - Hash of memory dump
+   - Any errors or warnings during capture
+   - System uptime and current time
+
+### In This Lab
+
+We've **skipped the capture phase** and provided you with a pre-captured memory dump (`memory.raw` from a Windows XP SP3 system). This lets you focus on:
+- Analysis skills
+- Process forensics
+- Malware detection
+- DLL and network analysis
+
+But remember: In real forensics, the memory capture step is CRITICAL because:
+- ✓ RAM capture must happen while system is running (volatile!)
+- ✓ Hashing proves memory integrity during capture
+- ✓ Chain of custody documents when capture occurred
+- ✓ Professional tools ensure complete RAM acquisition
+- ✓ Missing this step = missing active process evidence
+
+**Note:** This lab uses `memory.raw` from a Windows XP system (provided). In real practice, you'd capture from the actual system where the incident occurred.
+
+---
+
 ## 📋 Pre-Lab Setup
 
 ### 1. Copy Templates to Your Lab Folder
