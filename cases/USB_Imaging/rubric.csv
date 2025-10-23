@@ -1,5 +1,0 @@
-Criterion,Excellent (A),Good (B),Satisfactory (C),Needs Improvement (D/F),Weight
-Chain of Custody,All evidence hashed with accurate entries; clear notes and timestamps; consistent algorithm,Most evidence hashed; minor omissions; notes mostly clear,Some hashing done; entries incomplete or inconsistent,Little or no hashing; entries missing or incorrect,0.20
-Recovery of Artifacts,Correct use of TSK/Foremost; artifacts recovered and validated with hashes,Correct method; minor mistakes; partial validation,Attempted recovery; limited validation,Incorrect method or no meaningful recovery,0.30
-Timeline Analysis,Clearly identifies 3–5 notable events with accurate timestamps and strong justification,Identifies several events; adequate justification,Minimal events; weak justification,No meaningful timeline analysis,0.30
-Report Quality,Clean, reproducible steps; correct paths/hashes; succinct conclusions,Mostly reproducible; minor errors in paths/hashes,Reproducibility unclear; several errors,Disorganized or missing report,0.20

@@ -1,5 +1,0 @@
-Date,Time,File,Event
-2025-09-14,21:47,client_list.csv,Modified
-2025-09-15,02:30,backup.zip,Created
-# Generate more using: docker compose run --rm dfir fls -r -m / /evidence/usb.img > body.txt; docker compose run --rm dfir mactime -b body.txt -d >> timeline.csv
-# Include at least 10 key entries for submission

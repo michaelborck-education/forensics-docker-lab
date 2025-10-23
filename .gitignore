@@ -5,6 +5,12 @@
 #!cases/Lab_1/chain_of_custody_template.csv
 #!cases/Lab_*/**/*.md  # Allow report templates
 
+# Container runtime artifacts (created when DFIR container runs)
+cases/.bash_history
+cases/.bashrc
+cases/.python_history
+cases/.cache
+
 # Evidence files (large, replaceable; allow dummies/templates)
 evidence/*
 !evidence/.gitkeep
@@ -12,19 +18,9 @@ evidence/*
 evidence/memory.raw
 evidence/disk.img
 evidence/disk.E01
-cases/.cache
+
+# Archives
 _archive
-
-
-# Docker and temp
-.git/
-*.log
-.DS_Store
-
-# IDE/editor
-.vscode/
-.idea/
-*.swp
 
 # Docker and temp
 .git/

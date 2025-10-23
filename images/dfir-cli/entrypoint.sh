@@ -19,6 +19,9 @@ ANALYST="${ANALYST_NAME:-analyst}"
 export PS1="\[\033[01;32m\]${ANALYST}@forensics-lab\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
 export USER="${ANALYST_NAME:-analyst}"
 export LOGNAME="${ANALYST_NAME:-analyst}"
+
+# Ensure vol2 uses Python3 (Volatility 2 support)
+alias vol2='python3 /opt/volatility2/vol.py'
 EOF
 
 # Also export for non-interactive commands

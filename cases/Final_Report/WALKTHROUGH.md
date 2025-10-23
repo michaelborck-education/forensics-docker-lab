@@ -1,346 +1,397 @@
-# Lab 6: Case Consolidation & Final Report - Complete Walkthrough
+# Final_Report Lab - Student Walkthrough
+## Case Consolidation & Professional Report
 
-## Mission
-
-Synthesize all evidence from Labs 1-5 into a unified, professional investigation narrative. This is where individual artifacts become a coherent case story.
-
----
-
-## Prerequisites
-
-- [ ] Completed all Labs 1-5
-- [ ] Have analysis_log.csv files from each lab
-- [ ] Have key findings documented:
-  - Lab 1: Deleted files (project_secrets.zip, email_draft.txt)
-  - Lab 2: TrueCrypt process, suspicious TCP connections
-  - Lab 3: Autopsy file timestamps and metadata
-  - Lab 4: Email to exfil@personal.com, USB activity
-  - Lab 5: IRC C2, malware downloads, 50MB exfiltration
+**Time Estimate:** 3-5 hours
+**Difficulty:** Intermediate
+**Tools:** Text editor, spreadsheet application, all previous labs
 
 ---
 
-## Lab Setup
+## 🎯 Mission
+
+Synthesize findings from all 5 labs (USB_Imaging, Memory_Forensics, Autopsy_GUI, Email_Logs, Network_Analysis) into a unified, professional investigation report. This is where individual artifacts become a coherent narrative proving guilt or innocence.
+
+---
+
+## 📋 Pre-Lab Setup
+
+This lab does NOT use the forensic workstation. You'll work on your **host machine** consolidating evidence.
+
+### 1. Review All Previous Labs
+
+Open these folders and scan all findings:
+```bash
+cases/USB_Imaging/        # Files, deleted items
+cases/Memory_Forensics/   # Processes, network connections
+cases/Autopsy_GUI/        # Timeline, artifacts
+cases/Email_Logs/         # Communications
+cases/Network_Analysis/   # Traffic, exfiltration
+```
+
+### 2. Create Final Lab Folder
 
 ```bash
-mkdir -p cases/Final_Report/outputs
+mkdir -p cases/Final_Report
+cp templates/chain_of_custody.csv cases/Final_Report/master_chain_of_custody.csv
+cp templates/analysis_log.csv cases/Final_Report/master_analysis_log.csv
 ```
 
 ---
 
-## Timeline Construction
+## 📊 Part 1: Consolidate Chain of Custody
 
-### Step 1: Consolidate Key Timestamps
+Combine hashes from all 5 labs into a master file.
 
-**Walkthrough:**
-```bash
-# Create master timeline from all labs
-cat > cases/Final_Report/master_timeline.txt << 'EOF'
-2009-12-01 - Data preparation phase
-  - Deleted files appear on disk (Lab 1)
-  - Timestamps: 14:30-15:00 UTC
+**Open these files:**
+- cases/USB_Imaging/chain_of_custody.csv
+- cases/Memory_Forensics/chain_of_custody.csv
+- cases/Autopsy_GUI/chain_of_custody.csv
+- cases/Email_Logs/chain_of_custody.csv
+- cases/Network_Analysis/chain_of_custody.csv
 
-2009-12-05 - Memory snapshot (Lab 2)
-  - TrueCrypt.exe running (PID indicates encryption setup)
-  - Outbound TCP connections to suspicious IPs
-  - Evidence of staging data
+**In cases/Final_Report/master_chain_of_custody.csv:**
+Add one row for EACH evidence item with:
+- Evidence_ID: USB-001, MEMORY-001, EMAIL-001, etc.
+- Date_Received: (when seized)
+- MD5_Hash: (from each lab)
+- SHA256_Hash: (from each lab)
+- Analyst_Name: (your name)
+- Evidence_Description: Brief description
 
-2009-12-06 10:00 AM - Email activity (Lab 4)
-  - Email sent to exfil@personal.com with attachments
-  - Lab 4 analysis shows headers, timestamps
-
-2009-12-06 10:32-10:45 AM - Network exfiltration (Lab 5)
-  - IRC C2 connection to hunt3d.devilz.net
-  - Malware downloads via botnet
-  - 50MB data transfer to 203.0.113.50:8080
-  - MATCHES project_secrets.zip size from Lab 1
-
-2009-12-06 10:50 AM - USB removal (Lab 4 logs)
-  - Physical USB device removed from workstation
-  - Correlates with network exfil completion
-EOF
-cat cases/Final_Report/master_timeline.txt
+**Example row:**
 ```
-
-**Assignment (With CoC):**
-```bash
-coc-log "cat cases/Final_Report/master_timeline.txt" "Consolidated investigation timeline from all labs"
+USB-001,2024-10-20,14:00:00,Field Agent,fc8096...,6ebe35...,Michael,CASE-2024-001,"16GB SanDisk USB (usb.img)",./cases/secure_evidence/
 ```
 
 ---
 
-### Step 2: Cross-Lab Correlation
+## 📝 Part 2: Consolidate Analysis Log
 
-Create correlation matrix showing how evidence supports the threat:
+Combine all commands run across all 5 labs.
 
-```bash
-cat > cases/Final_Report/correlation_analysis.txt << 'EOF'
+**Open these files:**
+- cases/USB_Imaging/analysis_log.csv
+- cases/Memory_Forensics/analysis_log.csv
+- cases/Autopsy_GUI/analysis_log.csv
+- cases/Email_Logs/analysis_log.csv
+- cases/Network_Analysis/analysis_log.csv
+
+**In cases/Final_Report/master_analysis_log.csv:**
+Copy all rows from each lab's analysis_log.csv in chronological order.
+
+**Sort by timestamp_utc** to create a complete timeline of analysis activities.
+
+---
+
+## 🔍 Part 3: Build Master Timeline
+
+Create a comprehensive timeline showing WHEN attacks happened.
+
+**File:** cases/Final_Report/MASTER_TIMELINE.txt
+
+```
+CLOUDCORE INCIDENT TIMELINE
+Case: CLOUDCORE-2024-INS-001
+
+=== PHASE 1: PREPARATION ===
+[Date/Time from Lab 1] - Files created on USB
+- Evidence: [from USB_Imaging file list]
+- Suspicious files: [project_secrets.zip, client_database.csv, etc.]
+- Timestamp correlation: [were these created same day?]
+
+=== PHASE 2: ENCRYPTION/STAGING ===
+[Date/Time from Lab 2] - Memory dump captured
+- TrueCrypt.exe running: [yes/no, PID]
+- Network connections: [IRC port 6667?, external IPs?]
+- Timestamp: [when was memory dumped?]
+- Indicates: [suspect was encrypting/preparing data]
+
+=== PHASE 3: COMMUNICATION ===
+[Date/Time from Lab 4] - Emails sent
+- Recipients: [external email addresses]
+- Subject: [what was said?]
+- Attachments: [file names, sizes]
+- When: [specific timestamps]
+- Indicates: [suspect communicating with accomplice]
+
+=== PHASE 4: EXFILTRATION ===
+[Date/Time from Lab 5] - Network traffic
+- IRC C2 commands received: [yes/no]
+- Large data transfer detected: [size, destination]
+- Duration: [how long did transfer take?]
+- When: [specific timestamp]
+- Indicates: [data being stolen over network]
+
+=== PHASE 5: CLEANUP ===
+[Date/Time from Lab 1] - Files deleted
+- Deleted files: [list what was deleted]
+- When: [after exfiltration?]
+- Indicates: [suspect covering tracks]
+
+=== CONCLUSION ===
+Timeline shows coordinated, planned attack:
+1. Prepare data on USB
+2. Load into memory
+3. Encrypt with TrueCrypt
+4. Email to accomplice
+5. Exfiltrate over network
+6. Delete traces
+Total duration: [X hours/days]
+```
+
+---
+
+## 🔗 Part 4: Create Evidence Correlation Matrix
+
+Show how findings from different labs support each other.
+
+**File:** cases/Final_Report/CORRELATION_MATRIX.txt
+
+```
 EVIDENCE CORRELATION MATRIX
-============================
 
-Hypothesis: Insider data exfiltration via USB + IRC botnet coordination
+Finding: "project_secrets.zip" file
+- Lab 1: Found in recovered files (inode 257)
+- Lab 1: File deleted (marked with *)
+- Lab 4: Referenced in email subject line
+- Lab 5: Large transfer (50MB) to external server
+→ CONCLUSION: Same file from USB → emailed → exfiltrated
 
-Supporting Evidence:
+Finding: TrueCrypt process
+- Lab 2: TrueCrypt.exe running (PID 2048)
+- Lab 2: Network connections from PID 2048 to 8.8.8.8:6667
+- Lab 1: encrypted_container.dat found on USB
+→ CONCLUSION: Suspect used TrueCrypt to encrypt stolen data
 
-1. DATA STAGING (Lab 1 + Lab 3)
-   - project_secrets.zip created/deleted on disk
-   - Autopsy confirms timestamps match exfil timeline
-   - File size ~50 MB matches network transfer
+Finding: IRC C2 Communication
+- Lab 2: Memory shows connection to port 6667
+- Lab 5: Network capture shows IRC traffic
+- Lab 5: Commands visible in pcap (if readable)
+→ CONCLUSION: Malware or direct attacker control via IRC
 
-2. ENCRYPTION PREPARATION (Lab 2)
-   - TrueCrypt.exe running (suggests encrypted transfer prep)
-   - Parent process: explorer.exe (normal user activity cover)
-   - Outbound connections to staging server
-
-3. EMAIL COORDINATION (Lab 4)
-   - Email sent to exfil@personal.com
-   - Subject: "Project Update"
-   - Attachment: project_secrets.zip reference
-   - Timestamp: 10:00 AM, before network exfil
-
-4. NETWORK EXFILTRATION (Lab 5)
-   - IRC C2 connection (hunt3d.devilz.net, #s01)
-   - Botnet commands for file staging
-   - HTTP POST of 50MB file
-   - Destination: 203.0.113.50:8080
-   - Timeline: 10:32-10:45 AM (32 min after email)
-
-5. PHYSICAL TRANSFER (Lab 4 Logs + Lab 1 Evidence)
-   - USB mount event logged
-   - Physical device removal confirmed
-   - Matches file deletion pattern (covering tracks)
-
-CONCLUSION:
-Multi-stage insider attack:
-  Step 1: Identify/prepare sensitive data (Lab 1: deleted files)
-  Step 2: Encrypt data (Lab 2: TrueCrypt process)
-  Step 3: Coordinate via email (Lab 4: external email)
-  Step 4: Execute exfil via IRC botnet (Lab 5: network traffic)
-  Step 5: Physical removal via USB (Lab 4: mount/unmount logs)
-EOF
-cat cases/Final_Report/correlation_analysis.txt
+STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
 ```
 
 ---
 
-### Step 3: Chain of Custody Integration
+## 📄 Part 5: Write Professional Report
 
-**Compile all CoC logs:**
+**File:** cases/Final_Report/INVESTIGATION_REPORT.md
 
-```bash
-# Combine all analysis_log.csv files
-cat > cases/Final_Report/complete_chain_of_custody.csv << 'EOF'
-Lab,Analyst,Command,Timestamp,Hash,Evidence_File
-EOF
+### Executive Summary (1-2 pages)
+- What was the incident?
+- What evidence was found?
+- What is the conclusion?
+- Who is responsible?
 
-# Append from each lab
-for lab in 1 2 3 4 5; do
-  if [ -f "cases/Lab_${lab}/analysis_log.csv" ]; then
-    tail -n +2 "cases/Lab_${lab}/analysis_log.csv" | while read line; do
-      echo "Lab_${lab},$line" >> cases/Final_Report/complete_chain_of_custody.csv
-    done
-  fi
-done
+### Methodology (1-2 pages)
+- What evidence was collected?
+- What tools were used? (Sleuth Kit, Volatility, tshark, Autopsy)
+- What chain of custody procedures were followed?
+- Link to master_chain_of_custody.csv
 
-cat cases/Final_Report/complete_chain_of_custody.csv
+### Findings by Lab (5-8 pages total)
+
+#### Lab 1: Disk Forensics
+- Total files on USB: [number]
+- Deleted files recovered: [number]
+- Suspicious files found: [list with evidence]
+- Key artifacts: [what's most incriminating?]
+
+#### Lab 2: Memory Forensics
+- OS version: [Windows XP/etc]
+- Total processes: [number]
+- TrueCrypt.exe: [running, PID, timestamp]
+- Network connections: [IRC, external IPs]
+- Key finding: [smoking gun?]
+
+#### Lab 3: GUI Analysis (Autopsy)
+- Total files analyzed: [number]
+- Timeline anomalies: [suspicious clusters?]
+- Metadata patterns: [what do timestamps show?]
+- Key finding: [what did GUI reveal that CLI didn't?]
+
+#### Lab 4: Email Analysis
+- Total emails: [number]
+- External recipients: [list addresses]
+- Suspicious subjects: [what was discussed?]
+- Attachments: [file names, sizes, when sent?]
+- Key finding: [proof of communication?]
+
+#### Lab 5: Network Analysis
+- Total packets: [number]
+- IRC C2 traffic: [yes/no, server IP, timestamps]
+- Data exfiltration: [yes/no, size, destination, when?]
+- DNS queries: [suspicious domains?]
+- Key finding: [proof of theft?]
+
+### Timeline (1-2 pages)
+- Link to MASTER_TIMELINE.txt
+- Narrative version of events
+- Show cause → effect relationships
+
+### Correlations (1-2 pages)
+- Link to CORRELATION_MATRIX.txt
+- Explain how evidence supports conclusion
+- Show consistency across multiple labs
+
+### Conclusion (0.5-1 page)
+- Based on ALL evidence, what happened?
+- Who did it? How? When? Why?
+- Confidence level: (strong, moderate, weak)
+- Recommendation: (prosecution, further investigation, acquittal)
+
+### Appendices
+- Link to all CSV files
+- Link to all analysis outputs
+- References to specific findings
+
+---
+
+## 📋 Part 6: Create Summary Checklist
+
+**File:** cases/Final_Report/DELIVERABLES_CHECKLIST.txt
+
 ```
+COMPLETE FORENSIC INVESTIGATION CHECKLIST
 
-**Assignment (With CoC):**
-```bash
-coc-log "cat cases/Final_Report/complete_chain_of_custody.csv" "Consolidated chain of custody from all labs"
-```
+EVIDENCE COLLECTION & CoC:
+☐ Master chain_of_custody.csv contains all 5 labs
+☐ All evidence hashes documented (MD5 and SHA256)
+☐ Analyst names and dates recorded
+☐ Evidence descriptions clear and specific
 
----
+ANALYSIS DOCUMENTATION:
+☐ Master analysis_log.csv contains all commands from 5 labs
+☐ All timestamps UTC format
+☐ All commands include output redirection filenames
+☐ Notes explain purpose of each command
 
-## Writing the Final Report
+FINDINGS:
+☐ USB_Imaging: Files listed and deleted files recovered
+☐ Memory_Forensics: Suspicious processes and network connections documented
+☐ Autopsy_GUI: Timeline and artifact analysis complete
+☐ Email_Logs: Headers, keywords, and recipients identified
+☐ Network_Analysis: IRC, DNS, and exfiltration analyzed
 
-### Structure Template
+SYNTHESIS:
+☐ Master timeline created (MASTER_TIMELINE.txt)
+☐ Correlation matrix shows evidence relationships (CORRELATION_MATRIX.txt)
+☐ Professional report written (INVESTIGATION_REPORT.md)
+☐ Findings support conclusion
+☐ Timeline is consistent across all labs
 
-```markdown
-# CLOUDCORE INC. - INCIDENT INVESTIGATION REPORT
-## Case: CLOUDCORE-2024-INS-001
+REPORT QUALITY:
+☐ Professional tone (formal, objective)
+☐ Evidence cited properly (specific file names, PIDs, timestamps)
+☐ Conclusion is supported by evidence
+☐ No speculation without evidence
+☐ All suspicious findings documented
+☐ Grammar and spelling correct
 
----
-
-## EXECUTIVE SUMMARY (1 page)
-
-**Incident:** Suspected insider data exfiltration
-**Scope:** USB evidence + memory + email + network artifacts
-**Status:** Active investigation
-**Recommendation:** Escalate to law enforcement
-
----
-
-## INVESTIGATION METHODOLOGY (1-2 pages)
-
-**Evidence Examined:**
-- Disk image (Lab 1): deleted files, timestamps
-- Memory dump (Lab 2): running processes, network connections
-- Email/logs (Lab 4): communication patterns
-- Network PCAP (Lab 5): exfiltration traffic
-
-**Tools Used:**
-- Sleuth Kit (disk analysis)
-- Volatility 2 (memory analysis)
-- tshark (network analysis)
-- Autopsy GUI (metadata analysis)
-
-**Limitations:**
-- No write blocker (educational environment)
-- Containerized analysis (not physical forensics)
-- Limited network capture duration
-
----
-
-## DETAILED FINDINGS (3-5 pages)
-
-### Finding 1: Data Staging
-**Source:** Lab 1
-**Details:** project_secrets.zip deleted from user Documents folder
-**Significance:** Suggests deliberate deletion to cover tracks
-**Hash:** [Include hash from Lab 1 output]
-
-### Finding 2: Encryption Activity
-**Source:** Lab 2 Memory Analysis
-**Details:** TrueCrypt.exe process running with hidden volume config
-**Significance:** Preparation for encrypted data transfer
-**PID/Timeline:** [Include from Lab 2 output]
-
-### Finding 3: External Communication
-**Source:** Lab 4 Email Analysis
-**Details:** Email to exfil@personal.com with subject "Project Update"
-**Significance:** Coordination with external recipient
-**Timestamp:** [Include from Lab 4 logs]
-
-### Finding 4: Network Exfiltration
-**Source:** Lab 5 Network Analysis
-**Details:** 50MB HTTP POST to 203.0.113.50:8080 via IRC C2
-**Significance:** Actual data transfer to external server
-**Timeline:** [Include from Lab 5 output, shows 10:32-10:45 AM]
-
-### Finding 5: Timeline Correlation
-**Source:** All Labs
-**Details:** See master_timeline.txt and correlation_analysis.txt
-**Significance:** Proves coordinated, multi-stage attack
-
----
-
-## UNIFIED TIMELINE
-
-See: cases/Final_Report/master_timeline.txt
-
-Key points:
-- 2009-12-01: Data preparation
-- 2009-12-05: Encryption/staging setup
-- 2009-12-06 10:00 AM: Email coordination
-- 2009-12-06 10:32 AM: Network exfiltration begins
-- 2009-12-06 10:45 AM: ~50MB transferred
-- 2009-12-06 10:50 AM: USB device removed
-
----
-
-## CHAIN OF CUSTODY
-
-**Summary:**
-- All evidence hashed on receipt (Lab 1)
-- Analysis commands logged with timestamps (coc-log)
-- Output files preserved with SHA256 hashes
-- No modifications made to original evidence
-
-**Complete CoC:** See cases/Final_Report/complete_chain_of_custody.csv
-
----
-
-## CONCLUSIONS
-
-**Based on comprehensive analysis of all available evidence:**
-
-1. **Insider Threat Confirmed** - Employee had access to stolen data
-2. **Intentional Exfiltration** - Multi-stage attack shows planning
-3. **IRC Botnet Used** - Sophisticated tooling for cover
-4. **Estimated Data Loss** - ~50 MB of proprietary code/client data
-5. **Scalability** - Attack methods could affect other employees
-
----
-
-## RECOMMENDATIONS
-
-1. **Immediate Actions**
-   - Escalate to law enforcement (AFP Cybercrime)
-   - Revoke employee access, preserve equipment
-   - Notify affected clients per Privacy Act
-
-2. **Incident Response**
-   - Forensic report to legal team
-   - Support criminal investigation
-   - Implement network monitoring
-
-3. **Preventive Measures**
-   - Review access controls
-   - Monitor email for external transfers
-   - Implement USB blocking on critical systems
-   - Add IRC C2 detection to IDS
-
----
-
-## APPENDIX
-
-See supporting documents:
-- Lab 1: Disk analysis details (recovered files, hashes)
-- Lab 2: Memory analysis (process tree, network connections)
-- Lab 3: Autopsy findings (file metadata, recovery)
-- Lab 4: Email/log analysis (headers, syslog entries)
-- Lab 5: Network analysis (IRC C2, exfil traffic)
-
----
-
-**Prepared by:** [Your Name], Digital Forensic Analyst
-**Date:** [Today]
-**Case Number:** CLOUDCORE-2024-INS-001
+SUBMISSION:
+☐ All files in cases/Final_Report/
+☐ Report is readable (PDF or Markdown)
+☐ CSV files are valid (can open in Excel/spreadsheet)
+☐ All supporting documents included
 ```
 
 ---
 
-## Creating Your Report
+## 📁 Part 7: Organize Deliverables
 
-**Walkthrough:**
-```bash
-# Copy template and customize
-cp templates/final_case_report.md cases/Final_Report/final_case_report.md
+Final folder structure should look like:
 
-# Edit with your findings
-nano cases/Final_Report/final_case_report.md
 ```
-
-**Assignment (With CoC):**
-```bash
-# Log the report creation/verification
-coc-log "wc -l cases/Final_Report/final_case_report.md" "Verify final report generated"
-coc-log "head -20 cases/Final_Report/final_case_report.md" "Final report header verification"
+cases/Final_Report/
+├── master_chain_of_custody.csv      # All evidence hashes
+├── master_analysis_log.csv          # All commands run
+├── MASTER_TIMELINE.txt              # When did attacks happen?
+├── CORRELATION_MATRIX.txt           # How do labs support each other?
+├── INVESTIGATION_REPORT.md          # Professional final report
+├── DELIVERABLES_CHECKLIST.txt       # Did we complete everything?
+└── [output files from each lab]     # Reference materials
 ```
 
 ---
 
-## Wrap-Up Checklist
+## 🎯 Part 8: Reflect on Investigation Process
 
-Before submission:
+**File:** cases/Final_Report/PROCESS_REFLECTION.txt
 
-- [ ] Master timeline complete (master_timeline.txt)
-- [ ] Correlation analysis finished (correlation_analysis.txt)
-- [ ] Complete CoC assembled (complete_chain_of_custody.csv)
-- [ ] Final report written (final_case_report.md)
-- [ ] All supporting files from Labs 1-5 referenced
-- [ ] CoC logging completed for all analysis
+Questions to answer:
+
+1. **What evidence was MOST important?**
+   - Which single piece of evidence proved guilt?
+   - Why was that more important than others?
+
+2. **What did each lab contribute?**
+   - Could we have solved it with just Lab 1? Lab 2?
+   - Why was having all 5 labs necessary?
+
+3. **What challenges did you face?**
+   - Command syntax errors?
+   - Evidence interpretation?
+   - Thinking like an attacker?
+
+4. **What would you do differently?**
+   - Better search keywords?
+   - Different tools?
+   - Different analysis order?
+
+5. **How confident in your conclusion?**
+   - Strong (multiple corroborating sources)
+   - Moderate (some gaps)
+   - Weak (inconclusive)
+   - Why?
 
 ---
 
-## Why This Matters
+## ✅ Final Deliverables
 
-In real forensic investigations:
-- **Juries don't see labs 1-5 separately** - they see the final report
-- **Chain of custody proves nothing was planted** - critical for prosecution
-- **Timeline integration tells the story** - jury-friendly narrative
-- **Professional presentation** - determines case viability
+**In cases/Final_Report/, you should have:**
+
+- ✅ master_chain_of_custody.csv - All evidence hashes consolidated
+- ✅ master_analysis_log.csv - All commands documented
+- ✅ MASTER_TIMELINE.txt - Attack timeline
+- ✅ CORRELATION_MATRIX.txt - Evidence relationships
+- ✅ INVESTIGATION_REPORT.md - Professional report (2-10 pages)
+- ✅ DELIVERABLES_CHECKLIST.txt - Quality verification
+- ✅ PROCESS_REFLECTION.txt - Your thoughts on investigation
 
 ---
 
-*Congratulations! You've completed a full forensic investigation from evidence collection through final reporting. This is the work of professional forensic analysts.*
+## 📋 Quick Checklist for Report Quality
+
+- [ ] **Professional tone**: Formal, objective, no opinions
+- [ ] **Specific evidence**: All findings cite file names, PIDs, timestamps, IP addresses
+- [ ] **Timeline consistency**: Events make logical sense in order
+- [ ] **Chain of custody**: All evidence properly documented with hashes
+- [ ] **Correlation**: Findings from different labs support each other
+- [ ] **Conclusion clarity**: Reader understands WHO, WHAT, WHEN, WHERE, HOW
+- [ ] **No speculation**: Only facts supported by evidence
+- [ ] **Proper grammar**: Spell-checked and proofread
+
+---
+
+## 📚 Summary
+
+This lab brings all 5 previous investigations together into a unified case narrative. Your report should answer:
+
+**THE 5 W's + H:**
+- **WHO** committed the crime?
+- **WHAT** did they do?
+- **WHEN** did it happen? (timeline)
+- **WHERE** did evidence go?
+- **WHY** did they do it? (motive, if evident)
+- **HOW** did they carry it out? (method)
+
+If your report answers all 6 questions with supporting evidence, you've written a complete forensic investigation!
+
+---
+
+**Congratulations on completing all 6 labs!**
+
+You've now experienced a complete forensic investigation from evidence collection through professional reporting. This is what real-world digital forensics looks like.
+
+Remember: **Documentation is Evidence. Evidence is Truth.**

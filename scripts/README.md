@@ -7,9 +7,10 @@ This directory contains utility scripts for the Forensics Docker Lab. They're or
 ```
 scripts/
 ├── forensics-workstation      ← START HERE (bash/Linux/Mac)
-├── forensics-workstation.ps1  ← START HERE (PowerShell/Windows)
+├── forensics-workstation.bat  ← START HERE (PowerShell/Windows)
 ├── coc-log                     ← Use inside forensic workstation
-└── verify_setup.sh             ← Run once to verify setup
+├── verify_setup.sh             ← Run once to verify setup
+└── instructor/                 ← Instructor-only tools
 ```
 
 ---
@@ -25,7 +26,7 @@ scripts/
 
 **On Windows PowerShell:**
 ```powershell
-.\scripts\forensics-workstation.ps1
+.\scripts\forensics-workstation.bat
 ```
 
 Both scripts:
@@ -66,31 +67,13 @@ This checks:
 - New features (forensics-workstation, coc-log) are ready
 
 ---
-
-## 👨‍🏫 For Instructors
-
-### Creating Evidence Files
-
-**Move to instructor branch first:**
-```bash
-git checkout instructor
-```
-
-**Available tools in `scripts/instructor/`:**
-
 1. **Image Creation (varies by platform)**
-   - `legacy/make_practice_image_container.sh` - Cross-platform (recommended)
-   - `legacy/make_practice_image_simple.sh` - Alternative approach
-   - `legacy/make_practice_image.sh` - Original version (needs sudo)
+   - `scripts/instructor/make_practice_image_container.sh` - Cross-platform (recommended)
 
-2. **E01 Conversion** (multiple approaches in `legacy/`)
-   - `legacy/convert_to_e01_container.sh` - Docker-based (cross-platform)
-   - `legacy/convert_to_e01_fixed.sh` - Improved version
-   - `legacy/convert_to_e01_simple.sh` - Simple version
-
-3. **Utilities**
-   - `instructor/hashlog.py` - Generate hash logs for chain of custody
-   - `legacy/shift_time.sh` - Adjust timestamps on evidence
+2. **E01 Conversion**
+   - `scripts/instructor/convert_to_e01_container.sh` - Docker-based (cross-platform)
+   - `scripts/hashlog.py` - Generate hash logs for chain of custody
+   - `scripts/instructor/shift_time.sh` - Adjust timestamps on evidence
 
 ### Creating/Updating Evidence Images
 
@@ -99,10 +82,10 @@ git checkout instructor
 cd /path/to/forensics-docker-lab
 
 # Create raw disk image with forensic evidence
-./scripts/legacy/make_practice_image_container.sh
+./scripts/instructor/make_practice_image_container.sh
 
 # Convert to E01 format
-./scripts/legacy/convert_to_e01_container.sh
+./scripts/instructor/convert_to_e01_container.sh
 
 # Generate hash logs
 python3 scripts/instructor/hashlog.py evidence/ evidence/hashes.csv SHA256
@@ -114,24 +97,6 @@ python3 scripts/instructor/hashlog.py evidence/ evidence/hashes.csv SHA256
 2. Students download and place in `evidence/` folder
 3. They should NOT clone instructor branch
 4. Main branch is automatically used by default
-
----
-
-## 📚 Legacy Scripts - Reference Only
-
-These are in `scripts/legacy/` for reference and are NOT recommended for new use:
-
-| Script | Purpose | Status |
-|--------|---------|--------|
-| `make_practice_image.sh` | Create practice image (original) | ⚠️ Requires sudo |
-| `make_practice_image_simple.sh` | Create practice image (alternative) | ✓ Works but slower |
-| `make_practice_image_container.sh` | Create practice image (Docker) | ✅ **Recommended** |
-| `convert_to_e01*.sh` | Various E01 conversion methods | ⚠️ Inconsistent |
-| `entrypoint.sh` | Container startup (moved here) | Legacy |
-| `autopsy-entrypoint.sh` | Autopsy GUI entry | Legacy |
-| `diagnose-windows.sh` | Windows diagnostics | Legacy |
-| `shift_time.sh` | Timestamp adjustment | Legacy |
-| `fix-line-endings.sh` | Line ending conversion | Legacy |
 
 ---
 
@@ -160,9 +125,9 @@ These are in `scripts/legacy/` for reference and are NOT recommended for new use
 
 **Usage:**
 ```powershell
-.\scripts\forensics-workstation.ps1
-.\scripts\forensics-workstation.ps1 -AnalystName "Alice Johnson"
-.\scripts\forensics-workstation.ps1 -Help
+.\scripts\forensics-workstation.bat
+.\scripts\forensics-workstation.bat -AnalystName "Alice Johnson"
+.\scripts\forensics-workstation.bat -Help
 ```
 
 **Features:**
@@ -244,69 +209,11 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ---
 
-## 📋 Migration Guide
-
-If you have old scripts using direct Docker commands:
-
-**Old way:**
-```bash
-docker compose run --rm dfir fls -r /evidence/usb.img
-```
-
-**New way (recommended):**
-```bash
-./scripts/forensics-workstation
-# Then inside:
-analyst@forensics-lab:/cases$ fls -r /evidence/usb.img
-analyst@forensics-lab:/cases$ coc-log "fls -r /evidence/usb.img" "listing"
-```
-
-**Benefits:**
-- Immersive DFIR workstation experience
-- Automatic chain of custody logging
-- Analyst identification
-- Better workflow consistency
-
----
-
 ## 🔄 For Script Maintenance
 
 ### Adding New Scripts
 
 1. **Student-facing:** Keep in `scripts/` root directory
 2. **Instructor-only:** Place in `scripts/instructor/`
-3. **Legacy references:** Place in `scripts/legacy/`
 4. **Always:** Include usage comments at top
 
-### Deprecating Scripts
-
-1. Move to `scripts/legacy/`
-2. Update this README with deprecation note
-3. Add comment in script explaining why deprecated
-4. Keep for 1-2 semesters before deletion
-
-### Testing Scripts
-
-```bash
-# Test on bash
-bash scripts/forensics-workstation
-
-# Test on PowerShell
-pwsh scripts/forensics-workstation.ps1
-
-# Verify setup
-./scripts/verify_setup.sh
-```
-
----
-
-## 📞 Questions?
-
-- **Student questions:** See QUICK_REFERENCE.md or README.md
-- **Instructor questions:** Check `scripts/instructor/` or docs/instructor/
-- **Technical issues:** Review TROUBLESHOOTING.md in docs/
-
----
-
-*Last Updated: October 22, 2025*
-*Part of Forensics Docker Lab Polish Initiative*
