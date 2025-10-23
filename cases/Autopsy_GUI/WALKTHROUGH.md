@@ -596,7 +596,7 @@ After this lab:
 2. **Compare with USB_Imaging:** Do GUI results match CLI analysis?
 3. **Document discrepancies:** If findings differ, why? (tool limitation vs. new discovery)
 4. **Prepare report:** Compile summary of all findings for presentation
-5. **Proceed to Email_Logs:** When ready, move on to Email analysis
+5. **Continue with other labs** in the series when ready
 
 **Key question:** Did GUI analysis reveal anything CLI missed? This validates your methodology.
 

@@ -505,7 +505,7 @@ After completing this lab:
    - Did you find TrueCrypt? Check USB_Imaging for encrypted containers
    - Did you find IRC connections? Check Network_Analysis for network traffic
 3. **Document findings in your report**
-4. **Proceed to Autopsy_GUI** when ready
+4. **Continue with other labs** in the series when ready
 
 ---
 

@@ -716,7 +716,7 @@ After this lab:
 1. Review all extracted emails
 2. Identify most suspicious communications
 3. Document sender/recipient patterns
-4. Proceed to Network_Analysis when ready
+4. Continue with other labs in the series when ready
 
 Network traffic analysis will corroborate email findings!
 
