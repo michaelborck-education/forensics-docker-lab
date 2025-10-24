@@ -44,11 +44,11 @@ Use this template for the Final_Report lab, which synthesizes evidence from mult
 
 ### Scope
 
-**Evidence Analyzed**:
+**Evidence Analysed**:
 - Disk image: [Which device/image, hash, size]
 - Memory dump: [Which system, capture time, hash]
 - Network traffic: [Capture duration, packet count, timeframe]
-- Email records: [Mailbox(es) analyzed, date range]
+- Email records: [Mailbox(es) analysed, date range]
 - [Any other evidence sources]
 
 **Labs Completed**:

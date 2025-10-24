@@ -1,8 +1,16 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # Final_Report Lab - Student Walkthrough
 ## Case Consolidation & Professional Report
 
 **Time Estimate:** 3-5 hours
+
 **Difficulty:** Intermediate
+
 **Tools:** Text editor, spreadsheet application, all previous labs
 
 ---
@@ -27,6 +35,7 @@ ls -lh cases/Final_Report/
 ```
 
 You should see:
+
 - **chain_of_custody.csv** - Evidence handling record (from all labs)
 - **analysis_log.csv** - Master command log (optional for consolidation)
 - **lab_report.md** - Available if alternative format needed
@@ -53,6 +62,7 @@ cp templates/final_report_template.md cases/Final_Report/final_report.md
 ```
 
 **Tips for using these files:**
+
 - **chain_of_custody.csv**: Consolidate evidence records from all 5 lab folders. This becomes your master evidence list.
 - **final_report.md**: Use this as your primary template. It's designed for synthesizing evidence from multiple sources into a unified incident narrative.
 - **lab_report.md**: Available if you prefer the individual lab format instead of the comprehensive final report format.
@@ -69,6 +79,7 @@ cases/Network_Analysis/   # Traffic, exfiltration, lab_report.md, chain_of_custo
 ```
 
 **Key documents to review:**
+
 - Each lab's `lab_report.md` for analysis and findings
 - Each lab's `chain_of_custody.csv` for evidence details and hashes
 - Each lab's `analysis_log.csv` for methodology transparency
@@ -80,6 +91,7 @@ cases/Network_Analysis/   # Traffic, exfiltration, lab_report.md, chain_of_custo
 Combine hashes from all 5 labs into a master file.
 
 **Open these files:**
+
 - cases/USB_Imaging/chain_of_custody.csv
 - cases/Memory_Forensics/chain_of_custody.csv
 - cases/Autopsy_GUI/chain_of_custody.csv
@@ -88,6 +100,7 @@ Combine hashes from all 5 labs into a master file.
 
 **In cases/Final_Report/master_chain_of_custody.csv:**
 Add one row for EACH evidence item with:
+
 - Evidence_ID: USB-001, MEMORY-001, EMAIL-001, etc.
 - Date_Received: (when seized)
 - MD5_Hash: (from each lab)
@@ -107,6 +120,7 @@ USB-001,2024-10-20,14:00:00,Field Agent,fc8096...,6ebe35...,Michael,CASE-2024-00
 Combine all commands run across all 5 labs.
 
 **Open these files:**
+
 - cases/USB_Imaging/analysis_log.csv
 - cases/Memory_Forensics/analysis_log.csv
 - cases/Autopsy_GUI/analysis_log.csv
@@ -132,12 +146,14 @@ Case: CLOUDCORE-2024-INS-001
 
 === PHASE 1: PREPARATION ===
 [Date/Time from Lab 1] - Files created on USB
+
 - Evidence: [from USB_Imaging file list]
 - Suspicious files: [project_secrets.zip, client_database.csv, etc.]
 - Timestamp correlation: [were these created same day?]
 
 === PHASE 2: ENCRYPTION/STAGING ===
 [Date/Time from Lab 2] - Memory dump captured
+
 - TrueCrypt.exe running: [yes/no, PID]
 - Network connections: [IRC port 6667?, external IPs?]
 - Timestamp: [when was memory dumped?]
@@ -145,6 +161,7 @@ Case: CLOUDCORE-2024-INS-001
 
 === PHASE 3: COMMUNICATION ===
 [Date/Time from Lab 4] - Emails sent
+
 - Recipients: [external email addresses]
 - Subject: [what was said?]
 - Attachments: [file names, sizes]
@@ -153,6 +170,7 @@ Case: CLOUDCORE-2024-INS-001
 
 === PHASE 4: EXFILTRATION ===
 [Date/Time from Lab 5] - Network traffic
+
 - IRC C2 commands received: [yes/no]
 - Large data transfer detected: [size, destination]
 - Duration: [how long did transfer take?]
@@ -161,12 +179,14 @@ Case: CLOUDCORE-2024-INS-001
 
 === PHASE 5: CLEANUP ===
 [Date/Time from Lab 1] - Files deleted
+
 - Deleted files: [list what was deleted]
 - When: [after exfiltration?]
 - Indicates: [suspect covering tracks]
 
 === CONCLUSION ===
 Timeline shows coordinated, planned attack:
+
 1. Prepare data on USB
 2. Load into memory
 3. Encrypt with TrueCrypt
@@ -188,6 +208,7 @@ Show how findings from different labs support each other.
 EVIDENCE CORRELATION MATRIX
 
 Finding: "project_secrets.zip" file
+
 - Lab 1: Found in recovered files (inode 257)
 - Lab 1: File deleted (marked with *)
 - Lab 4: Referenced in email subject line
@@ -195,12 +216,14 @@ Finding: "project_secrets.zip" file
 → CONCLUSION: Same file from USB → emailed → exfiltrated
 
 Finding: TrueCrypt process
+
 - Lab 2: TrueCrypt.exe running (PID 2048)
 - Lab 2: Network connections from PID 2048 to 8.8.8.8:6667
 - Lab 1: encrypted_container.dat found on USB
 → CONCLUSION: Suspect used TrueCrypt to encrypt stolen data
 
 Finding: IRC C2 Communication
+
 - Lab 2: Memory shows connection to port 6667
 - Lab 5: Network capture shows IRC traffic
 - Lab 5: Commands visible in pcap (if readable)
@@ -216,12 +239,14 @@ STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
 **File:** cases/Final_Report/INVESTIGATION_REPORT.md
 
 ### Executive Summary (1-2 pages)
+
 - What was the incident?
 - What evidence was found?
 - What is the conclusion?
 - Who is responsible?
 
 ### Methodology (1-2 pages)
+
 - What evidence was collected?
 - What tools were used? (Sleuth Kit, Volatility, tshark, Autopsy)
 - What chain of custody procedures were followed?
@@ -229,33 +254,38 @@ STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
 
 ### Findings by Lab (5-8 pages total)
 
-#### Lab 1: Disk Forensics
+#### Lab: Disk Forensics
+
 - Total files on USB: [number]
 - Deleted files recovered: [number]
 - Suspicious files found: [list with evidence]
 - Key artifacts: [what's most incriminating?]
 
-#### Lab 2: Memory Forensics
+#### Lab: Memory Forensics
+
 - OS version: [Windows XP/etc]
 - Total processes: [number]
 - TrueCrypt.exe: [running, PID, timestamp]
 - Network connections: [IRC, external IPs]
 - Key finding: [smoking gun?]
 
-#### Lab 3: GUI Analysis (Autopsy)
+#### Lab: GUI Analysis (Autopsy)
+
 - Total files analyzed: [number]
 - Timeline anomalies: [suspicious clusters?]
 - Metadata patterns: [what do timestamps show?]
 - Key finding: [what did GUI reveal that CLI didn't?]
 
-#### Lab 4: Email Analysis
+#### Lab: Email Analysis
+
 - Total emails: [number]
 - External recipients: [list addresses]
 - Suspicious subjects: [what was discussed?]
 - Attachments: [file names, sizes, when sent?]
 - Key finding: [proof of communication?]
 
-#### Lab 5: Network Analysis
+#### Lab: Network Analysis
+
 - Total packets: [number]
 - IRC C2 traffic: [yes/no, server IP, timestamps]
 - Data exfiltration: [yes/no, size, destination, when?]
@@ -263,22 +293,26 @@ STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
 - Key finding: [proof of theft?]
 
 ### Timeline (1-2 pages)
+
 - Link to MASTER_TIMELINE.txt
 - Narrative version of events
 - Show cause → effect relationships
 
 ### Correlations (1-2 pages)
+
 - Link to CORRELATION_MATRIX.txt
 - Explain how evidence supports conclusion
 - Show consistency across multiple labs
 
 ### Conclusion (0.5-1 page)
+
 - Based on ALL evidence, what happened?
 - Who did it? How? When? Why?
 - Confidence level: (strong, moderate, weak)
 - Recommendation: (prosecution, further investigation, acquittal)
 
 ### Appendices
+
 - Link to all CSV files
 - Link to all analysis outputs
 - References to specific findings
@@ -309,7 +343,7 @@ FINDINGS:
 ☐ Memory_Forensics: Suspicious processes and network connections documented
 ☐ Autopsy_GUI: Timeline and artifact analysis complete
 ☐ Email_Logs: Headers, keywords, and recipients identified
-☐ Network_Analysis: IRC, DNS, and exfiltration analyzed
+☐ Network_Analysis: IRC, DNS, and exfiltration analysed
 
 SYNTHESIS:
 ☐ Master timeline created (MASTER_TIMELINE.txt)
@@ -335,7 +369,7 @@ SUBMISSION:
 
 ---
 
-## 📁 Part 7: Organize Deliverables
+## 📁 Part 7: Organise Deliverables
 
 Final folder structure should look like:
 
@@ -416,6 +450,7 @@ Questions to answer:
 This lab brings all 5 previous investigations together into a unified case narrative. Your report should answer:
 
 **THE 5 W's + H:**
+
 - **WHO** committed the crime?
 - **WHAT** did they do?
 - **WHEN** did it happen? (timeline)

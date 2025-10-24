@@ -1,15 +1,23 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # Network_Analysis Lab - Student Walkthrough
 ## PCAP Network Traffic Analysis
 
 **Time Estimate:** 1.5-2 hours
+
 **Difficulty:** Intermediate
+
 **Tools:** tshark, wireshark, strings, grep
 
 ---
 
 ## 📸 Context: Network Traffic Capture in Forensic Practice
 
-**Important Context:** In this lab, you're analyzing a **network packet capture (PCAP)** file captured from network traffic. In real incident response, network captures provide critical evidence of data exfiltration and attacker communication.
+**Important Context:** In this lab, you're analysing a **network packet capture (PCAP)** file captured from network traffic. In real incident response, network captures provide critical evidence of data exfiltration and attacker communication.
 
 ### Real-World Network Capture Process
 
@@ -57,6 +65,7 @@ In a real incident response, a forensic technician would:
 ### In This Lab
 
 We've **skipped the capture phase** and provided you with a pre-captured PCAP file (`network.cap`). This contains actual network traffic from the Cloudcore incident. You'll analyze:
+
 - **Protocol analysis:** What protocols were used?
 - **Data exfiltration:** Evidence of data leaving the network
 - **C2 Communication:** Command & Control traffic from malware
@@ -64,6 +73,7 @@ We've **skipped the capture phase** and provided you with a pre-captured PCAP fi
 - **Indicators of Compromise (IOCs):** IPs, domains, ports involved
 
 This lab teaches:
+
 - How to read and filter network traffic
 - Identifying C2 (Command & Control) communications
 - Detecting data exfiltration patterns
@@ -73,6 +83,7 @@ This lab teaches:
 ### Key Network Forensics Concepts
 
 **Why Network Forensics?**
+
 - ✓ Shows what data left the network (exfiltration proof)
 - ✓ Identifies attacker infrastructure (C2 servers, IPs)
 - ✓ Reveals attack timeline at network level
@@ -80,6 +91,7 @@ This lab teaches:
 - ✓ Proof of unauthorized data access
 
 **Limitations:**
+
 - ✗ Encrypted traffic (HTTPS, TLS) shows only metadata (not content)
 - ✗ Malware can use obfuscation or tunneling
 - ✗ Legitimate traffic can hide malicious intent
@@ -99,6 +111,7 @@ ls -lh cases/Network_Analysis/
 ```
 
 You should see:
+
 - **chain_of_custody.csv** - Evidence handling record
 - **analysis_log.csv** - Command execution log
 - **lab_report.md** - Report template for your findings
@@ -122,6 +135,7 @@ cp templates/lab_report_template.md cases/Network_Analysis/lab_report.md
 ```
 
 **Tips for using these files:**
+
 - **chain_of_custody.csv**: Edit with spreadsheet app or text editor. Fill in evidence hash, analyst name, case number before beginning.
 - **analysis_log.csv**: Use `coc-log` script inside container to automatically log commands (recommended). If not using coc-log, manually add entries after each command.
 - **lab_report.md**: Use as starting point for your findings report. Replace placeholders with your actual analysis and evidence.
@@ -134,7 +148,9 @@ ls -lh evidence/network.cap
 
 ---
 
-## 🚀 Connecting to the DFIR Workstation
+## 🚀 Connecting to the DFIR Forensic Workstation
+
+The `scripts/forensics-workstation` script provides an immersive forensic environment that hides Docker complexity and simulates logging into a professional forensic workstation.
 
 **On macOS/Linux:**
 ```bash
@@ -146,25 +162,94 @@ ls -lh evidence/network.cap
 .\scripts\forensics-workstation.bat
 ```
 
+You'll see:
+
+1. A welcome banner asking for your analyst name
+2. A lab summary showing all available cases
+3. A connection message, then you'll see the forensic workstation prompt
+
+
 ---
 
-## 📦 Part 1: Chain of Custody
+**CRITICAL:** Before analysing ANY evidence, you must calculate and document hash values. This proves the evidence hasn't been tampered with.
+
+### Step 1: Calculate MD5 Hash
 
 ```bash
-sha256sum /evidence/network.cap
 md5sum /evidence/network.cap
 ```
 
-**📋 Document in chain_of_custody.csv:**
-- Evidence_ID: NETWORK-CAP-001
-- SHA256_Hash: (paste)
-- Evidence_Description: Network packet capture (network.cap)
+**Example md5 Output:**
+```
+5b11bcf700d237fa9cd786eb9b140b68  /evidence/network.cap
+```
+
+**📋 Document in cases/Network_Analysis/chain_of_custody.csv:**
+
+- Evidence_ID: NETWORK-001
+- MD5_Hash: (paste output from running the above command)
+- SHA256_Hash: (you'll add this next)
+- Analyst_Name: (your name)
+- Date_Received: (today's date)
+- Case_Number: CLOUDCORE-2024-INS-001
+- Evidence_Description: Wireshark/Tshark Network Packet Capture
+- Storage_Location: /evidence/network.cap
+
+### Step 2: Calculate SHA256 Hash
+
+```bash
+sha256sum /evidence/network.cap
+```
+
+**Example sha256 Output:**
+```
+2bb66007b2ab2117aec5b7d925b1edc408855ae03ff73c36f7cdb93af6553831  /evidence/network.cap
+```
+
+**📋 Update chain_of_custody.csv:**
+- Add the SHA256_Hash value above
+
+**Why document hashes?**
+
+- **Integrity verification:** Proves evidence hasn't been modified or corrupted
+- **Legal admissibility:** Courts require hash verification for digital evidence
+- **Reproducibility:** Other investigators can verify they're analysing the same evidence
+- **Chain of custody:** Documents the starting point of analysis
+
+
+**📋 Document in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: md5sum /evidence/network.cap
+exit_code: 0
+note: Chain of custody - calculated MD5 hash of network.cap : 5b11bcf700d237fa9cd786eb9b140b68
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: sha256sum /evidence/network.cap
+exit_code: 0
+note: Chain of custody - calculated SHA256 hash of network.cap: 2bb66007b2ab2117aec5b7d925b1edc408855ae03ff73c36f7cdb93af6553831
+```
+
+**Why document commands?**
+
+- **Reproducibility:** Lets others repeat your exact steps to verify findings.
+- **Legal Defensibility:** Creates a transparent, auditable log for court.
+- **Evidence Integrity:** Shows exactly how you interacted with the data.
+- **Accurate Reporting:** Provides the precise technical "how" for your report.
+- **Peer Review & QA:** Allows colleagues to check your process for accuracy.
+- **Contemporaneous Notes:** Logs actions as they happen, preventing memory errors.
+
 
 ---
 
 ## 📊 Part 2: PCAP Summary
 
-**Why this step:** Before analyzing network traffic, you need an overview. What hosts are communicating? How much traffic? This gives context and helps identify suspicious patterns. A sudden spike in outgoing traffic or communication with unknown external hosts is suspicious.
+**Why this step:** Before analysing network traffic, you need an overview. What hosts are communicating? How much traffic? This gives context and helps identify suspicious patterns. A sudden spike in outgoing traffic or communication with unknown external hosts is suspicious.
 
 Get overview of the capture:
 
@@ -184,12 +269,14 @@ file /evidence/network.cap
 ```
 
 **Step 2: Generate host summary**
+
 ```bash
 # Use tshark to get statistics
 tshark -r /evidence/network.cap -q -z ip_hosts,tree > /cases/Network_Analysis/host_summary.txt
 ```
 
 **What this command does:**
+
 - `-r /evidence/network.cap` - Read from the PCAP file (read-only, safe)
 - `-q` - Quiet mode (no packet-by-packet output)
 - `-z ip_hosts,tree` - Generate IP statistics in tree format
@@ -198,6 +285,7 @@ tshark -r /evidence/network.cap -q -z ip_hosts,tree > /cases/Network_Analysis/ho
   - Helps identify which IPs are talking to which
 
 **Why it matters:**
+
 - **Scope:** How many hosts are in the capture? (Few = targeted attack, Many = broader network)
 - **Internal vs. External:** Which IPs are inside vs. outside your network?
 - **Volume patterns:** Which hosts sent/received the most data?
@@ -214,6 +302,7 @@ Host | Packets | Bytes
 ```
 
 **Analysis tips:**
+
 - **Internal IPs** (192.168.x.x, 10.x.x.x, 172.16.x.x) = your network
 - **External IPs** = check if they should be communicating
 - **High packet count** = frequent communication (C2 beacon pattern?)
@@ -232,7 +321,7 @@ note: PCAP file verified and host summary generated - identified X unique hosts,
 
 ## 🔍 Part 3: Identify Suspicious Traffic
 
-**Why this step:** Protocol analysis reveals intent. Attackers must communicate - via DNS (to find command servers), HTTP (to exfiltrate data), SSH (for remote access), etc. By analyzing these protocols, you discover what was actually transmitted and to where.
+**Why this step:** Protocol analysis reveals intent. Attackers must communicate - via DNS (to find command servers), HTTP (to exfiltrate data), SSH (for remote access), etc. By analysing these protocols, you discover what was actually transmitted and to where.
 
 ### Extract DNS Queries
 
@@ -243,6 +332,7 @@ tshark -r /evidence/network.cap -Y "dns" -T fields -e dns.qry.name > /cases/Netw
 ```
 
 **What this command does:**
+
 - `-Y "dns"` - Filter to show only DNS protocol packets
   - DNS queries = requests to resolve domain names to IPs
   - Essential for understanding "what was the attacker looking for?"
@@ -251,6 +341,7 @@ tshark -r /evidence/network.cap -Y "dns" -T fields -e dns.qry.name > /cases/Netw
   - Example: `malware.com`, `c2server.net`, `data-exfil.ru`
 
 **Why it matters:**
+
 - **C2 Infrastructure:** Attackers register domains for C2 servers
   - Suspicious domains: `*.ru`, `*.cn`, unusual names
   - Known bad domains: Compare against threat intelligence databases
@@ -267,6 +358,7 @@ data-exfil.net (SUSPICIOUS - potential data dump)
 ```
 
 **Analysis tips:**
+
 - Look for domains you don't recognize
 - Check for `.ru`, `.cn`, `.ir` TLDs (often associated with malicious activity)
 - Count query frequency (repeated queries = beacon?)
@@ -292,6 +384,7 @@ tshark -r /evidence/network.cap -Y "http" -T fields -e http.host -e http.request
 ```
 
 **What this command does:**
+
 - `-Y "http"` - Filter to show only HTTP protocol packets (not HTTPS/SSL)
   - Note: HTTPS is encrypted - you'll see the connection but not the data
 - `-T fields` - Output as structured fields
@@ -300,6 +393,7 @@ tshark -r /evidence/network.cap -Y "http" -T fields -e http.host -e http.request
   - Example: `/admin/upload.php`, `/api/exfil`, `/data.zip`
 
 **Why it matters:**
+
 - **Visible payloads:** HTTP is unencrypted - you can see actual data
 - **File transfers:** HTTP GET/POST requests show file activity
 - **Exfiltration routes:** Data leaving the network via HTTP
@@ -322,6 +416,7 @@ URI: /receive?data=xyz123 (SUSPICIOUS - data parameter)
 ```
 
 **Analysis tips:**
+
 - Look for unusual file uploads (POST to .php scripts)
 - Note large file downloads (exfiltration)
 - Identify any credentials in URIs (username=admin&password=xxx)
@@ -343,6 +438,7 @@ note: HTTP analysis - extracted X requests, suspicious uploads to: [list], exfil
 **Why this step:** This is critical evidence of malware. Attackers use IRC (Internet Relay Chat) as a C2 (Command & Control) channel - the attacker sends commands to the malware, malware reports back. Finding IRC connections is smoking-gun proof of compromise.
 
 **What is IRC/C2?**
+
 - **IRC:** Legacy chat protocol, uses ports 6667-6669 (often 6667, 6668)
 - **Botnet:** Compromised computer joins IRC channel and waits for commands
 - **Attack proof:** If we find IRC traffic from internal IP to external IRC server = botnet infection
@@ -356,6 +452,7 @@ tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields 
 ```
 
 **What this command does:**
+
 - `-Y "tcp.port==6667 or tcp.port==6668"` - Filter for TCP connections on IRC ports
   - Port 6667: Standard IRC port
   - Port 6668: Alternate IRC port (used by some botnets to evade detection)
@@ -365,6 +462,7 @@ tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields 
 - `-e tcp.dstport` - Destination port (confirm it's 6667 or 6668)
 
 **Why it matters:**
+
 - **Definitive botnet infection:** IRC to external server = malware C2 communication
 - **Compromised host:** Identified which internal IP is infected
 - **Attack timeline:** When did IRC connections start?
@@ -372,6 +470,7 @@ tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields 
 - **Legal evidence:** Clear proof of unauthorized access and control
 
 **Analysis tips:**
+
 - **Look for patterns:**
   - Repeated connections = beacon traffic (checking for commands)
   - Connection to unknown external IP = C2 server
@@ -421,9 +520,10 @@ note: IRC C2 search - [FOUND X connections / NO IRC C2 detected]. If found: infe
 
 ## 📤 Part 5: Detect Data Exfiltration
 
-**Why this step:** This is the smoking gun for data theft. Exfiltration (stealing data) creates distinctive network traffic patterns - large amounts of data flowing OUT of your network to external servers. By analyzing data volume, you prove data left the network.
+**Why this step:** This is the smoking gun for data theft. Exfiltration (stealing data) creates distinctive network traffic patterns - large amounts of data flowing OUT of your network to external servers. By analysing data volume, you prove data left the network.
 
 **What is exfiltration?**
+
 - **Data theft:** Copying sensitive files to external servers
 - **Evidence:** Large outbound traffic (anomalous for normal users)
 - **Proof:** Data left the network during the attack window
@@ -437,6 +537,7 @@ tshark -r /evidence/network.cap -q -z conv,tcp > /cases/Network_Analysis/tcp_con
 ```
 
 **What this command does:**
+
 - `-q` - Quiet mode
 - `-z conv,tcp` - Generate TCP conversation statistics
   - Shows every unique TCP connection (source IP + port → destination IP + port)
@@ -464,6 +565,7 @@ cat /cases/Network_Analysis/tcp_conversations.txt | sort -k5 -h
 ```
 
 **Analysis tips:**
+
 - **Large outbound transfers** = potential exfiltration
   - Normal: 100KB-1MB (email, web browsing)
   - Suspicious: 10MB+ (compressed archive)
@@ -499,6 +601,7 @@ note: TCP conversation analysis - identified X connections. Exfiltration found: 
 ```
 
 **Look for:**
+
 - **Abnormally large data volumes** (>10MB for single connection)
 - **Asymmetric transfers** (much more OUT than IN)
 - **Connections to external IPs** (especially unknown/suspicious IPs)
@@ -512,6 +615,7 @@ note: TCP conversation analysis - identified X connections. Exfiltration found: 
 **Why this step:** Deep packet inspection shows actual data content (for unencrypted protocols). This reveals what information was stolen, what commands were sent, exact attacker communications. This is the detailed proof needed for legal proceedings.
 
 **What is packet payload analysis?**
+
 - **Payload:** The actual data inside the network packet (email text, file content, commands, etc.)
 - **Encrypted vs. Plaintext:**
   - HTTPS/SSH = encrypted (payload hidden)
@@ -526,6 +630,7 @@ tshark -r /evidence/network.cap -Y "ip.addr==192.168.1.100" -T text > /cases/Net
 ```
 
 **What this command does:**
+
 - `-Y "ip.addr==192.168.1.100"` - Filter for packets from/to specific IP
   - Replace `192.168.1.100` with the IP you identified earlier
 - `-T text` - Output in readable text format
@@ -533,6 +638,7 @@ tshark -r /evidence/network.cap -Y "ip.addr==192.168.1.100" -T text > /cases/Net
   - Unlike `-T fields`, this shows the actual content
 
 **Why it matters:**
+
 - **See actual commands:** If IRC C2 found, read the attacker commands
 - **Recover stolen data:** If HTTP exfiltration found, see the file contents
 - **Credential theft:** Plaintext passwords in HTTP requests
@@ -553,10 +659,12 @@ tshark -r /evidence/network.cap -Y "smtp" -T text
 ```
 
 **Analysis tips:**
+
 - **Grep for keywords:**
   ```bash
   grep -i "password\|secret\|confidential" /cases/Network_Analysis/suspicious_ip_packets.txt
   ```
+
 - **Look for file content:**
   - Binary files appear as hex dumps
   - Text files appear in plaintext
@@ -590,6 +698,7 @@ grep -i "password\|secret\|confidential\|exfil" /cases/Network_Analysis/suspicio
 **Why this step:** Timing is critical forensic evidence. Attackers work during specific windows (off-hours, during business hours for cover, etc.). Timeline analysis shows WHEN each event happened, revealing patterns that prove coordination and planning.
 
 **What is network timeline analysis?**
+
 - **TCP SYN packets:** The beginning of every TCP connection (handshake)
 - **Timestamps:** When each connection started
 - **Pattern analysis:** Clusters of activity reveal planned attacks vs. random traffic
@@ -603,6 +712,7 @@ tshark -r /evidence/network.cap -Y "tcp.flags.syn==1" -T fields -e frame.time -e
 ```
 
 **What this command does:**
+
 - `-Y "tcp.flags.syn==1"` - Filter for TCP SYN packets only
   - SYN = synchronization flag (first packet of connection)
   - Each new connection starts with exactly one SYN
@@ -614,6 +724,7 @@ tshark -r /evidence/network.cap -Y "tcp.flags.syn==1" -T fields -e frame.time -e
 - `-e tcp.dstport` - Destination port (what service)
 
 **Why it matters:**
+
 - **When did attack start?** First suspicious connection = attack window opening
 - **Attack duration:** Last suspicious connection = attack window closing
 - **Patterns prove planning:**
@@ -623,6 +734,7 @@ tshark -r /evidence/network.cap -Y "tcp.flags.syn==1" -T fields -e frame.time -e
 - **Correlation evidence:** Does network timeline match memory/disk evidence?
 
 **Analysis tips:**
+
 - **Look for patterns in timestamps:**
   - **Early morning 2-4 AM** = automated attack or attacker in different timezone
   - **Business hours** = human attacker or attempt to blend in
@@ -683,6 +795,7 @@ note: Network timeline - attack window [START time] to [END time]. First C2: [ti
 **Why this step:** No single piece of evidence proves a crime. Correlation across multiple sources creates an unbreakable case. When network, disk, memory, and email evidence all point to the same events at the same times, you've proven the attack conclusively.
 
 **What is evidence correlation?**
+
 - **Triangulation:** Multiple independent sources confirming same event
 - **Strength:** One piece = suspicious, three pieces = proof
 - **Timeline:** Events must occur at consistent times across all evidence sources
@@ -704,6 +817,7 @@ NETWORK FINDINGS CORRELATION
 
 === IRC C2 TRAFFIC ===
 Found: [yes/no]
+
   - When: [timestamp from network timeline]
   - From: [internal IP from network]
   - To: [IRC server IP]
@@ -715,6 +829,7 @@ Found: [yes/no]
 
 === DATA EXFILTRATION ===
 Found: [yes/no]
+
   - Size: [___MB] exfiltrated
   - When: [timestamp]
   - To: [external IP]
@@ -803,8 +918,9 @@ exit
 ```
 
 **What happens:**
+
 - All analysis scripts and tools are shut down cleanly
-- Output files are finalized and saved to `/cases/Network_Analysis/`
+- Output files are finalised and saved to `/cases/Network_Analysis/`
 - DFIR workstation container stops
 - You're back at your host machine command prompt
 - Case is closed and ready for reporting
@@ -898,6 +1014,7 @@ Analysis Date: 2024-10-24
 Analyst: [Your Name]
 
 KEY FINDINGS:
+
 1. IRC C2 DETECTED: YES
    - Compromised Host: 192.168.1.100
    - C2 Server: 203.0.113.50:6667
@@ -935,6 +1052,7 @@ Data was successfully exfiltrated and mailed to attacker
 **Problem:** `tshark` says file is corrupted or not a PCAP file
 
 **Solutions:**
+
 - Verify file format: `file /evidence/network.cap`
   - Should show: "tcpdump capture file"
 - Check if file is readable: `ls -la /evidence/network.cap`
@@ -945,6 +1063,7 @@ Data was successfully exfiltrated and mailed to attacker
 **Problem:** `irc_traffic.txt` is empty despite expecting C2
 
 **Solutions:**
+
 - C2 might use different port (not 6667/6668)
   - Try: `tshark -r /evidence/network.cap -Y "tcp.port==6665 or tcp.port==6666 or tcp.port==6669"`
 - C2 might use different protocol (HTTP, DNS tunneling, custom)
@@ -957,6 +1076,7 @@ Data was successfully exfiltrated and mailed to attacker
 **Problem:** `tshark: command not found`
 
 **Solutions:**
+
 - Verify you're inside the workstation: `pwd` should show `/` not your home
 - Check if tool is installed: `which tshark`
 - If missing, ensure workstation container is running properly
@@ -966,6 +1086,7 @@ Data was successfully exfiltrated and mailed to attacker
 **Problem:** `tcp_conversations.txt` is 10MB+ or commands are hanging
 
 **Solutions:**
+
 - This is normal for large captures (1000+ packets)
 - Let commands complete (can take 5-10 minutes for large files)
 - Redirect output to files rather than printing to terminal
@@ -976,6 +1097,7 @@ Data was successfully exfiltrated and mailed to attacker
 **Problem:** All output files are empty
 
 **Solutions:**
+
 - Verify PCAP file has data: `tshark -r /evidence/network.cap | head -5`
 - Check if file is too small (might be empty): `ls -lh /evidence/network.cap`
 - Try basic statistics: `tshark -r /evidence/network.cap -q -z ip_hosts,tree`
@@ -1033,6 +1155,7 @@ exit
 ```
 
 **Expected execution time:** 30-60 minutes total
+
 - Host summary: 1-2 minutes
 - DNS extraction: 1-2 minutes
 - HTTP extraction: 1-2 minutes
@@ -1073,12 +1196,14 @@ This lab teaches you how network evidence reveals attack patterns. In real inves
    - Combined with disk/memory evidence = bulletproof case
 
 **Key insights:**
+
 - **Protocol analysis reveals attack type:** IRC = botnet, HTTP = web shell, DNS = tunneling
 - **Data volume proves intent:** 1MB = accidental, 100MB = deliberate theft
 - **Timeline proves coordination:** Events at same time across multiple systems = planned attack
 - **No encryption = no mystery:** Plaintext protocols expose attacker completely
 
 **Challenge questions:**
+
 - Where did the data go? (destination IP identification)
 - When did the attack happen? (timestamp analysis)
 - How much data was stolen? (data volume calculation)

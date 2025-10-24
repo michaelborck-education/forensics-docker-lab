@@ -1,15 +1,23 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # Email_Logs Lab - Student Walkthrough
 ## Email & System Log Analysis
 
 **Time Estimate:** 1.5-2.5 hours
+
 **Difficulty:** Intermediate
+
 **Tools:** grep, awk, Python, text analysis tools
 
 ---
 
 ## 📸 Context: How Email and Logs are Captured (In Real Forensic Practice)
 
-**Important Context:** In this lab, you're analyzing a **pre-captured email mailbox** (`mail.mbox`) and system logs. In real incident response, email and logs are extracted from live systems using forensically sound methods.
+**Important Context:** In this lab, you're analysing a **pre-captured email mailbox** (`mail.mbox`) and system logs. In real incident response, email and logs are extracted from live systems using forensically sound methods.
 
 ### Real-World Email & Log Capture Process
 
@@ -34,7 +42,7 @@ In a real incident response, a forensic technician would:
      - **wevtutil** (Windows) - Event log export
      - **rsync/tar** (Linux) - Preserve permissions and timestamps
      - **FTK Imager** - Can extract logs from disk images
-     - **Splunk/ELK** - Export from centralized logging
+     - **Splunk/ELK** - Export from centralised logging
    - Document log sources and date ranges captured
 
 3. **Verification:**
@@ -54,16 +62,19 @@ In a real incident response, a forensic technician would:
 ### In This Lab
 
 We've **skipped the export/capture phase** and provided you with:
+
 - Pre-captured email mailbox (`mail.mbox` in standard mbox format)
-- Analyzed email evidence from the Cloudcore incident
+- Analysed email evidence from the Cloudcore incident
 
 This lets you focus on:
+
 - Email analysis
 - Evidence interpretation
 - Timeline correlation
 - Investigating data exfiltration
 
 But remember: In real forensics, email capture is CRITICAL because:
+
 - ✓ Email servers can be modified (cover-up attempts)
 - ✓ Hashing proves email integrity during export
 - ✓ Chain of custody documents access to email system
@@ -86,6 +97,7 @@ ls -lh cases/Email_Logs/
 ```
 
 You should see:
+
 - **chain_of_custody.csv** - Evidence handling record
 - **analysis_log.csv** - Command execution log
 - **lab_report.md** - Report template for your findings
@@ -109,6 +121,7 @@ cp templates/lab_report_template.md cases/Email_Logs/lab_report.md
 ```
 
 **Tips for using these files:**
+
 - **chain_of_custody.csv**: Edit with spreadsheet app or text editor. Fill in evidence hash, analyst name, case number before beginning.
 - **analysis_log.csv**: Use `coc-log` script inside container to automatically log commands (recommended). If not using coc-log, manually add entries after each command.
 - **lab_report.md**: Use as starting point for your findings report. Replace placeholders with your actual analysis and evidence.
@@ -123,7 +136,9 @@ ls -lh evidence/
 
 ---
 
-## 🚀 Connecting to the DFIR Workstation
+## 🚀 Connecting to the DFIR Forensic Workstation
+
+The `scripts/forensics-workstation` script provides an immersive forensic environment that hides Docker complexity and simulates logging into a professional forensic workstation.
 
 **On macOS/Linux:**
 ```bash
@@ -135,11 +150,18 @@ ls -lh evidence/
 .\scripts\forensics-workstation.bat
 ```
 
+You'll see:
+
+1. A welcome banner asking for your analyst name
+2. A lab summary showing all available cases
+3. A connection message, then you'll see the forensic workstation prompt
+
+
 ---
 
 ## 📧 Part 1: Chain of Custody - Hash Email Evidence
 
-**CRITICAL:** Before analyzing ANY evidence, calculate and document hash values. This proves the evidence hasn't been tampered with.
+**CRITICAL:** Before analysing ANY evidence, calculate and document hash values. This proves the evidence hasn't been tampered with.
 
 ### Step 1: Calculate MD5 Hash
 
@@ -153,11 +175,16 @@ md5sum /evidence/mail.mbox
 ```
 
 **📋 Document in cases/Email_Logs/chain_of_custody.csv:**
+
 - Evidence_ID: EMAIL-001
-- MD5_Hash: (paste the hash from above)
+- MD5_Hash: (paste the hash from running the above command)
 - SHA256_Hash: (you'll add this next)
 - Analyst_Name: (your name)
 - Date_Received: (today's date)
+- Case_Number: CLOUDCORE-2024-INS-001
+- Evidence_Description: Email Capture (mbox format)
+- Storage_Location: /evidence/mail.mbox
+
 
 ### Step 2: Calculate SHA256 Hash
 
@@ -167,16 +194,17 @@ sha256sum /evidence/mail.mbox
 
 **Example Output:**
 ```
-45ae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a  /evidence/mail.mbox
+4bae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a  /evidence/mail.mbox
 ```
 
 **📋 Update chain_of_custody.csv:**
 - Add the SHA256_Hash value above
 
 **Why document hashes?**
+
 - **Integrity verification:** Proves evidence hasn't been modified or corrupted
 - **Legal admissibility:** Courts require hash verification for digital evidence
-- **Reproducibility:** Other investigators can verify they're analyzing the same evidence
+- **Reproducibility:** Other investigators can verify they're analysing the same evidence
 - **Chain of custody:** Documents the starting point of analysis
 
 **📋 Document in analysis_log.csv:**
@@ -194,8 +222,17 @@ timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: sha256sum /evidence/mail.mbox
 exit_code: 0
-note: Chain of custody - calculated SHA256 hash of mail.mbox: 45ae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a
+note: Chain of custody - calculated SHA256 hash of mail.mbox: 4bae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a
 ```
+
+**Why document commands?**
+
+- **Reproducibility:** Lets others repeat your exact steps to verify findings.
+- **Legal Defensibility:** Creates a transparent, auditable log for court.
+- **Evidence Integrity:** Shows exactly how you interacted with the data.
+- **Accurate Reporting:** Provides the precise technical "how" for your report.
+- **Peer Review & QA:** Allows colleagues to check your process for accuracy.
+- **Contemporaneous Notes:** Logs actions as they happen, preventing memory errors.
 
 ---
 
@@ -203,6 +240,7 @@ note: Chain of custody - calculated SHA256 hash of mail.mbox: 45ae66a11ff995a1a6
 
 **Why this step matters:**
 Email headers are the "metadata" of communication - they show who contacted whom, when, about what, and whether evidence was attached. In insider threat cases, email headers often provide direct proof of intent and knowledge of wrongdoing. We're looking for:
+
 - Communications to external addresses (exfiltration indicator)
 - Timing patterns (coordinated attacks, specific dates)
 - Subject lines that seem innocent but hide suspicious activity
@@ -277,6 +315,7 @@ Subject: Project Update
 
 **Why this step matters:**
 Keyword searching helps identify emails that discuss sensitive topics. Criminals and insider threats often use specific language patterns:
+
 - "confidential", "secret", "do not forward" (data they know is sensitive)
 - "export", "backup", "archive" (exfiltration terminology)
 - "password", "credential", "access" (stealing authentication)
@@ -353,6 +392,7 @@ Attached: project_secrets.zip
 
 **Why this step matters:**
 Once we've identified suspicious emails via headers and keywords, we need to read the complete messages. Individual emails show:
+
 - Full message bodies (intent, planning, coordination)
 - Actual attachment names and sizes
 - Complete recipient lists (did they include BCC'd addresses?)
@@ -410,10 +450,11 @@ email_3
 
 ---
 
-## 📝 Part 5: Analyze Email Content
+## 📝 Part 5: Analyse Email Content
 
 **Why this step matters:**
 Now that we have individual emails, we can do detailed analysis. We're looking for:
+
 - Specific suspicious communications (intent)
 - Attachment evidence (what data was exfiltrated?)
 - Timeline patterns (when did suspicious activity occur?)
@@ -451,6 +492,7 @@ note: EVIDENCE ANALYSIS - Email from alex@cloudcore.com to exfil@personal.com, S
 ```
 
 **Questions to answer:**
+
 1. **How many emails total?** (count email_* files)
 2. **Which are suspicious?** (emails to external domains, with attachments, mentioning secrets)
 3. **What was attached?** (look for attachment names and descriptions)
@@ -458,6 +500,7 @@ note: EVIDENCE ANALYSIS - Email from alex@cloudcore.com to exfil@personal.com, S
 5. **Intent:** Do the emails show knowledge of wrongdoing? ("Project Update" as disguise, sending to personal account)
 
 **In this lab's evidence, look for:**
+
 - Email from alex@cloudcore.com to exfil@personal.com (personal external account = red flag)
 - Subject line "Project Update" (innocent-sounding disguise)
 - Attachment: project_secrets.zip (data exfiltration)
@@ -490,6 +533,7 @@ Forensic investigators have two tools available:
 You've already done this in Parts 2-5. The manual approach is excellent for understanding email structure and teaches forensic thinking.
 
 **Pros:**
+
 - ✓ Learn exactly how email files work
 - ✓ Understand each field (From, To, Date, Subject, Attachments)
 - ✓ See the evidence directly (detective-like approach)
@@ -498,6 +542,7 @@ You've already done this in Parts 2-5. The manual approach is excellent for unde
 - ✓ Full transparency (jury sees the actual analysis)
 
 **Cons:**
+
 - ✗ Time-consuming for large mailboxes (1000+ emails)
 - ✗ Manual extraction prone to human error
 - ✗ Difficult to find patterns across many emails
@@ -563,6 +608,7 @@ note: COMPARISON - Ran automated analysis script to verify manual findings and d
 ```
 
 **Pros of Script Approach:**
+
 - ✓ Fast analysis of large mailboxes
 - ✓ Consistent pattern detection (no human variation)
 - ✓ Easy to modify for different keywords
@@ -570,6 +616,7 @@ note: COMPARISON - Ran automated analysis script to verify manual findings and d
 - ✓ Good for initial triage of enterprise environments
 
 **Cons of Script Approach:**
+
 - ✗ Requires understanding Python code
 - ✗ Script assumptions might miss evidence
 - ✗ Black box approach (jury doesn't see how detection works)
@@ -580,6 +627,7 @@ note: COMPARISON - Ran automated analysis script to verify manual findings and d
 
 **For Students:**
 Use the manual Unix approach (Parts 2-5) because:
+
 1. Learn how email evidence actually works
 2. Develop forensic intuition and pattern recognition
 3. Can explain each step to a jury
@@ -587,6 +635,7 @@ Use the manual Unix approach (Parts 2-5) because:
 
 **In Real Forensic Work:**
 Use BOTH approaches:
+
 1. **First:** Python script for fast triage of large dataset
 2. **Second:** Manual analysis of suspicious emails identified by script
 3. **Third:** Manual Unix commands to verify script findings and document evidence
@@ -610,9 +659,9 @@ python3 /cases/Email_Logs/analyse_emails.py
 
 ---
 
-## 📋 Part 6: Analyze System Logs (Optional)
+## 📋 Part 6: Analyse System Logs (Optional)
 
-If log files exist, analyze them:
+If log files exist, analyse them:
 
 ```bash
 # Check what logs are available
@@ -718,16 +767,19 @@ Document your findings:
 ## 🆘 Troubleshooting
 
 ### "No mail.mbox file"
+
 - Check evidence/ folder exists
 - Verify file is named exactly mail.mbox
 - Check file permissions
 
 ### "Split command doesn't work"
+
 - Use alternative: `awk` to split emails
 - Or use Python script to parse mbox files
 - Ask instructor for email parsing script
 
 ### "grep finds nothing"
+
 - Keywords might use different case or spelling
 - Try broader search patterns
 - Check file actually contains readable text

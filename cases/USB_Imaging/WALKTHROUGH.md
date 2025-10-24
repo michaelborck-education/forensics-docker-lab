@@ -1,15 +1,23 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # USB_Imaging Lab - Student Walkthrough
 ## Evidence Triage & Deleted File Recovery
 
 **Time Estimate:** 2-3 hours
+
 **Difficulty:** Beginner
+
 **Tools:** Sleuth Kit (fls, icat, fsstat), ewf-tools, strings, grep
 
 ---
 
 ## 📸 Context: How Evidence is Captured (In Real Forensic Practice)
 
-**Important Context:** In this lab, you're analyzing a **pre-captured evidence image** (`usb.E01`). In real forensic investigations, the imaging process is critical and happens BEFORE analysis.
+**Important Context:** In this lab, you're analysing a **pre-captured evidence image** (`usb.E01`). In real forensic investigations, the imaging process is critical and happens BEFORE analysis.
 
 ### Real-World Evidence Capture Process
 
@@ -45,11 +53,13 @@ In a real incident response, a forensic technician would:
 ### In This Lab
 
 We've **skipped the capture phase** and provided you with a pre-captured image (`usb.E01`). This lets you focus on:
+
 - Analysis skills
 - Forensic reasoning
 - Evidence interpretation
 
 But remember: In real forensics, the imaging step is CRITICAL because:
+
 - ✓ Write blockers prevent accidental modification
 - ✓ Hashing proves evidence integrity
 - ✓ Chain of custody documents who handled evidence
@@ -69,6 +79,7 @@ ls -lh cases/USB_Imaging/
 ```
 
 You should see:
+
 - **chain_of_custody.csv** - Evidence handling record
 - **analysis_log.csv** - Command execution log
 - **lab_report.md** - Report template for your findings
@@ -92,6 +103,7 @@ cp templates/lab_report_template.md cases/USB_Imaging/lab_report.md
 ```
 
 **Tips for using these files:**
+
 - **chain_of_custody.csv**: Edit with spreadsheet app or text editor. Fill in evidence hash, analyst name, case number before beginning.
 - **analysis_log.csv**: Use `coc-log` script inside container to automatically log commands (recommended). If not using coc-log, manually add entries after each command.
 - **lab_report.md**: Use as starting point for your findings report. Replace placeholders with your actual analysis and evidence.
@@ -126,6 +138,7 @@ The `scripts/forensics-workstation` script provides an immersive forensic enviro
 ```
 
 You'll see:
+
 1. A welcome banner asking for your analyst name
 2. A lab summary showing all available cases
 3. A connection message, then you'll see the forensic workstation prompt
@@ -136,7 +149,7 @@ You'll see:
 
 ## 📦 Part 1: Chain of Custody - Verify Evidence Integrity
 
-**CRITICAL:** Before analyzing ANY evidence, you must calculate and document hash values. This proves the evidence hasn't been tampered with.
+**CRITICAL:** Before analysing ANY evidence, you must calculate and document hash values. This proves the evidence hasn't been tampered with.
 
 ### Step 1: Calculate MD5 Hash
 
@@ -146,15 +159,20 @@ md5sum /evidence/usb.E01
 
 **Example Output:**
 ```
-6a4ae5319e4c1757793dec70d5746703  /evidence/usb.E01
+6b4ae5319e4c1757793dec70d5746703  /evidence/usb.E01
 ```
 
 **📋 Document in cases/USB_Imaging/chain_of_custody.csv:**
+
 - Evidence_ID: USB-001
-- MD5_Hash: (paste the hash from above)
+- MD5_Hash: (paste output for the above command)
 - SHA256_Hash: (you'll add this next)
 - Analyst_Name: (your name)
 - Date_Received: (today's date)
+- Case_Number: CLOUDCORE-2024-INS-001
+- Evidence_Description: Encase E01 image of USB drive
+- Storage_Location: /evidence/usb.E01
+
 
 ### Step 2: Calculate SHA256 Hash
 
@@ -164,11 +182,47 @@ sha256sum /evidence/usb.E01
 
 **Example Output:**
 ```
-49a0bc914cc6f02bdb96e20c1081755ddb5ee7a653e60f088b6d680e07f722b2  /evidence/usb.E01
+4ba0bc914cc6f02bdb96e20c1081755ddb5ee7a653e60f088b6d680e07f722b2  /evidence/usb.E01
 ```
 
 **📋 Update chain_of_custody.csv:**
 - Add the SHA256_Hash value above
+
+
+**Why document hashes?**
+
+- **Integrity verification:** Proves evidence hasn't been modified or corrupted
+- **Legal admissibility:** Courts require hash verification for digital evidence
+- **Reproducibility:** Other investigators can verify they're analysing the same evidence
+- **Chain of custody:** Documents the starting point of analysis
+
+
+**📋 Document in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: md5sum /evidence/usb.E01
+exit_code: 0
+note: Chain of custody - calculated MD5 hash of usb.E01 : 83a0f673cada8bb15d22dcfbc4cfba18
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: sha256sum /evidence/usb.E01
+exit_code: 0
+note: Chain of custody - calculated SHA256 hash of usb.E01: 45ae66a11ff995a1a6e71484202418358c4531659dffa18eb21b1e1c335e8c7a
+```
+
+**Why document commands?**
+
+- **Reproducibility:** Lets others repeat your exact steps to verify findings.
+- **Legal Defensibility:** Creates a transparent, auditable log for court.
+- **Evidence Integrity:** Shows exactly how you interacted with the data.
+- **Accurate Reporting:** Provides the precise technical "how" for your report.
+- **Peer Review & QA:** Allows colleagues to check your process for accuracy.
+- **Contemporaneous Notes:** Logs actions as they happen, preventing memory errors.
 
 ---
 
@@ -206,7 +260,7 @@ total 0
 
 ---
 
-## 🗂️ Part 3: Analyze File System Structure
+## 🗂️ Part 3: Analyse File System Structure
 
 **Why this step matters:**
 Before we can list files, we need to understand the filesystem structure. Is it FAT32? NTFS? What's the cluster size? These details affect how we recover deleted files and interpret timestamps. We also check if the drive has multiple partitions - some USB drives have hidden recovery partitions.
@@ -221,6 +275,7 @@ fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
 ```
 
 **What this tells us:**
+
 - **File System Type:** FAT32, NTFS, exFAT, etc.
 - **Volume Label:** Name of the USB drive
 - **Cluster Size:** How data is grouped (important for recovery)
@@ -258,12 +313,14 @@ mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
 
 **What this tells us:**
 The `mmls` command analyzes the Master Boot Record (MBR) and partition table. Professional USB drives might have:
+
 - Multiple partitions (data + recovery)
 - Hidden partitions (for firmware)
 - No partition table (raw FAT32, common on simple USB drives)
 
 **Why we run it:**
 An experienced investigator doesn't assume - they verify. We run mmls to:
+
 1. Confirm there's only ONE filesystem (not multiple partitions)
 2. Document what we found for the investigation report
 3. Ensure we're not missing hidden partitions with deleted data
@@ -291,6 +348,7 @@ cat /cases/USB_Imaging/filesystem_info.txt
 ```
 
 **Key Questions to Ask:**
+
 - How much free space is on the drive?
 - Were files deleted recently (high free space = yes)?
 - Is the filesystem FAT32 or something else?
@@ -302,6 +360,7 @@ cat /cases/USB_Imaging/filesystem_info.txt
 
 **Why this step matters:**
 This is the MOST IMPORTANT step in USB forensics. Suspects delete files thinking they're gone, but FAT32 doesn't actually erase the data - it just marks the clusters as "free". The `fls` command reads the FAT and recovers the references to deleted files BEFORE we even recover the data. This tells us:
+
 1. What files were on the drive (including deleted ones)
 2. Their original locations and timestamps
 3. How recently they were deleted (fragmentation level)
@@ -317,15 +376,18 @@ fls -r -d /tmp/ewf/ewf1 > /cases/USB_Imaging/file_list.txt
 ```
 
 **What the flags do:**
+
 - `-r`: recursive (scan all subdirectories)
 - `-d`: show deleted files (marked with `*` in the output)
 
 **Understanding the output format:**
 ```
 d/d 3:  Documents/
+
 + r/r 4: Documents/project.xlsx (recovered)
 - r/r 5: Documents/secret.txt (DELETED - marked with -)
 ```
+
 - `d/d`: directory
 - `r/r`: regular file
 - `+`: allocated (active file)
@@ -343,7 +405,7 @@ note: List all files (active and deleted). The '-' prefix indicates deleted file
 ### Step 2: Extract Just the Deleted Files
 
 **Why separate them:**
-It's easier to analyze if we create a focused list of ONLY the deleted files. These are the suspicious ones.
+It's easier to analyse if we create a focused list of ONLY the deleted files. These are the suspicious ones.
 
 ```bash
 grep "\* " /cases/USB_Imaging/file_list.txt > /cases/USB_Imaging/deleted_files.txt
@@ -369,6 +431,7 @@ wc -l /cases/USB_Imaging/deleted_files.txt  # Count deleted files
 
 **Forensic Analysis - What to look for:**
 Files that are INTENTIONALLY deleted (vs. accidental) often follow patterns:
+
 - **Data files:** `.xlsx`, `.csv`, `.json`, `.xml` - Why delete financial/project data?
 - **Documents:** `.txt`, `.docx`, `.pdf` - Confidential information?
 - **Databases:** `.db`, `.pst`, `.sqlite` - Customer records? Secrets?
@@ -377,6 +440,7 @@ Files that are INTENTIONALLY deleted (vs. accidental) often follow patterns:
 - **Scripts:** `.py`, `.ps1`, `.vbs` - Automation for theft/vandalism?
 
 **Red Flags for Investigation:**
+
 - Deleted files grouped by type (e.g., all .xlsx files deleted)
 - Large archive files (.zip) deleted
 - Multiple files deleted at same timestamp (mass deletion = cover-up?)
@@ -419,6 +483,7 @@ Plus Apple system files (`.fseventsd` directory and related files).
 5. **Root directory file:** `_lag.txt` (possibly `flag.txt` with first character corrupted) - added to curiosity
 
 **Questions for your investigation:**
+
 - What's in these deleted files? (recover them in Part 5)
 - When were they deleted? (check timestamps in recovered files)
 - Does the filename `flag.txt` relate to captured credentials? Secrets?
@@ -434,6 +499,7 @@ Now that we know WHICH files were deleted, we need to READ their content. Delete
 
 **How we know to do this:**
 Professional forensic investigators use TWO complementary approaches:
+
 1. **icat (direct extraction):** Fast, targeted extraction of specific files by inode
 2. **tsk_recover (bulk recovery):** Recover ALL deleted files for comprehensive analysis
 
@@ -450,6 +516,7 @@ The `icat` command (inode cat) reads file data directly from disk using the inod
 **Step A1: Extract Suspicious Files by Inode**
 
 From your `file_list.txt`, you identified these suspicious deleted files:
+
 - Inode 375: `home/alex/Documents/project_secrets.txt`
 - Inode 663: `tmp/email_draft.txt`
 - Inode 669: `tmp/flag_backup.txt`
@@ -505,6 +572,7 @@ note: Viewed extracted content - contains [BRIEF SUMMARY: what was in file]
 ```
 
 **Why document every command?**
+
 - **Reproducibility:** Another investigator can run the exact same commands
 - **Chain of Custody:** Proves what you did and when you did it
 - **Verification:** Someone can verify your output matches theirs
@@ -512,6 +580,7 @@ note: Viewed extracted content - contains [BRIEF SUMMARY: what was in file]
 - **Peer review:** Colleagues can audit your investigative steps
 
 **Advantages of icat approach:**
+
 - ✓ Fast (no bulk recovery overhead)
 - ✓ Targeted (only get what you need)
 - ✓ Clean (minimal filesystem clutter)
@@ -523,7 +592,7 @@ note: Viewed extracted content - contains [BRIEF SUMMARY: what was in file]
 
 **When to use:** When you want comprehensive recovery and need files for reporting/archiving
 
-`tsk_recover` extracts ALL deleted files at once, creating actual files on disk that you can analyze with standard Linux tools (cat, grep, strings, file, etc.).
+`tsk_recover` extracts ALL deleted files at once, creating actual files on disk that you can analyse with standard Linux tools (cat, grep, strings, file, etc.).
 
 **Step B1: Bulk Recover All Deleted Files**
 
@@ -533,9 +602,10 @@ tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered_files
 ```
 
 **What this does:**
+
 - Scans the entire image for deleted file data
 - Recovers all files to numbered directories (organized by inode ranges)
-- Creates actual files you can manipulate and analyze
+- Creates actual files you can manipulate and analyse
 
 **Step B2: Explore Recovered Files**
 
@@ -561,6 +631,7 @@ In real forensic work on large datasets, you'll use **wildcards for initial disc
 ### **Phase 1: Initial Triage with Wildcards (Fast Scanning)**
 
 **Why use wildcards initially?**
+
 - Large recovered datasets can have thousands of files
 - Need to quickly identify which files are relevant
 - Wildcards let you scan patterns without examining every file individually
@@ -581,6 +652,7 @@ find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
 ```
 
 **This phase helps you:**
+
 - Understand what's in the dataset
 - Identify which specific files contain evidence
 - Plan your detailed analysis (Phase 2)
@@ -621,7 +693,7 @@ Expected output:
 
 **Step B3b: Examine each file with EXACT paths (no wildcards!)**
 
-Now analyze each identified file using its **complete, precise path**:
+Now analyse each identified file using its **complete, precise path**:
 
 ```bash
 cat /cases/USB_Imaging/recovered_files/home/alex/Documents/project_secrets.txt
@@ -665,6 +737,7 @@ note: EVIDENCE ANALYSIS - Examined recovered file (inode 1715) - Duplicate of pr
 ```
 
 **Why Phase 2 requires exact paths:**
+
 - **Court admissibility:** Defense will ask "which specific file?" - wildcards don't answer this
 - **Reproducibility:** Another investigator must examine the **exact** same files
 - **Peer review:** Colleagues need to verify **which specific files** contained what evidence
@@ -746,7 +819,7 @@ note: TRIAGE - Located binary files for analysis
 
 ### **Phase 2: Detailed Binary Analysis with EXACT PATHS**
 
-Once you've identified which binaries are relevant, analyze them with exact paths:
+Once you've identified which binaries are relevant, analyse them with exact paths:
 
 **Step B4a: Document which binaries you'll analyze**
 
@@ -757,7 +830,7 @@ From your triage, identify specific binaries of interest. For example:
 find /cases/USB_Imaging/recovered_files -type f -name "*.exe"
 ```
 
-**Step B4b: Analyze EACH binary with EXACT path**
+**Step B4b: Analyse EACH binary with EXACT path**
 
 For each binary file, extract strings and search for evidence:
 
@@ -783,12 +856,14 @@ note: EVIDENCE ANALYSIS - Extracted readable strings from malware.exe - found C2
 ```
 
 **What strings does:**
+
 - Scans binary file for ASCII/Unicode text sequences
 - Extracts all readable strings separated by non-printable characters
 - Searches those strings with grep for keywords of interest
 - Safe: Never executes the binary, just reads memory layout
 
 **What to look for in binary analysis:**
+
 - **C2 domains:** IP addresses, hostnames, domains (exfiltration targets)
 - **API calls:** Windows API names (WINAPI.dll, KERNEL32.dll functions)
 - **File operations:** Paths being accessed, registry keys being modified
@@ -797,6 +872,7 @@ note: EVIDENCE ANALYSIS - Extracted readable strings from malware.exe - found C2
 - **Credentials:** Hardcoded usernames, passwords, API keys
 
 **Advantages of tsk_recover approach:**
+
 - ✓ Comprehensive (gets everything, not just what you know about)
 - ✓ Flexible (analyze with any Linux tool)
 - ✓ Documented (actual files in directory structure)
@@ -819,13 +895,14 @@ note: EVIDENCE ANALYSIS - Extracted readable strings from malware.exe - found C2
 | **Small evidence** | Either | Either |
 
 **Professional approach:** Use BOTH
+
 1. Start with icat on suspicious filenames (fast initial analysis)
 2. Then use tsk_recover for comprehensive documentation
 3. Use strings/grep on recovered files for pattern matching
 
 ---
 
-### Step 2: Analyze Extracted Content
+### Step 2: Analyse Extracted Content
 
 **Key Questions to Answer:**
 
@@ -881,19 +958,183 @@ cat /cases/USB_Imaging/extracted_analysis.txt
 ```
 timestamp_utc: [run date -u]
 analyst: [Your Name]
-command: Analyzed extracted deleted files for investigative significance
+command: Analysed extracted deleted files for investigative significance
 exit_code: 0
 note: Found [X] text files with evidence of [describe pattern]
 ```
 
 ---
 
-## 🔍 Part 6: Keyword Searching
+## 🦠 Part 6: Malware Detection with YARA
+
+**Why this step matters:**
+YARA is a pattern-matching tool designed to identify malware and suspicious code. It compares files against rule definitions that describe known malware signatures, suspicious code patterns (like webshells), and behavioural indicators. In real investigations, YARA helps detect:
+
+1. **Known malware:** Signatures of detected malware families
+2. **Suspicious patterns:** Code that looks like malware even if not recognized
+3. **Backdoors & webshells:** Remote access tools or web-based attack vectors
+4. **Obfuscated code:** Base64 encoding, encrypted payloads, suspicious function calls
+
+**How we know to do this:**
+Digital forensics best practices include automated malware scanning at every stage:
+
+- Initial triage (quick scan of evidence)
+- After mounting filesystem (scan filesystem artifacts)
+- After file recovery (scan recovered deleted files for hidden malware)
+- Before final reporting (comprehensive scan to ensure no malware was missed)
+
+Malware often hides in deleted files, thinking it won't be found. YARA catches it.
+
+### Step 1: Scan the Mounted Image
+
+**Why scan the mounted image?**
+The mounted `/tmp/ewf/ewf1` represents the entire USB drive including unallocated space. Scanning here catches active malware AND deleted malware before we even extract files.
+
+```bash
+yara -r /rules/ /tmp/ewf/ewf1 > /cases/USB_Imaging/yara_image_scan.txt
+```
+
+**What this does:**
+
+- `-r`: Recursive (scan all files in the image)
+- `/rules/`: Path to YARA rules (mounted volume from host)
+- `/tmp/ewf/ewf1`: The mounted forensic image to scan
+- Output redirected to `yara_image_scan.txt`
+
+**Review results:**
+```bash
+cat /cases/USB_Imaging/yara_image_scan.txt
+wc -l /cases/USB_Imaging/yara_image_scan.txt
+```
+
+**📋 Document in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: yara -r /rules/ /tmp/ewf/ewf1 > /cases/USB_Imaging/yara_image_scan.txt
+exit_code: 0
+note: MALWARE DETECTION - Scanned mounted USB image against YARA rules - Found [X] matches
+```
+
+**What matches mean:**
+
+- **Match = suspicious pattern detected:** Not necessarily "malware confirmed" but patterns worth investigating
+- **No matches = no known patterns detected:** Doesn't mean it's clean (unknown malware exists), just no pattern match
+- **Multiple matches on same file = stronger indicator:** File matches multiple rules = higher suspicion
+
+### Step 2: Scan Recovered Deleted Files
+
+**Why scan recovered files separately?**
+Deleted files might contain malware that wasn't detected in the image scan. Scanning the extracted/recovered directory gives clearer results (organized by file rather than raw blocks).
+
+**Option A: Scan bulk recovered files (Comprehensive)**
+
+If you used `tsk_recover` in Part 5:
+
+```bash
+yara -r /rules/ /cases/USB_Imaging/recovered_files > /cases/USB_Imaging/yara_recovered_scan.txt
+```
+
+**Option B: Scan extracted files (Targeted)**
+
+If you used `icat` to extract specific files:
+
+```bash
+yara -r /rules/ /cases/USB_Imaging/extracted_by_icat > /cases/USB_Imaging/yara_extracted_scan.txt
+```
+
+**Review results:**
+```bash
+cat /cases/USB_Imaging/yara_*_scan.txt
+grep -E "^.*:" /cases/USB_Imaging/yara_*_scan.txt | sort | uniq -c
+```
+
+**📋 Document in analysis_log.csv:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: yara -r /rules/ /cases/USB_Imaging/recovered_files > /cases/USB_Imaging/yara_recovered_scan.txt
+exit_code: 0
+note: MALWARE DETECTION - Scanned recovered deleted files - Found [X] matches in [files]
+```
+
+### Step 3: Analyse YARA Matches
+
+**If YARA found matches:**
+
+1. **Identify which files matched:**
+   ```bash
+   grep "^.*:" /cases/USB_Imaging/yara_recovered_scan.txt | cut -d: -f1 | sort -u
+   ```
+
+2. **For each matched file, analyse with strings:**
+   ```bash
+   # Example: if yara matched /cases/USB_Imaging/recovered_files/malware.exe
+   strings /cases/USB_Imaging/recovered_files/malware.exe | grep -iE "password|api|url|command|server"
+   file /cases/USB_Imaging/recovered_files/malware.exe
+   ```
+
+3. **Document findings:**
+   ```
+   timestamp_utc: [run date -u]
+   analyst: [Your Name]
+   command: strings /cases/USB_Imaging/recovered_files/malware.exe | grep -iE "password|api|url|command"
+   exit_code: 0
+   note: MALWARE ANALYSIS - Matched file contains suspicious strings: [list what you found]
+   ```
+
+**If YARA found no matches:**
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: yara -r /rules/ /cases/USB_Imaging/recovered_files > /cases/USB_Imaging/yara_recovered_scan.txt
+exit_code: 0
+note: MALWARE DETECTION - No YARA rule matches found (does not confirm clean status, only that no known patterns matched available rules)
+```
+
+### Step 4: Understanding YARA Results
+
+**What a YARA match looks like:**
+
+```
+Lab1_Webshell_Pattern /cases/USB_Imaging/recovered_files/tmp/webshell.php
+```
+
+**Breaking it down:**
+- `Lab1_Webshell_Pattern`: The name of the YARA rule that matched
+- `/cases/USB_Imaging/recovered_files/tmp/webshell.php`: The file that triggered the rule
+- **Significance:** The file contains patterns associated with webshells (base64_decode + eval + $_GET/POST)
+
+**What to do when rules match:**
+
+| Finding | Action |
+|---------|--------|
+| **Binary matches rule** | Use `strings` to extract readable content, search for C2 domains, IPs, API calls |
+| **Script matches rule** | Read directly with `cat`, look for suspicious functions/domains |
+| **Multiple rules match same file** | Strong indicator of malicious intent - prioritize for detailed analysis |
+| **No matches** | File is either clean or uses unknown/custom malware (continue manual analysis) |
+
+### Step 5: Compare with Evidence Timeline
+
+**Optional advanced step:**
+If files matched malware rules, compare against other evidence:
+
+- **Memory Forensics lab:** Were any of these malware samples running in memory?
+- **Network Analysis lab:** Did malware establish network connections?
+- **Email Logs lab:** Was malware sent via email or exfiltration planned?
+
+---
+
+## 🔍 Part 7: Keyword Searching
 
 **Why this step matters:**
 Keyword searching is a safety and efficiency tool. In real forensics, you might have thousands of deleted files. You can't manually read each one. Keyword search helps you:
+
 1. Find files containing specific evidence (passwords, credit cards, classified markings)
-2. Safely analyze binary files without opening them (executables, PDFs, images)
+2. Safely analyse binary files without opening them (executables, PDFs, images)
 3. Identify patterns across the entire drive (multiple references to same suspect)
 
 **When to use `strings` vs. direct reading:**
@@ -906,6 +1147,7 @@ In this lab, since we found text files, we already read them with `icat` + `cat`
 
 **Why this step matters:**
 While we already extracted known deleted files, keyword searching finds evidence we might have missed:
+
 - Files we didn't notice in the fls listing
 - Fragments of deleted data still scattered on disk
 - Hidden or obfuscated content
@@ -925,6 +1167,7 @@ strings /tmp/ewf/ewf1 | grep -iE "password|confidential|secret|flag|credential" 
 - `grep -iE`: Searches for keywords (case-insensitive, with OR operator `|`)
 
 **Flags:**
+
 - `-i`: case-insensitive search (PASSWORD = password = PassWord)
 - `-E`: extended regex (allows `|` for OR logic)
 
@@ -940,6 +1183,7 @@ note: Comprehensive keyword search across entire image - found [X] matches in de
 ```
 
 **What to look for:**
+
 - **Repeated keywords:** Same password/credential in multiple locations suggests importance
 - **Contextual data:** See what surrounds the keyword (email addresses, usernames, URLs)
 - **File paths:** Where was the data originally? What was the intent?
@@ -973,6 +1217,7 @@ note: Reviewed top keyword matches - [describe patterns found]
 ```
 
 **What to look for:**
+
 - Repeated keywords (suggests multiple references to same data)
 - Context around keywords (what sensitive data is mentioned?)
 - File paths or email addresses in the results
@@ -981,11 +1226,13 @@ note: Reviewed top keyword matches - [describe patterns found]
 ### Step 3: Summary - Text vs. Binary Files
 
 **For this evidence (text files):**
+
 - We extracted content directly with `icat` ✓ (More reliable)
 - We read with `cat` ✓ (Straightforward)
 - Keyword searching is optional (already found sensitive files by name)
 
 **For real-world evidence (mixed binary/text):**
+
 - Use `strings` on `.exe`, `.dll`, `.bin` files (safer than opening them)
 - Use `icat` + `cat` on `.txt`, `.csv`, `.json` files
 - Use `strings` + `grep` for pattern matching across entire image
@@ -993,7 +1240,7 @@ note: Reviewed top keyword matches - [describe patterns found]
 
 ---
 
-## 🚪 Part 7: Exit the Workstation
+## 🚪 Part 8: Exit the Workstation
 
 When done, exit the forensic environment:
 
@@ -1010,14 +1257,18 @@ You're back on your host machine.
 When you exit the container, you should have created these files in `cases/USB_Imaging/`:
 
 **CSV Files (Documentation):**
+
 - ✅ `chain_of_custody.csv` - Evidence hashes and integrity verification
 - ✅ `analysis_log.csv` - Commands executed with timestamps
 
 **Evidence Files (from analysis):**
+
 - ✅ `filesystem_info.txt` - File system details
 - ✅ `partition_table.txt` - Partition information
 - ✅ `file_list.txt` - All files (active + deleted)
 - ✅ `deleted_files.txt` - Just the deleted files
+- ✅ `yara_image_scan.txt` - YARA malware detection results (mounted image)
+- ✅ `yara_recovered_scan.txt` - YARA results for recovered/deleted files
 - ✅ `keyword_search.txt` - Keyword search results
 - ✅ `recovered/` - Directory with all recovered files
 
@@ -1038,20 +1289,24 @@ Before moving to the next lab, answer these questions in your lab notes:
 ## 🆘 Troubleshooting
 
 ### "ewf1 not found"
+
 - Verify ewfmount succeeded: `ls -lh /tmp/ewf/`
 - Re-run ewfmount command
 - Check the path is exactly `/tmp/ewf` not `/tmp/ewf/`
 
 ### "fls: cannot open image"
+
 - You're probably using the E01 path instead of `/tmp/ewf/ewf1`
 - Must run ewfmount first!
 - Check your command uses `/tmp/ewf/ewf1`
 
 ### "No deleted files found"
+
 - Make sure you used both flags: `fls -r -d`
 - The `-d` flag is required to show deleted files
 
 ### "Permission denied"
+
 - Make sure you're inside the forensic workstation
 - Check your prompt ends with `#` (you're at bash prompt)
 
@@ -1086,7 +1341,7 @@ mkdir -p /tmp/ewf
 ewfmount /evidence/usb.E01 /tmp/ewf
 ls -lh /tmp/ewf/ewf1
 
-# ===== ANALYZE FILESYSTEM =====
+# ===== ANALYSE FILESYSTEM =====
 fsstat /tmp/ewf/ewf1 > /cases/USB_Imaging/filesystem_info.txt
 mmls /tmp/ewf/ewf1 > /cases/USB_Imaging/partition_table.txt
 
@@ -1107,9 +1362,17 @@ icat /tmp/ewf/ewf1 15 > /cases/USB_Imaging/extracted_by_icat/_lag.txt
 cat /cases/USB_Imaging/extracted_by_icat/project_secrets.txt
 cat /cases/USB_Imaging/extracted_by_icat/email_draft.txt
 
+# ===== MALWARE DETECTION with YARA =====
+yara -r /rules/ /tmp/ewf/ewf1 > /cases/USB_Imaging/yara_image_scan.txt
+cat /cases/USB_Imaging/yara_image_scan.txt
+
 # ===== APPROACH B: BULK RECOVERY with tsk_recover (Comprehensive) =====
 mkdir -p /cases/USB_Imaging/recovered_files
 tsk_recover /tmp/ewf/ewf1 /cases/USB_Imaging/recovered_files
+
+# ===== SCAN RECOVERED FILES with YARA =====
+yara -r /rules/ /cases/USB_Imaging/recovered_files > /cases/USB_Imaging/yara_recovered_scan.txt
+cat /cases/USB_Imaging/yara_recovered_scan.txt
 
 # === PHASE 1: TRIAGE with wildcards (OK for discovery) ===
 # Quick scan to understand what's in the dataset
@@ -1118,7 +1381,7 @@ find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
 cat /cases/USB_Imaging/recovered_files/*/project_secrets.txt  # Triage only
 
 # === PHASE 2: EVIDENCE ANALYSIS with EXACT PATHS (Court-ready) ===
-# Once you know which files matter, analyze with precision
+# Once you know which files matter, analyse with precision
 
 # STEP 1: Find exact paths
 find /cases/USB_Imaging/recovered_files -type f -name "*.txt"
@@ -1155,14 +1418,16 @@ exit
 | **PHASE 2: Evidence** | Precise analysis for reports/court | `cat /exact/path/file`, `grep /exact/path/file` | DETAILED: Document exact path, findings |
 
 **When to use wildcards:**
+
 - ✓ Initial discovery on large recovered dataset (thousands of files)
 - ✓ Finding which files contain what evidence
 - ✓ Planning your detailed analysis
 - ✓ Understanding the investigation landscape
 
 **When to use exact paths:**
+
 - ✓ Documenting findings for final report
-- ✓ Analyzing files that will appear in evidence
+- ✓ Analysing files that will appear in evidence
 - ✓ Creating expert testimony
 - ✓ Anything that goes in analysis_log.csv as EVIDENCE ANALYSIS
 - ✓ Peer review and court presentation
@@ -1184,6 +1449,7 @@ grep -i "password" /cases/USB_Imaging/recovered_files/home/alex/Documents/projec
 ```
 
 **Remember:**
+
 - **Triage = Exploration** (wildcards acceptable, fast discovery)
 - **Evidence = Documentation** (exact paths required, court-ready)
 - **Mark your log entries** with "TRIAGE" or "EVIDENCE ANALYSIS" to show the difference

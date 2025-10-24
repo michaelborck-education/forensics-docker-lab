@@ -1,15 +1,23 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # Memory_Forensics Lab - Student Walkthrough
 ## Memory Analysis with Volatility 2
 
 **Time Estimate:** 2-3 hours
+
 **Difficulty:** Intermediate
+
 **Tools:** Volatility 2, strings, grep, analysis tools
 
 ---
 
 ## 📸 Context: How Memory Dumps are Captured (In Real Forensic Practice)
 
-**Important Context:** In this lab, you're analyzing a **pre-captured memory dump** (`memory.raw`). In real incident response, capturing RAM is time-critical and must be done before shutting down the system.
+**Important Context:** In this lab, you're analysing a **pre-captured memory dump** (`memory.raw`). In real incident response, capturing RAM is time-critical and must be done before shutting down the system.
 
 ### Real-World Memory Capture Process
 
@@ -22,7 +30,7 @@ In a real incident response, a forensic technician would:
    - Power down = loss of all volatile data (RAM)
 
 2. **Memory Capture Tools (Industry Standard):**
-   - **Volatility 2/3** - Can create memory dumps (in addition to analyzing them)
+   - **Volatility 2/3** - Can create memory dumps (in addition to analysing them)
    - **FTK Imager** (Accessdata) - GUI tool for Windows memory capture
    - **winpmem** - Windows memory acquisition (open source)
    - **LiME** (Linux Memory Extractor) - Linux kernel module for RAM capture
@@ -46,12 +54,14 @@ In a real incident response, a forensic technician would:
 ### In This Lab
 
 We've **skipped the capture phase** and provided you with a pre-captured memory dump (`memory.raw` from a Windows XP SP3 system). This lets you focus on:
+
 - Analysis skills
 - Process forensics
 - Malware detection
 - DLL and network analysis
 
 But remember: In real forensics, the memory capture step is CRITICAL because:
+
 - ✓ RAM capture must happen while system is running (volatile!)
 - ✓ Hashing proves memory integrity during capture
 - ✓ Chain of custody documents when capture occurred
@@ -74,6 +84,7 @@ ls -lh cases/Memory_Forensics/
 ```
 
 You should see:
+
 - **chain_of_custody.csv** - Evidence handling record
 - **analysis_log.csv** - Command execution log
 - **lab_report.md** - Report template for your findings
@@ -114,6 +125,8 @@ You should see `memory.raw` (~511 MB).
 
 ## 🚀 Connecting to the DFIR Forensic Workstation
 
+The `scripts/forensics-workstation` script provides an immersive forensic environment that hides Docker complexity and simulates logging into a professional forensic workstation.
+
 **On macOS/Linux:**
 ```bash
 ./scripts/forensics-workstation
@@ -124,35 +137,92 @@ You should see `memory.raw` (~511 MB).
 .\scripts\forensics-workstation.bat
 ```
 
-You're now inside the forensic environment. All commands below run WITHOUT Docker prefixes.
+You'll see:
+
+1. A welcome banner asking for your analyst name
+2. A lab summary showing all available cases
+3. A connection message, then you'll see the forensic workstation prompt
+
+
 
 ---
 
 ## 📦 Part 1: Chain of Custody - Hash the Memory File
 
-Before any analysis, calculate and document the SHA256 hash.
+**CRITICAL:** Before analysing ANY evidence, you must calculate and document hash values. This proves the evidence hasn't been tampered with.
+
+### Step 1: Calculate MD5 Hash
+
+```bash
+md5sum /evidence/memory.raw
+```
+
+**Example MD5 Output:**
+```
+fbe64517ecc93a02ed61aac8fddbe721  /evidence/memory.raw
+```
+
+**📋 Document MD5 in cases/Memory_Forensics/chain_of_custody.csv:**
+
+- Evidence_ID: MEMORY-002
+- MD5_Hash: (paste output from running the above command)
+- SHA256_Hash: (you'll add this next)
+- Analyst_Name: (your name)
+- Date_Received: (today's date)
+- Case_Number: CLOUDCORE-2024-INS-001
+- Evidence_Description: Windows XP memory dump (memory.raw)
+- Storage_Location: /evidence/memory.raw
+
+### Step 2: Calculate SHA256 Hash
 
 ```bash
 sha256sum /evidence/memory.raw
 ```
 
-**Example Output:**
+**Example SHA256 Output:**
 ```
-91df773dd3316d447661085715344e3aa58b136815698e2cc03dbffc777a9e1b  /evidence/memory.raw
+9bdf773dd3316d447661085715344e3aa58b136815698e2cc03dbffc777a9e1b  /evidence/memory.raw
 ```
 
-**📋 Document in cases/Memory_Forensics/chain_of_custody.csv:**
-- Evidence_ID: MEMORY-001
-- SHA256_Hash: (paste the hash above)
-- Analyst_Name: (your name)
-- Date_Received: (today's date)
-- Evidence_Description: Windows XP memory dump (memory.raw)
+**📋 Update chain_of_custody.csv:**
+- Add the SHA256_Hash value above
 
-Also calculate MD5 (if your template asks for it):
+**Why document hashes?**
 
-```bash
-md5sum /evidence/memory.raw
+- **Integrity verification:** Proves evidence hasn't been modified or corrupted
+- **Legal admissibility:** Courts require hash verification for digital evidence
+- **Reproducibility:** Other investigators can verify they're analysing the same evidence
+- **Chain of custody:** Documents the starting point of analysis
+
+
+**📋 Document in analysis_log.csv:**
+
 ```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: md5sum /evidence/memory.raw
+exit_code: 0
+note: Chain of custody - calculated MD5 hash of memmory.raw : fbe64517ecc93a02ed61aac8fddbe721
+```
+
+```
+timestamp_utc: [run date -u]
+analyst: [Your Name]
+command: sha256sum /evidence/memmory.raw
+exit_code: 0
+note: Chain of custody - calculated SHA256 hash of memory.raw: 9bdf773dd3316d447661085715344e3aa58b136815698e2cc03dbffc777a9e1b
+```
+
+**Why document commands?**
+
+- **Reproducibility:** Lets others repeat your exact steps to verify findings.
+- **Legal Defensibility:** Creates a transparent, auditable log for court.
+- **Evidence Integrity:** Shows exactly how you interacted with the data.
+- **Accurate Reporting:** Provides the precise technical "how" for your report.
+- **Peer Review & QA:** Allows colleagues to check your process for accuracy.
+- **Contemporaneous Notes:** Logs actions as they happen, preventing memory errors.
+
+
 
 ---
 
@@ -180,6 +250,7 @@ cat /cases/Memory_Forensics/imageinfo.txt
 ```
 
 **Key Info to Note:**
+
 - Suggested Profile (e.g., WinXPSP3x86)
 - OS version (Windows XP, Vista, 7, etc.)
 - Architecture (32-bit or 64-bit)
@@ -220,11 +291,13 @@ cat /cases/Memory_Forensics/pslist.txt
 ```
 
 **✅ Feedback - Command Success Indicators:**
+
 - You should see output with multiple columns: `Offset(V)`, `Name`, `PID`, `PPID`, `Thds`, etc.
 - You should see familiar Windows processes like: System, csrss.exe, services.exe, explorer.exe, svchost.exe
 - Timestamps should match the memory dump date (2009-12-05)
 
 **What to look for:**
+
 - **Normal system processes:** System, smss.exe, csrss.exe, services.exe, lsass.exe, svchost.exe, explorer.exe
 - **User processes:** iexplore.exe, firefox.exe, chrome.exe, Office applications
 - **⚠️ SUSPICIOUS:**
@@ -265,12 +338,14 @@ cat /cases/Memory_Forensics/pstree.txt
 ```
 
 **✅ Feedback - Command Success Indicators:**
+
 - Output shows a tree structure with indentation (dots: `.`, `..`, `...`)
 - Normal boot sequence: System → smss.exe → csrss.exe + winlogon.exe → services.exe
 - explorer.exe (PID 168) is the parent of most user processes
 - Should have 30+ processes listed
 
 **What to look for:**
+
 - Unusual parent-child relationships (e.g., explorer.exe spawning keyloggers, cmd.exe spawning svchost.exe)
 - Orphaned processes (processes with invalid parent PIDs)
 - Multiple instances of normally-single processes
@@ -316,6 +391,7 @@ ERROR: This command does not support the profile WinXPSP3x86
 This is **normal** - netscan is primarily for Windows Vista and later. Document this in your analysis log and move to the next step.
 
 **What to look for (if command succeeds):**
+
 - **Suspicious ports:**
   - 6667, 6668 (IRC - Command & Control communications)
   - 445, 139 (SMB - often used for lateral movement)
@@ -344,11 +420,12 @@ Malware reveals its purpose through the libraries (DLLs) it loads. A keylogger n
 
 **How we know to do this:**
 DLL analysis is standard malware reverse engineering. The DLLs a process loads tell us:
+
 - What APIs it uses
 - What capabilities it has
 - Whether it's designed for persistence, exfiltration, or keylogging
 
-Analyze the suspicious keylogger we found:
+Analyse the suspicious keylogger we found:
 
 ```bash
 vol2 -f /evidence/memory.raw --profile=WinXPSP3x86 dlllist -p 280 > /cases/Memory_Forensics/dlllist_280.txt
@@ -372,18 +449,21 @@ cat /cases/Memory_Forensics/dlllist_280.txt
 ```
 
 **✅ Feedback - Command Success Indicators:**
+
 - Output shows executable path: `C:\Program Files\XP Advanced\ToolKeylogger.exe`
 - Output shows command line that launched it
 - Should list 40+ DLLs
 - Format has columns: Base, Size, LoadCount, LoadTime, Path
 
 **What to look for:**
+
 - **Keylogging indicators:** USER32.dll, KERNEL32.dll (for API hooking)
 - **Internet connectivity:** WININET.dll, urlmon.dll, iertutil.dll (for C2 or data exfiltration)
 - **Persistence:** Registry DLLs, file system libraries
 - **Custom/suspicious DLLs:** Any DLL from non-standard locations like Program Files folders
 
 **Key Finding in This Case:**
+
 - **Executable:** ToolKeylogger.exe from "C:\Program Files\XP Advanced\"
 - **Supporting DLL:** ToolKeyloggerDLL.dll (the actual keylogging code)
 - **Internet libraries:** Loaded WININET, urlmon, iertutil - this keylogger sends data to an attacker!
@@ -401,7 +481,7 @@ Advanced malware analysis requires checking for hidden processes. If a process i
 
 **Reusing Previous Output:**
 
-You already ran psscan earlier. Let's analyze those results:
+You already ran psscan earlier. Let's analyse those results:
 
 ```bash
 # Review the psscan output you already collected
@@ -425,11 +505,13 @@ note: Compare pslist vs psscan to detect hidden processes
 ```
 
 **✅ Expected Output:**
+
 - Both pslist and psscan should show ~33 processes
 - If they match exactly, no processes are hidden
 - If psscan shows MORE processes than pslist, some are hidden
 
 **What to look for:**
+
 - **Hidden Processes:** If psscan shows MORE processes than pslist, some are hidden
 - **Compare process names:** Look for processes in psscan that don't appear in pslist
 - **Timing anomalies:** Processes with exit times but still in memory
@@ -452,10 +534,12 @@ exit
 You should have created these files in `cases/Memory_Forensics/`:
 
 **CSV Files (Documentation):**
+
 - ✅ `chain_of_custody.csv` - Evidence hash
 - ✅ `analysis_log.csv` - All commands run
 
 **Evidence Analysis Files:**
+
 - ✅ `imageinfo.txt` - OS profile and detection
 - ✅ `pslist.txt` - All running processes
 - ✅ `pstree.txt` - Process tree
@@ -504,16 +588,19 @@ Before moving to the next lab, answer these questions:
 ## 🆘 Troubleshooting
 
 ### "Unable to detect OS profile"
+
 - Memory file might be corrupted
 - Verify hash matches expected value
 - Try specifying profile manually if known
 
 ### "No output from netscan"
+
 - Memory dump might not have any network activity
 - Try alternative: `netstat` plugin instead
 - This is okay - note it in your report
 
 ### "Plugin not found" error
+
 - Make sure you're using correct plugin name
 - `vol2` for Volatility 2 (legacy Windows)
 - Check spelling of profile name

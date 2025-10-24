@@ -1,8 +1,16 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # Autopsy_GUI Lab - Student Walkthrough
 ## Graphical Forensic Analysis
 
 **Time Estimate:** 1-2 hours
+
 **Difficulty:** Beginner
+
 **Tools:** Autopsy GUI (web-based via noVNC), web browser
 
 ---
@@ -47,6 +55,7 @@ In a real investigation, a forensic technician would:
 ### In This Lab
 
 We're using **Autopsy** to:
+
 - Load the USB disk image from USB_Imaging analysis
 - Perform GUI-based evidence analysis
 - Demonstrate how professionals accelerate investigations
@@ -54,6 +63,7 @@ We're using **Autopsy** to:
 - Correlate evidence across the filesystem
 
 This lab teaches:
+
 - How GUI tools complement command-line analysis
 - Autopsy's powerful file indexing and searching
 - Timeline analysis and metadata extraction
@@ -73,6 +83,7 @@ ls -lh cases/Autopsy_GUI/
 ```
 
 You should see:
+
 - **chain_of_custody.csv** - Evidence handling record
 - **analysis_log.csv** - Command execution log
 - **lab_report.md** - Report template for your findings
@@ -96,6 +107,7 @@ cp templates/lab_report_template.md cases/Autopsy_GUI/lab_report.md
 ```
 
 **Tips for using these files:**
+
 - **chain_of_custody.csv**: Edit with spreadsheet app or text editor. Fill in evidence hash, analyst name, case number before beginning.
 - **analysis_log.csv**: Use `coc-log` script inside container to automatically log commands (recommended). If not using coc-log, manually add entries after each command.
 - **lab_report.md**: Use as starting point for your findings report. Replace placeholders with your actual analysis and evidence.
@@ -132,6 +144,7 @@ md5sum /evidence/usb.img
 ```
 
 **📋 Document in chain_of_custody.csv:**
+
 - Evidence_ID: USB-AUTOPSY-001
 - SHA256_Hash: (paste hash)
 - Analyst_Name: (your name)
@@ -152,6 +165,7 @@ autopsy
 ```
 
 **What this command does:**
+
 - Starts the Autopsy forensic framework
 - Listens on localhost (127.0.0.1) port 8888
 - Initializes the database for case management
@@ -193,6 +207,7 @@ In the Autopsy GUI (in your browser):
 ## 🔎 Part 4: Add Evidence (Disk Image Ingestion)
 
 **Why this step:** This imports your forensic image into Autopsy's analysis system. Autopsy will:
+
 - Parse the filesystem
 - Index all files and metadata
 - Run automated analysis modules
@@ -201,11 +216,11 @@ In the Autopsy GUI (in your browser):
 In the Autopsy GUI:
 
 1. **Click "Add Data Source"**
-   - Tells Autopsy you want to add evidence to analyze
+   - Tells Autopsy you want to add evidence to analyse
 
 2. **Select "Disk Image or VM file"**
    - You're providing a raw disk image (not live system)
-   - Autopsy will mount and analyze the image
+   - Autopsy will mount and analyse the image
 
 3. **Browse to:** `/evidence/usb.img`
    - This is the USB image from USB_Imaging
@@ -243,9 +258,10 @@ note: Added disk image and ran all ingest modules
 
 ---
 
-## 📊 Part 5: Analyze Evidence Through Autopsy GUI
+## 📊 Part 5: Analyse Evidence Through Autopsy GUI
 
-**Why these steps:** Now that Autopsy has indexed the evidence, you'll use the GUI to explore and analyze it. The automated analysis reveals:
+**Why these steps:** Now that Autopsy has indexed the evidence, you'll use the GUI to explore and analyse it. The automated analysis reveals:
+
 - What files exist (and were deleted)
 - What data is suspicious (keyword matches)
 - Timeline of events (when files were modified)
@@ -315,7 +331,7 @@ note: AUTOMATED SEARCH - Found X matches for sensitive keywords. Top findings: p
    - Shows: File creation, modification, deletion
    - Color-coded: Green=created, Blue=modified, Red=deleted
 
-2. Analyze file creation/modification dates
+2. Analyse file creation/modification dates
    - Suspicious activity often happens at odd hours
    - Mass operations (many files modified/deleted at same time) = deliberate
    - Legitimate users create/modify files gradually over time
@@ -325,7 +341,7 @@ note: AUTOMATED SEARCH - Found X matches for sensitive keywords. Top findings: p
    - **Pattern 2:** All modifications at 2am = automated/unattended access
    - **Pattern 3:** Files on USB modified same time as email sent = staging before exfiltration
 
-### Step 4: Analyze Extracted Artifacts
+### Step 4: Analyse Extracted Artifacts
 
 **Why:** Autopsy automatically extracts and parses artifacts (metadata, embedded data, deleted file headers). This reveals evidence even in fragments.
 
@@ -346,7 +362,8 @@ note: AUTOMATED SEARCH - Found X matches for sensitive keywords. Top findings: p
    - Geographic location (if images with EXIF)
 
 **📋 Document findings:**
-- Number of files analyzed
+
+- Number of files analysed
 - Suspicious files discovered
 - Timeline patterns observed
 - Key artifacts recovered
@@ -383,6 +400,7 @@ Autopsy can export professional reports in multiple formats:
    - Report size depends on evidence volume
 
 **What the report contains:**
+
 - Executive summary (files found, results overview)
 - Detailed file listing (name, size, timestamps, deleted status)
 - Timeline analysis (all activities chronologically)
@@ -407,6 +425,7 @@ note: Report contains complete summary of all findings - total files analyzed, d
 **Why this step:** In real investigations, comparing results across different tools validates findings. If CLI and GUI analysis show the same evidence, your conclusion is stronger. Discrepancies might reveal new findings or tool limitations.
 
 In forensic practice:
+
 - **CLI tools** (fls, icat, strings) show raw filesystem data, require manual interpretation
 - **GUI tools** (Autopsy) automate the process, easier to navigate but can miss edge cases
 - **Best practice:** Use both for validation and completeness
@@ -476,8 +495,9 @@ exit
 ```
 
 **What happens:**
+
 - Autopsy saves any pending data to the case database
-- All analysis results are finalized
+- All analysis results are finalised
 - Case directory is safely closed
 - DFIR workstation container stops
 - Back at your host machine prompt
@@ -547,7 +567,7 @@ Document your complete findings in a summary file. This becomes your official re
 ```
 AUTOPSY_GUI LAB FINDINGS
 
-Total Files: 247 files analyzed
+Total Files: 247 files analysed
 - Deleted files: 4 (recovered by Autopsy)
 - Archive files: 1 (.zip backup)
 
@@ -577,6 +597,7 @@ Conclusion: GUI analysis confirms CLI findings and provides easier visualization
 **Problem:** Browser says "Connection refused" or "Cannot reach localhost:8888"
 
 **Solutions:**
+
 - Verify Autopsy is still running in the container (check terminal for errors)
 - Ensure you're using the correct URL: `http://localhost:8888` (not https://)
 - Check that port 8888 is not blocked by firewall
@@ -587,11 +608,13 @@ Conclusion: GUI analysis confirms CLI findings and provides easier visualization
 **Problem:** Ingest has been running for >30 minutes
 
 **What's happening:**
+
 - Autopsy is indexing every file in the image
 - With 250+ files and multiple analysis modules, this can take 30+ minutes
 - This is normal for large disks - patience required
 
 **Solutions:**
+
 - **Wait longer:** Processing can take 30-60 minutes for medium disks
 - **Don't close the browser tab:** This terminates Autopsy processing
 - **Monitor progress:** Check Autopsy GUI for "Ingest running" indicator
@@ -601,6 +624,7 @@ Conclusion: GUI analysis confirms CLI findings and provides easier visualization
 **Problem:** Autopsy shows error when saving case or generating report
 
 **Solutions:**
+
 - Verify directory exists: `ls -la /cases/Autopsy_GUI/`
 - Check permissions: Should be writable by Autopsy user
 - On Linux: Ensure case directory is not read-only
@@ -611,6 +635,7 @@ Conclusion: GUI analysis confirms CLI findings and provides easier visualization
 **Problem:** No results for keywords that should definitely exist
 
 **Solutions:**
+
 - Verify ingest completed fully (check "Ingest running" status)
 - Try different keywords (shorter terms often work better)
 - Check if files are in indexed data sources (Part 4 step 5 should select all modules)

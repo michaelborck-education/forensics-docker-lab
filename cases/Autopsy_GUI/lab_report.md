@@ -60,6 +60,7 @@ Use this template for reporting findings from individual forensic labs (USB_Imag
 
 ### Phase 2: Evidence Collection
 [Detailed procedures used to extract evidence. Include:
+
 - Specific commands/tool features used
 - Rationale for each step (why this tool or approach?)
 - Why you chose automated vs. manual analysis]
@@ -123,8 +124,8 @@ Use this template for reporting findings from individual forensic labs (USB_Imag
 **For this investigation**:
 [What should the investigator do next? What additional labs or deep dives would be valuable?]
 
-**For the organization**:
-[Based on your findings, what should the organization do to prevent similar incidents?]
+**For the organisation**:
+[Based on your findings, what should the organisation do to prevent similar incidents?]
 
 ---
 
@@ -155,6 +156,7 @@ Attach `chain_of_custody.csv` with complete evidence handling record.
 
 ### C. Supporting Output Files
 List and briefly describe:
+
 - Screenshots of key findings
 - Tool output files (e.g., Volatility process listings, tshark packet summaries)
 - Extracted artifacts (recovered files, email messages, etc.)
