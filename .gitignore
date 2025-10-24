@@ -12,12 +12,9 @@ cases/.python_history
 cases/.cache
 
 # Evidence files (large, replaceable; allow dummies/templates)
-evidence/*
-!evidence/.gitkeep
-!evidence/encrypted_container.dat
 evidence/memory.raw
-evidence/disk.img
-evidence/disk.E01
+evidence/usb.img
+evidence/usb.E01
 
 # Archives
 _archive
