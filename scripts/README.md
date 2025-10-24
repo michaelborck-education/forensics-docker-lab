@@ -121,7 +121,7 @@ python3 scripts/instructor/hashlog.py evidence/ evidence/hashes.csv SHA256
 - Requires: Docker and Docker Compose
 - Runs on: macOS, Linux, Windows WSL
 
-### forensics-workstation.ps1 (PowerShell)
+### forensics-workstation.bat (PowerShell)
 
 **Usage:**
 ```powershell
@@ -159,8 +159,8 @@ coc-log "fls -r /evidence/usb.img" "Initial filesystem listing"
 - Exit code tracking
 
 **Output:**
-- CSV entry in: `/cases/Lab_X/analysis_log.csv`
-- Output files in: `/cases/Lab_X/outputs/`
+- CSV entry in: `/cases/[CaseName]/analysis_log.csv`
+- Output files in: `/cases/[CaseName]/outputs/`
 
 ### verify_setup.sh (bash)
 

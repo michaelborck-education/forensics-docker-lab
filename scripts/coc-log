@@ -9,26 +9,15 @@
 # Usage: coc-log "command" "note"
 # Example: coc-log "fls -r /evidence/usb.img" "Initial filesystem listing"
 #
-# Creates/updates: cases/Lab_X/analysis_log.csv
+# Creates/updates: cases/[CaseName]/analysis_log.csv
 #################################################################################
 
 set -euo pipefail
 
-# Get current lab from working directory or environment
-LAB_NUM="${1:-}"
-COMMAND="${2:-}"
-NOTE="${3:-}"
-
-# If called with positional args, use them directly
-if [ $# -eq 2 ] && [[ "$1" != "-"* ]]; then
-    # coc-log "command" "note" format
-    COMMAND="$1"
-    NOTE="$2"
-    # Try to detect lab from current directory
-    if [[ $(pwd) =~ /Lab_([0-9])(/|$) ]]; then
-        LAB_NUM="${BASH_REMATCH[1]}"
-    fi
-fi
+# Get current case name from working directory or environment
+CASE_NAME="${CURRENT_CASE:-}"
+COMMAND="${1:-}"
+NOTE="${2:-}"
 
 # Validate inputs
 if [ -z "$COMMAND" ]; then
@@ -37,23 +26,20 @@ if [ -z "$COMMAND" ]; then
     exit 1
 fi
 
-# Determine lab number from current directory if not provided
-if [ -z "$LAB_NUM" ] || ! [[ "$LAB_NUM" =~ ^[0-9]$ ]]; then
-    if [[ $(pwd) =~ /Lab_([0-9])(/|$) ]]; then
-        LAB_NUM="${BASH_REMATCH[1]}"
+# Determine case name from current directory if not provided
+if [ -z "$CASE_NAME" ]; then
+    # Try to detect case name from current directory path
+    if [[ $(pwd) =~ /cases/([^/]+)(/|$) ]]; then
+        CASE_NAME="${BASH_REMATCH[1]}"
     else
-        # Try to find any Lab_* in path
-        LAB_NUM=$(pwd | grep -oP 'Lab_\K[0-9]' | head -1)
-        if [ -z "$LAB_NUM" ]; then
-            echo "Error: Could not determine lab number. Please run from Lab_X directory."
-            echo "Or set: export CURRENT_LAB=1"
-            exit 1
-        fi
+        echo "Error: Could not determine case name. Please run from /cases/[CaseName] directory."
+        echo "Or set: export CURRENT_CASE=USB_Imaging"
+        exit 1
     fi
 fi
 
 # Initialize paths
-LOG_FILE="/cases/Lab_${LAB_NUM}/analysis_log.csv"
+LOG_FILE="/cases/${CASE_NAME}/analysis_log.csv"
 TEMP_OUTPUT="/tmp/coc_output_$$.txt"
 
 # Create log directory if needed
@@ -97,7 +83,7 @@ NOTE_ESCAPED=$(echo "$NOTE" | sed 's/"/""/g' | sed 's/,/\,/g')
 } >> "$LOG_FILE"
 
 # Save output to evidence file
-OUTPUT_FILE="/cases/Lab_${LAB_NUM}/outputs/$(basename "$COMMAND" | cut -d' ' -f1)_${TIMESTAMP%T*}_${TIMESTAMP##*T}.txt"
+OUTPUT_FILE="/cases/${CASE_NAME}/outputs/$(basename "$COMMAND" | cut -d' ' -f1)_${TIMESTAMP%T*}_${TIMESTAMP##*T}.txt"
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 cp "$TEMP_OUTPUT" "$OUTPUT_FILE"
 
