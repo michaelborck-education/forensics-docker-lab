@@ -1,12 +1,45 @@
-# Glossary
+# Glossary - Forensic Analysis Terms
 
-- **C2 (Command and Control)**: Communication channel (e.g., IRC in Lab 5) for remote malware control.
-- **Chain-of-Custody (CoC)**: Log of evidence handling (cases/chain_of_custody.csv, hashed SHA-256).
-- **Carving**: Recovering files from unallocated space (Foremost in Lab 1).
-- **Exfil (Exfiltration)**: Data theft outbound (HTTP POST/IRC in Phase 5).
-- **Plaso**: Timeline tool for super-timelines (log2timeline/psort in Lab 1).
-- **TrueCrypt**: Encryption tool for hidden volumes (process in memory.ram, Lab 2).
-- **Volatility3**: Memory analysis framework (pslist/netscan in Lab 2).
-- **YARA**: Rule-based malware scanner (optional in rules/).
+## Core Forensic Concepts
 
-Updates as labs evolve.
+- **Chain-of-Custody (CoC)**: Log of evidence handling showing who accessed evidence, when, and why. Digital evidence includes hashes (SHA-256, MD5) to prove integrity. Documented in `cases/*/chain_of_custody.csv`.
+
+- **Write Blocker**: Hardware device that prevents accidental modification of evidence during imaging. Used with USB devices, hard drives, etc. to maintain forensic integrity.
+
+- **Carving**: Recovering files from unallocated disk space using file headers/footers without relying on filesystem metadata. Useful for deleted files.
+
+## Tools Used in These Labs
+
+- **Autopsy**: GUI forensic analysis framework for filesystem examination, timeline analysis, and artifact extraction.
+
+- **Sleuth Kit (fls, icat, fsstat)**: Command-line tools for filesystem analysis, deleted file recovery, and file extraction.
+
+- **Volatility2/3**: Memory analysis framework for examining RAM dumps. Tools like `pslist` (processes), `netscan` (network connections), and `psxview` (process verification).
+
+- **tshark**: Command-line network packet analyzer. Used for protocol filtering (DNS, HTTP, IRC) and data volume analysis.
+
+- **Wireshark**: GUI version of tshark for interactive network traffic analysis.
+
+- **YARA**: Rule-based malware and file pattern scanner (optional).
+
+## Attack Indicators
+
+- **C2 (Command and Control)**: Communication channel for remote malware control. In these labs, demonstrated via IRC connections to external servers.
+
+- **Exfiltration**: Data theft - sensitive data being transferred to external servers. Network analysis shows large outbound data volumes.
+
+- **Keylogger**: Software that captures keyboard input. Detected in memory analysis and filesystem examination.
+
+- **TrueCrypt**: Encryption tool for creating hidden volumes. Detected as running process in memory, evidence file on disk.
+
+- **IRC (Internet Relay Chat)**: Legacy chat protocol (ports 6667-6669) used by botnets for C2 communication.
+
+## Investigation Phases
+
+- **Triage**: Quick initial examination with wildcards and filters to identify evidence and suspicious files.
+
+- **Deep Dive**: Detailed analysis of specific evidence using precise paths and tools, documenting exact findings.
+
+- **Correlation**: Cross-referencing findings across multiple evidence sources (disk, memory, network, email) to build the complete attack picture.
+
+- **Reporting**: Compilation of findings into professional reports suitable for legal proceedings.
