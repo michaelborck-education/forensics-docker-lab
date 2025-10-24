@@ -166,9 +166,9 @@ You'll be prompted for your analyst name, then you're inside:
 ```
 ╔═════════════════════════════════════════════════════════════════╗
 ║                                                                 ║
-║     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY           ║
+║     DIGITAL FORENSICS & INCIDENT RESPONSE LABORATORY            ║
 ║                                                                 ║
-║           Cloudcore 2009 Data Exfiltration Investigation       ║
+║     Cloudcore 2009 Data Exfiltration Investigation              ║
 ║                                                                 ║
 ╚═════════════════════════════════════════════════════════════════╝
 
