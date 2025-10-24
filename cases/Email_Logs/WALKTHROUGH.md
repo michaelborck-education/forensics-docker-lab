@@ -76,12 +76,42 @@ But remember: In real forensics, email capture is CRITICAL because:
 
 ## 📋 Pre-Lab Setup
 
-### 1. Copy Templates to Your Lab Folder
+### 1. Verify Lab Templates Are Ready
+
+The lab folder should already contain three template files. Verify they exist:
 
 ```bash
+# On your host machine
+ls -lh cases/Email_Logs/
+```
+
+You should see:
+- **chain_of_custody.csv** - Evidence handling record
+- **analysis_log.csv** - Command execution log
+- **lab_report.md** - Report template for your findings
+- **WALKTHROUGH.md** - This document
+
+**What each file does:**
+
+| File | Purpose | When Used |
+|------|---------|-----------|
+| **chain_of_custody.csv** | Documents evidence integrity (hashes, analyst, date) | Before lab starts - fill in evidence details |
+| **analysis_log.csv** | Logs every command you run with timestamps and output hashes | During lab - use `coc-log` script to auto-update |
+| **lab_report.md** | Template for writing your findings and analysis | After lab - document what you discovered |
+
+If any files are missing, copy them from templates/:
+
+```bash
+# Copy missing templates (if needed)
 cp templates/chain_of_custody.csv cases/Email_Logs/chain_of_custody.csv
 cp templates/analysis_log.csv cases/Email_Logs/analysis_log.csv
+cp templates/lab_report_template.md cases/Email_Logs/lab_report.md
 ```
+
+**Tips for using these files:**
+- **chain_of_custody.csv**: Edit with spreadsheet app or text editor. Fill in evidence hash, analyst name, case number before beginning.
+- **analysis_log.csv**: Use `coc-log` script inside container to automatically log commands (recommended). If not using coc-log, manually add entries after each command.
+- **lab_report.md**: Use as starting point for your findings report. Replace placeholders with your actual analysis and evidence.
 
 ### 2. Verify Evidence Files
 

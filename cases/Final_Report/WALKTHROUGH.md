@@ -17,24 +17,61 @@ Synthesize findings from all 5 labs (USB_Imaging, Memory_Forensics, Autopsy_GUI,
 
 This lab does NOT use the forensic workstation. You'll work on your **host machine** consolidating evidence.
 
-### 1. Review All Previous Labs
+### 1. Verify Final_Report Templates Are Ready
 
-Open these folders and scan all findings:
-```bash
-cases/USB_Imaging/        # Files, deleted items
-cases/Memory_Forensics/   # Processes, network connections
-cases/Autopsy_GUI/        # Timeline, artifacts
-cases/Email_Logs/         # Communications
-cases/Network_Analysis/   # Traffic, exfiltration
-```
-
-### 2. Create Final Lab Folder
+The lab folder should already contain template files. Verify they exist:
 
 ```bash
-mkdir -p cases/Final_Report
-cp templates/chain_of_custody.csv cases/Final_Report/master_chain_of_custody.csv
-cp templates/analysis_log.csv cases/Final_Report/master_analysis_log.csv
+# On your host machine
+ls -lh cases/Final_Report/
 ```
+
+You should see:
+- **chain_of_custody.csv** - Evidence handling record (from all labs)
+- **analysis_log.csv** - Master command log (optional for consolidation)
+- **lab_report.md** - Available if alternative format needed
+- **final_report.md** - Report template for comprehensive incident synthesis (PRIMARY)
+- **WALKTHROUGH.md** - This document
+
+**What each file does:**
+
+| File | Purpose | When Used |
+|------|---------|-----------|
+| **chain_of_custody.csv** | Master evidence record from all 5 labs | Before starting - consolidate all evidence hashes |
+| **analysis_log.csv** | Optional master log if tracking all commands | During lab - optional for tracking consolidated analysis |
+| **final_report.md** | Template for comprehensive incident investigation | Main deliverable - synthesize all evidence into narrative |
+| **lab_report.md** | Alternative format if needed | Optional - individual lab-style reporting |
+
+If any files are missing, copy them from templates/:
+
+```bash
+# Copy missing templates (if needed)
+cp templates/chain_of_custody.csv cases/Final_Report/chain_of_custody.csv
+cp templates/analysis_log.csv cases/Final_Report/analysis_log.csv
+cp templates/lab_report_template.md cases/Final_Report/lab_report.md
+cp templates/final_report_template.md cases/Final_Report/final_report.md
+```
+
+**Tips for using these files:**
+- **chain_of_custody.csv**: Consolidate evidence records from all 5 lab folders. This becomes your master evidence list.
+- **final_report.md**: Use this as your primary template. It's designed for synthesizing evidence from multiple sources into a unified incident narrative.
+- **lab_report.md**: Available if you prefer the individual lab format instead of the comprehensive final report format.
+
+### 2. Review All Previous Labs
+
+Open these folders and review all findings and evidence:
+```bash
+cases/USB_Imaging/        # Files, deleted items, lab_report.md, chain_of_custody.csv, analysis_log.csv
+cases/Memory_Forensics/   # Processes, network connections, lab_report.md, chain_of_custody.csv, analysis_log.csv
+cases/Autopsy_GUI/        # Timeline, artifacts, lab_report.md, chain_of_custody.csv, analysis_log.csv
+cases/Email_Logs/         # Communications, lab_report.md, chain_of_custody.csv, analysis_log.csv
+cases/Network_Analysis/   # Traffic, exfiltration, lab_report.md, chain_of_custody.csv, analysis_log.csv
+```
+
+**Key documents to review:**
+- Each lab's `lab_report.md` for analysis and findings
+- Each lab's `chain_of_custody.csv` for evidence details and hashes
+- Each lab's `analysis_log.csv` for methodology transparency
 
 ---
 

@@ -59,21 +59,42 @@ But remember: In real forensics, the imaging step is CRITICAL because:
 
 ## 📋 Pre-Lab Setup
 
-### 1. Copy Templates to Your Lab Folder
+### 1. Verify Lab Templates Are Ready
 
-Before starting, copy the CSV templates to your lab folder so you can track evidence and commands:
+The lab folder should already contain three template files. Verify they exist:
 
 ```bash
 # On your host machine (outside the container)
-cp templates/chain_of_custody.csv cases/USB_Imaging/chain_of_custody.csv
-cp templates/analysis_log.csv cases/USB_Imaging/analysis_log.csv
+ls -lh cases/USB_Imaging/
 ```
 
-**These files will store:**
-- **chain_of_custody.csv**: Evidence hashes (MD5, SHA256) for integrity verification
-- **analysis_log.csv**: Every command you run and when you ran it
+You should see:
+- **chain_of_custody.csv** - Evidence handling record
+- **analysis_log.csv** - Command execution log
+- **lab_report.md** - Report template for your findings
+- **WALKTHROUGH.md** - This document
 
-Keep these files open on your host machine so you can copy-paste entries as you work.
+**What each file does:**
+
+| File | Purpose | When Used |
+|------|---------|-----------|
+| **chain_of_custody.csv** | Documents evidence integrity (hashes, analyst, date) | Before lab starts - fill in evidence details |
+| **analysis_log.csv** | Logs every command you run with timestamps and output hashes | During lab - use `coc-log` script to auto-update |
+| **lab_report.md** | Template for writing your findings and analysis | After lab - document what you discovered |
+
+If any files are missing, copy them from templates/:
+
+```bash
+# Copy missing templates (if needed)
+cp templates/chain_of_custody.csv cases/USB_Imaging/chain_of_custody.csv
+cp templates/analysis_log.csv cases/USB_Imaging/analysis_log.csv
+cp templates/lab_report_template.md cases/USB_Imaging/lab_report.md
+```
+
+**Tips for using these files:**
+- **chain_of_custody.csv**: Edit with spreadsheet app or text editor. Fill in evidence hash, analyst name, case number before beginning.
+- **analysis_log.csv**: Use `coc-log` script inside container to automatically log commands (recommended). If not using coc-log, manually add entries after each command.
+- **lab_report.md**: Use as starting point for your findings report. Replace placeholders with your actual analysis and evidence.
 
 ### 2. Verify Your Evidence File
 
