@@ -590,14 +590,20 @@ git checkout instructor
 
 ---
 
-## 📚 Additional Resources
+## 📚 Forensic Tools & Resources
 
-- **Sleuth Kit:** https://sleuthkit.org/sleuthkit/docs.php
-- **Volatility 3:** https://volatility3.readthedocs.io/
-- **Autopsy:** https://www.sleuthkit.org/autopsy/
-- **YARA Rules:** https://github.com/Yara-Rules/rules
-- **Plaso:** https://plaso.readthedocs.io/
-- **Wireshark:** https://www.wireshark.org/docs/
+### Core Tools (Pre-Installed)
+
+- **Sleuth Kit (fls, icat, tsk_recover, fsstat, istat):** https://sleuthkit.org/sleuthkit/docs.php
+- **Volatility 2:** For Windows XP and older memory analysis - https://volatility-labs.blogspot.com/
+- **Volatility 3:** Modern memory forensics framework - https://volatility3.readthedocs.io/
+- **tshark:** Command-line network packet analyzer - https://www.wireshark.org/docs/man-pages/tshark.html
+- **Autopsy:** GUI forensic analysis platform - https://www.sleuthkit.org/autopsy/
+
+### Additional Resources
+
+- **Wireshark:** Network protocol analyzer (GUI complement to tshark) - https://www.wireshark.org/docs/
+- **YARA Rules:** Malware detection patterns - https://github.com/Yara-Rules/rules
 
 ---
 
