@@ -6,6 +6,6 @@
 |                                                                     |
 +=====================================================================+
 
-Ready for forensic analysis. See CHEATSHEET.md for quick reference.
 Type 'exit' to end session. All work is saved to ./cases/
+Ready for forensic analysis.
 
