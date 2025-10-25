@@ -598,12 +598,13 @@ git checkout instructor
 - **Volatility 2:** For Windows XP and older memory analysis - https://volatility-labs.blogspot.com/
 - **Volatility 3:** Modern memory forensics framework - https://volatility3.readthedocs.io/
 - **tshark:** Command-line network packet analyzer - https://www.wireshark.org/docs/man-pages/tshark.html
+- **YARA:** Malware pattern matching and detection - https://virustotal.github.io/yara/
 - **Autopsy:** GUI forensic analysis platform - https://www.sleuthkit.org/autopsy/
 
 ### Additional Resources
 
 - **Wireshark:** Network protocol analyzer (GUI complement to tshark) - https://www.wireshark.org/docs/
-- **YARA Rules:** Malware detection patterns - https://github.com/Yara-Rules/rules
+- **YARA Rules Repository:** Community malware detection rules - https://github.com/Yara-Rules/rules
 
 ---
 
