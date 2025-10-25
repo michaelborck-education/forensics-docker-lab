@@ -233,8 +233,8 @@ The chain of custody CSV tracks evidence handling for **forensic integrity**.
 - **Date_Received / Time_Received**: When evidence came into your custody
 - **Received_From**: Who provided the evidence (maintains chain)
 - **MD5_Hash / SHA256_Hash**: Cryptographic hashes proving evidence hasn't been modified
-- **Analyst_Name**: Who is analyzing (may be different from who captured it)
-- **Case_Number**: Reference for organization
+- **Analyst_Name**: Who is analysing (may be different from who captured it)
+- **Case_Number**: Reference for organisation
 - **Evidence_Description**: What the evidence is (disk image, memory dump, etc.)
 - **Storage_Location**: Where the evidence is kept
 

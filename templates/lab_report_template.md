@@ -123,8 +123,8 @@ Use this template for reporting findings from individual forensic labs (USB_Imag
 **For this investigation**:
 [What should the investigator do next? What additional labs or deep dives would be valuable?]
 
-**For the organization**:
-[Based on your findings, what should the organization do to prevent similar incidents?]
+**For the organisation**:
+[Based on your findings, what should the organisation do to prevent similar incidents?]
 
 ---
 

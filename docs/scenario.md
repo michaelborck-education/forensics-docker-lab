@@ -12,9 +12,13 @@ format:
 ## Case Information
 
 **Case Number:** CLOUDCORE-2009-INS-001
+
 **Incident Type:** Suspected Data Exfiltration
+
 **Investigation Status:** Active Triage
+
 **Lead Investigator:** [Your Name - Student Analyst]
+
 **Date Opened:** December 6, 2009
 
 ---
@@ -24,6 +28,7 @@ format:
 **Cloudcore Inc.** is a mid-sized Australian software firm specializing in cloud security solutions. The company employs approximately 150 staff across offices in Sydney and Melbourne, serving clients in the financial services, healthcare, and government sectors.
 
 Cloudcore handles sensitive data including:
+
 - Client database exports and customer lists
 - Financial reports and billing information
 - Proprietary source code and algorithms
@@ -110,6 +115,7 @@ This investigation operates under the framework of:
 ### Chain of Custody Requirements
 
 All forensic analysis must comply with:
+
 - **ISO 27037:2012** 
   - Guidelines for identification, collection, acquisition and preservation of digital evidence
   - https://www.iso.org/standard/44381.html
@@ -236,24 +242,28 @@ All forensic evidence files are located in the `/evidence/` directory (read-only
 ### Available Evidence by Case Type
 
 **Case 1: USB Device Analysis**
+
 - **Filename:** `usb.E01`
 - **Format:** Expert Witness Format (EnCase Evidence File)
 - **Content:** NTFS filesystem image with allocated and deleted files
 - **Analysis Method:** File carving, deleted file recovery, timeline reconstruction
 
 **Case 2: Network Traffic Analysis**
-- **Filename:** `network.pcap` (or similar)
+
+- **Filename:** `network.cap` (or similar)
 - **Format:** PCAP network packet capture file
 - **Content:** Raw network packets from suspect communication period
 - **Analysis Method:** PCAP parsing, protocol analysis, flow reconstruction
 
 **Case 3: Email Archive Analysis**
+
 - **Filenames:** `suspect_mailbox.mbox` or `suspect_mailbox.pst`
 - **Format:** MBOX (standard email format) or PST (Outlook format)
 - **Content:** Email messages, metadata, and attachments
 - **Analysis Method:** Email parsing, metadata extraction, attachment analysis
 
 **Case 4: Memory Forensics**
+
 - **Filename:** `memory.dmp` or `RAM.dd`
 - **Format:** Raw memory dump or volatility-compatible format
 - **Content:** System RAM at time of acquisition
@@ -290,11 +300,12 @@ This multi-case investigation allows you to work across different forensic domai
 - **Email Forensics (MBOX Lab):** Message parsing, attachment analysis, metadata extraction
 - **Memory Forensics (Volatility Lab):** Process analysis, malware detection, artifact recovery
 
-Each case provides independent evidence that may corroborate or contradict other findings. You may analyze one case in depth or perform comparative analysis across multiple evidence types.
+Each case provides independent evidence that may corroborate or contradict other findings. You may analyse one case in depth or perform comparative analysis across multiple evidence types.
 
 ### Time Recommendations
 
 Each case can be completed independently:
+
 - **USB Imaging Case:** 2-3 hours
 - **Network Traffic Analysis:** 2-3 hours
 - **Email Archive Analysis:** 1-2 hours
@@ -339,6 +350,7 @@ As a forensic analyst, you must:
 ### Impact Awareness
 
 Your analysis may be used in:
+
 - **Employment Proceedings:** Termination justification or wrongful dismissal claims
 - **Criminal Prosecution:** If evidence reveals criminal activity
 - **Civil Litigation:** If clients sue for data breach damages

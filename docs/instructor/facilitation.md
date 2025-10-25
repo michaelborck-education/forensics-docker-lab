@@ -2,7 +2,7 @@
 
 ## Overview
 
-This training lab package teaches digital forensic analysis through a realistic incident investigation. Students analyze evidence from the Cloudcore incident (2009) across five independent labs:
+This training lab package teaches digital forensic analysis through a realistic incident investigation. Students analyse evidence from the Cloudcore incident (2009) across five independent labs:
 
 - **USB_Imaging**: Disk forensics and file recovery
 - **Memory_Forensics**: RAM analysis and process investigation
@@ -116,7 +116,7 @@ Each walkthrough contains cross-references to help students correlate findings r
 ### Extensions for Advanced Students
 - Add forensic signatures (YARA rules) to identify malware families
 - Perform more detailed memory analysis (kernel structures, injected DLLs)
-- Analyze SSL/TLS certificates in network traffic
+- Analyse SSL/TLS certificates in network traffic
 - Research the real Cloudcore incident (if it inspired this case)
 - Design their own incident scenario for peers to investigate
 
@@ -197,7 +197,7 @@ By completing these labs, students will be able to:
 
 1. **Apply forensic methodology**: Chain of custody, evidence integrity, documentation
 2. **Use forensic tools**: Both command-line (Sleuth Kit, Volatility, tshark) and GUI (Autopsy)
-3. **Analyze evidence**: Recover deleted files, extract artifacts, correlate findings
+3. **Analyse evidence**: Recover deleted files, extract artifacts, correlate findings
 4. **Reason forensically**: Interpret data, draw conclusions, explain significance
 5. **Communicate professionally**: Document findings, create reports suitable for legal proceedings
 6. **Adapt to incomplete information**: Reason with partial evidence, acknowledge limitations

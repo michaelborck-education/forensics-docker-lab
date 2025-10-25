@@ -29,7 +29,7 @@ Labs can be assigned in any order (except Final_Report which synthesizes all evi
 **Evidence Analysis (30%)**
 - Manual keyword searches conducted (password, secret, confidential)
 - Deleted file contents extracted and examined
-- File metadata analyzed (creation time, modification time, access time)
+- File metadata analysed (creation time, modification time, access time)
 - Evidence correlations noted for later labs
 
 **Documentation & Report (20%)**
@@ -51,7 +51,7 @@ Labs can be assigned in any order (except Final_Report which synthesizes all evi
 - Process listing generated (pslist output)
 - Suspicious processes identified (ToolKeylogger.exe, unusual network processes, etc.)
 - Process hierarchy examined (parent-child relationships)
-- Network connections from processes analyzed (netscan output)
+- Network connections from processes analysed (netscan output)
 
 **Evidence Extraction (30%)**
 - String extraction from suspicious processes
@@ -104,7 +104,7 @@ Labs can be assigned in any order (except Final_Report which synthesizes all evi
 **Email Analysis (30%)**
 - Emails extracted and parsed (headers, sender, recipient, subject, body)
 - Suspicious emails identified (external recipients, attachments)
-- Email content analyzed for evidence of intent
+- Email content analysed for evidence of intent
 - Timestamps compared with other evidence
 
 **Correlation & Timeline (30%)**
@@ -129,13 +129,13 @@ Labs can be assigned in any order (except Final_Report which synthesizes all evi
 - Capture integrity established
 
 **Protocol Analysis (30%)**
-- DNS queries extracted and analyzed
+- DNS queries extracted and analysed
 - HTTP/HTTPS traffic examined
 - IRC C2 connections identified (if present)
 - Suspicious domains and servers documented
 
 **Data Exfiltration Detection (30%)**
-- TCP conversations analyzed for data volume
+- TCP conversations analysed for data volume
 - Large outbound transfers identified
 - Asymmetric traffic patterns noted
 - Destination IPs and ports documented

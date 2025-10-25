@@ -86,7 +86,7 @@ These documents provide architectural context and historical decisions:
 
 ---
 
-## 📞 File Organization
+## 📞 File Organisation
 
 ```
 docs/

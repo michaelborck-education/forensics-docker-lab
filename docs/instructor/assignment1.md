@@ -9,7 +9,7 @@ Assessment 1 – USB Evidence Triage Report
 
 Learning Outcomes
 
-Upon completion of this assessment, students will be able to: 1. Apply proper digital evidence handling procedures following forensic best practices (ISO 27037, ACPO principles) 2. Utilize command-line forensic tools for evidence examination and file recovery 3. Document forensic findings in a professional, reproducible manner suitable for legal proceedings 4. Critically reflect on the role of AI tools in digital forensics practice
+Upon completion of this assessment, students will be able to: 1. Apply proper digital evidence handling procedures following forensic best practices (ISO 27037, ACPO principles) 2. Utilise command-line forensic tools for evidence examination and file recovery 3. Document forensic findings in a professional, reproducible manner suitable for legal proceedings 4. Critically reflect on the role of AI tools in digital forensics practice
 ## Investigation Background
 
 📖 For complete case details, read **docs/scenario.md**.
@@ -24,7 +24,7 @@ Cloudcore Inc.'s security team detected suspicious USB activity on employee work
 **Your Role:** As a junior forensic analyst, conduct an initial triage examination of the USB device to:
 
 1. Identify what data is currently on the device
-2. Recover deleted files and analyze their content
+2. Recover deleted files and analyse their content
 3. Determine whether client data was exfiltrated
 4. Build a timeline of device usage and file operations
 
@@ -168,8 +168,8 @@ tsk_recover /tmp/ewf/ewf1 /cases/recovered
 
 **Organize Recovered Files:**
 - Separate deleted files from active files
-- Categorize by file type (documents, databases, archives, etc.)
-- Create subdirectories in `/cases/recovered/` for organization
+- Categorise by file type (documents, databases, archives, etc.)
+- Create subdirectories in `/cases/recovered/` for organisation
 
 #### 2.4 Content Analysis (Required)
 
@@ -244,7 +244,7 @@ history > /cases/command_log.txt
 
 #### Findings and Analysis (200-250 words)
 
-Detailed findings organized by category:
+Detailed findings organised by category:
 - Active files of interest
 - Deleted/recovered files
 - Keyword search results
@@ -262,7 +262,7 @@ Include:
 
 #### AI Usage Reflection (2.5 points) - 100-150 words
 
-- How you utilized AI tools during this assessment
+- How you utilised AI tools during this assessment
 - Specific prompts or queries you found most effective
 - Limitations or challenges encountered with AI assistance
 - Ethical considerations when using AI in forensic investigations
@@ -351,7 +351,7 @@ Assessment Rubric
 | Criteria | Excellent (9-10) | Good (7-8) | Satisfactory (5-6) | Needs Improvement (<5) |
 |----------|---|---|---|---|
 | File System Analysis | Complete file listing with deleted files identified; timeline created; file system info extracted | Most files listed; timeline attempted; some analysis gaps | Basic file listing; minimal timeline work | Incomplete file listing; no timeline |
-| File Recovery | All deleted files recovered; organized by category; key files specifically extracted | Most deleted files recovered; basic organization | Some files recovered; disorganized | Minimal recovery attempted |
+| File Recovery | All deleted files recovered; organised by category; key files specifically extracted | Most deleted files recovered; basic organisation | Some files recovered; disorganized | Minimal recovery attempted |
 | Keyword Search | Comprehensive keyword search; all required terms; results documented with context | Most keywords searched; adequate documentation | Basic keyword search; limited documentation | Minimal or no keyword search |
 | Command Documentation | Every command logged with purpose and results; reproducible methodology | Most commands documented; mostly reproducible | Some commands documented; gaps in methodology | Poor or missing documentation |
 
@@ -417,7 +417,7 @@ Assessment Rubric
 ❌ Not including deleted files in analysis (forgetting `-d` flag)
 ❌ Ignoring exculpatory evidence (only reporting incriminating findings)
 ❌ Over-reliance on single tool without verification
-❌ Not organizing recovered files by category
+❌ Not organising recovered files by category
 ❌ Failing to document unexpected results or errors
 
 ### Reporting Mistakes

@@ -19,7 +19,7 @@ Learning Outcomes
 
 Upon completion of this assessment, students will be able to:
 1. Conduct memory forensics analysis using Volatility 2 for Windows XP systems
-2. Parse and analyze email evidence for data exfiltration indicators
+2. Parse and analyse email evidence for data exfiltration indicators
 3. Correlate findings across memory, email, and log sources
 4. Document multi-source forensic investigations in a comprehensive report
 5. Apply timeline analysis to establish sequence of malicious activities
@@ -89,7 +89,7 @@ Tasks
 
 Task 1: Memory Forensics Analysis (10 points)
 
-Objective: Analyze Windows XP memory image to identify malicious processes and data concealment activities.
+Objective: Analyse Windows XP memory image to identify malicious processes and data concealment activities.
 
 1.1 Memory Image Identification and Verification (Required)
 
@@ -139,11 +139,11 @@ Objective: Analyze Windows XP memory image to identify malicious processes and d
         Network connection details with timestamps
         Any errors encountered and troubleshooting steps
 
-    💡 Hint: Save all outputs to /cases/Memory_Forensics/vol_output/ directory for organization
+    💡 Hint: Save all outputs to /cases/Memory_Forensics/vol_output/ directory for organisation
 
 Task 2: Email and Log Analysis (10 points)
 
-Objective: Analyze email evidence and system logs to identify data exfiltration and correlate with memory findings.
+Objective: Analyse email evidence and system logs to identify data exfiltration and correlate with memory findings.
 
 2.1 Email Evidence Processing (Required)
 
@@ -159,7 +159,7 @@ Objective: Analyze email evidence and system logs to identify data exfiltration 
         Document timestamps, subject lines, and recipient information
 
     Attachment Analysis
-        Extract and analyze email attachments
+        Extract and analyse email attachments
         Look for encrypted files, archives, or proprietary data
         Document attachment names, sizes, and hash values
         Correlate with files identified in Assignment 1
@@ -167,7 +167,7 @@ Objective: Analyze email evidence and system logs to identify data exfiltration 
 2.2 System Log Correlation (Required)
 
     Log File Analysis
-        Analyze /evidence/logs/ for USB insertion/removal events
+        Analyse /evidence/logs/ for USB insertion/removal events
         Look for application execution logs matching memory process findings
         Document system events around the critical time periods (Dec 5-6, 2009)
 
@@ -249,7 +249,7 @@ Conclusions and Recommendations (150-200 words)
 
 AI Usage Reflection (2.5 points) - 100-150 words
 
-    How you utilized AI tools for this multi-source analysis
+    How you utilised AI tools for this multi-source analysis
     Specific prompts or queries for correlation analysis
     Challenges in using AI for timeline creation and cross-source analysis
     Verification process for AI-generated analytical suggestions
@@ -345,7 +345,7 @@ Documentation 	All commands documented; outputs saved; methodology reproducible 
 
 Task 2: Email & Log Analysis (10 points)
 Criteria 	Excellent (9-10) 	Good (7-8) 	Satisfactory (5-6) 	Needs Improvement (<5)
-Email Parsing 	Comprehensive email analysis; suspicious emails identified; attachments analyzed 	Good email analysis; most suspicious emails found 	Basic email parsing; limited analysis 	Minimal email analysis
+Email Parsing 	Comprehensive email analysis; suspicious emails identified; attachments analysed 	Good email analysis; most suspicious emails found 	Basic email parsing; limited analysis 	Minimal email analysis
 Log Analysis 	Thorough log analysis; USB events identified; timeline created 	Good log analysis; most events found 	Basic log parsing 	Minimal log analysis
 Correlation 	Excellent cross-source correlation; timeline integrated; patterns identified 	Good correlation; some patterns identified 	Basic correlation attempted 	Minimal or no correlation
 Documentation 	All findings documented; methodology clear; verification steps shown 	Most findings documented; adequate methodology 	Some documentation; gaps in process 	Poor or missing documentation

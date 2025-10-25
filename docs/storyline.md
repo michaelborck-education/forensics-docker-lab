@@ -12,7 +12,7 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 
 ### Phase 1: Local Preparation and Deletion (2009-12-01 to 12-05)
 - **Disk Activity:** Files are created and mounted on USB drive (FAT32, labeled "PRACTICE"). Sensitive files including source code with embedded credentials are deleted to hide tracks.
-- **Link to Labs:** Lab 1 (USB Imaging & Triage) – Establish chain-of-custody for `usb.E01`, recover deleted artifacts using Sleuth Kit (fls, icat, tsk_recover), analyze filesystem structure and recover file content.
+- **Link to Labs:** Lab 1 (USB Imaging & Triage) – Establish chain-of-custody for `usb.E01`, recover deleted artifacts using Sleuth Kit (fls, icat, tsk_recover), analyse filesystem structure and recover file content.
 - **Key Findings:**
   - **project_secrets.txt (inode 375):** Cloudcore proprietary source code with hardcoded database credentials (db_host=192.168.1.100, db_user=alex_doe, db_pass=TempPass_2009!) and client data (MegaCorp Inc. project details)
   - **email_draft.txt (inode 663):** Email from Alex Doe to Sarah Connor expressing security concerns about database credentials and unusual network activity from development server

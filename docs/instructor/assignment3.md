@@ -226,7 +226,7 @@ High-level overview suitable for management/legal review:
 
 ##### Investigation Scope & Methodology (300-400 words)
 
-- Evidence analyzed (disk images, memory dumps, network captures, email archives)
+- Evidence analysed (disk images, memory dumps, network captures, email archives)
 - Labs completed and evidence types examined
 - Tools used and versions (Sleuth Kit, Volatility 2, etc.)
 - Analysis approach (phases, techniques, verification methods)
@@ -333,7 +333,7 @@ High-level overview suitable for management/legal review:
 Create **PROCESS_REFLECTION.txt** addressing:
 
 1. **Investigation Complexity**
-   - Why was analyzing multiple evidence sources more valuable than single-source analysis?
+   - Why was analysing multiple evidence sources more valuable than single-source analysis?
    - How did corroboration increase confidence in conclusions?
    - What would be missing if only one lab had been conducted?
 
@@ -471,7 +471,7 @@ Before submitting, verify:
 | Criteria | Excellent (4.5-5.0) | Good (3.5-4.0) | Satisfactory (2.5-3.0) | Needs Improvement (<2.5) |
 |----------|---|---|---|---|
 | **Master CoC** | All evidence items from all labs included; complete fields; proper formatting | Most evidence items included; minor field gaps | Basic evidence list; some fields missing | Incomplete or disorganized |
-| **Analysis Logs** | All commands from all labs consolidated; properly sorted by timestamp | Most commands included; mostly chronological | Some commands included; basic organization | Incomplete or poorly organized |
+| **Analysis Logs** | All commands from all labs consolidated; properly sorted by timestamp | Most commands included; mostly chronological | Some commands included; basic organisation | Incomplete or poorly organised |
 | **Data Integrity** | Hash values verified; all dates/times accurate; analyst names consistent | Mostly accurate; minor discrepancies | Some accuracy issues; inconsistencies | Significant errors or missing data |
 
 #### Task 2: Timeline & Correlation (5 points)
@@ -504,7 +504,7 @@ Before submitting, verify:
 
 ## Common Pitfalls to Avoid
 
-### Data Organization Mistakes
+### Data Organisation Mistakes
 
 ❌ Not consolidating all evidence hashes into single master file
 ❌ Missing evidence items from specific labs

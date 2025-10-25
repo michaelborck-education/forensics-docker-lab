@@ -5,7 +5,7 @@
 
 ## 🎯 Course Overview
 
-This is a comprehensive hands-on digital forensics course where you will conduct a real-world style investigation of a data exfiltration incident at Cloudcore Inc. You'll work through 5 progressive labs using professional forensic tools in a containerized environment to analyze evidence, recover deleted files, perform memory analysis, and produce professional incident response reports.
+This is a comprehensive hands-on digital forensics course where you will conduct a real-world style investigation of a data exfiltration incident at Cloudcore Inc. You'll work through 5 progressive labs using professional forensic tools in a containerized environment to analyse evidence, recover deleted files, perform memory analysis, and produce professional incident response reports.
 
 **Case:** CLOUDCORE-2009-INS-001 - Data Exfiltration Investigation
 
@@ -376,7 +376,7 @@ docker compose run --rm -it dfir bash
 ### Inside the Workstation
 
 ```bash
-# Lab 1: Analyze the USB image
+# Lab 1: Analyse the USB image
 mkdir -p USB_Imaging/output
 fls -r /evidence/usb.img > USB_Imaging/output/fls.txt
 
@@ -404,7 +404,7 @@ coc-log "fls -r /evidence/usb.img" "Lab 1 filesystem listing"
 
 ---
 
-## 📁 Workspace Organization
+## 📁 Workspace Organisation
 
 ### Evidence Directory (`./evidence/`)
 
@@ -491,10 +491,10 @@ By completing all 5 labs, you will:
 
 1. ✅ Understand proper digital evidence handling (chain of custody, hashing, integrity verification)
 2. ✅ Master industry-standard forensic tools (Sleuth Kit, Volatility, Autopsy, Wireshark)
-3. ✅ Analyze multiple evidence types (disk images, memory dumps, network captures, logs)
+3. ✅ Analyse multiple evidence types (disk images, memory dumps, network captures, logs)
 4. ✅ Perform deleted file recovery and carving
 5. ✅ Conduct memory forensics on legacy Windows systems
-6. ✅ Identify and analyze command & control communications
+6. ✅ Identify and analyse command & control communications
 7. ✅ Construct timelines and correlate events across multiple data sources
 8. ✅ Write professional incident response reports
 9. ✅ Understand real-world incident response workflow

@@ -1,8 +1,8 @@
-# Scripts Directory - Organization & Usage
+# Scripts Directory - Organisation & Usage
 
 ## 📍 Overview
 
-This directory contains utility scripts for the Forensics Docker Lab. They're organized into three categories:
+This directory contains utility scripts for the Forensics Docker Lab. They're organised into three categories:
 
 ```
 scripts/
@@ -133,7 +133,7 @@ python3 scripts/instructor/hashlog.py evidence/ evidence/hashes.csv SHA256
 **Features:**
 - Same functionality as bash version
 - Native Windows PowerShell (no WSL needed)
-- Colored output on PowerShell 7+
+- Coloured output on PowerShell 7+
 - Handles Windows path conventions
 
 **Requirements:**

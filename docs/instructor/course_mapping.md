@@ -130,7 +130,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
   - `cases/Memory_Forensics/WALKTHROUGH.md` (memory analysis lab)
   - `glossary.md` (Volatility, keylogger, C2, memory forensics)
 - **Activities**:
-  - Full Memory_Forensics lab: Analyze memory dump with Volatility
+  - Full Memory_Forensics lab: Analyse memory dump with Volatility
   - Identify suspicious processes and network connections
   - Extract evidence from memory (DLL analysis, strings extraction)
   - Discussion: "How does memory evidence support or refute disk evidence?"
@@ -152,7 +152,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
   - `cases/Network_Analysis/WALKTHROUGH.md` (network analysis lab with comprehensive explanations)
   - `glossary.md` (tshark, IRC, C2, exfiltration, botnet)
 - **Activities**:
-  - Full Network_Analysis lab: Analyze PCAP file, identify IRC C2, detect exfiltration
+  - Full Network_Analysis lab: Analyse PCAP file, identify IRC C2, detect exfiltration
   - Protocol filtering with tshark (DNS, HTTP, IRC)
   - Conversation analysis and data volume calculation
   - Group discussion: "What does the network evidence tell us about the attack?"
@@ -174,7 +174,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
   - `cases/Email_Logs/WALKTHROUGH.md` (email analysis lab)
   - `glossary.md` (chain of custody, exfiltration, correlation)
 - **Activities**:
-  - Full Email_Logs lab: Extract and analyze emails, identify suspicious communications
+  - Full Email_Logs lab: Extract and analyse emails, identify suspicious communications
   - Correlate email timestamps with other evidence (disk, memory, network)
   - Timeline building: "When did each phase of the attack occur?"
   - Case analysis: "Does the email prove intent to steal data?"
@@ -246,7 +246,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
     - Timeline of attack phases
     - Evidence from each lab with correlation analysis
     - Forensic reasoning and conclusions
-    - Recommendations for the organization
+    - Recommendations for the organisation
     - Acknowledgment of limitations
   - Final presentations (5 min each if class size allows)
   - Course reflection: "What was most challenging? What did you learn?"
@@ -323,7 +323,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
   - Advanced memory analysis (rootkit detection, kernel exploitation)
   - Encrypted evidence (encrypted containers, file encryption)
   - Advanced network analysis (SSL/TLS certificate analysis, steganography)
-  - Malware analysis (YARA rules, behavior analysis)
+  - Malware analysis (YARA rules, behaviour analysis)
 
 - **Different student levels**:
   - Introductory: Labs 1, 4, Final_Report
