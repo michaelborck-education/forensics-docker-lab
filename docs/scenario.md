@@ -5,11 +5,11 @@
 
 ## Case Information
 
-**Case Number:** CLOUDCORE-2024-INS-001
+**Case Number:** CLOUDCORE-2009-INS-001
 **Incident Type:** Suspected Data Exfiltration
 **Investigation Status:** Active Triage
 **Lead Investigator:** [Your Name - Student Analyst]
-**Date Opened:** January 16, 2024
+**Date Opened:** December 6, 2009
 
 ---
 
@@ -30,14 +30,14 @@ Cloudcore handles sensitive data including:
 
 ### Initial Alert
 
-On **Monday, January 16, 2024 at 8:00 AM**, Cloudcore's IT Security Team received a tip from an internal whistleblower regarding a potential data breach. The whistleblower reported that a recently terminated employee may have exfiltrated sensitive client data via USB storage device before leaving the company premises.
+On **Monday, December 6, 2009 at 8:00 AM**, Cloudcore's IT Security Team received a tip from an internal whistleblower regarding a potential data breach. The whistleblower reported that a recently terminated employee may have exfiltrated sensitive client data via USB storage device before leaving the company premises.
 
 ### The Suspect
 
-An employee (identity redacted for educational purposes) was terminated on **January 15, 2024** for documented performance issues. During the exit process, the following suspicious activities were noted:
+An employee (identity redacted for educational purposes) was terminated on **December 5, 2009** for documented performance issues. During the exit process, the following suspicious activities were noted:
 
 - **Unusual Access Patterns:** Security logs showed the employee accessing multiple workstations outside normal business hours during their final two weeks of employment
-- **Last System Access:** January 14, 2024 at 9:47 PM (well after standard business hours)
+- **Last System Access:** December 4, 2009 at 9:47 PM (well after standard business hours)
 - **Authorized Access:** The employee had legitimate access to sensitive systems including:
   - Client database export tools
   - Financial reporting systems
@@ -46,7 +46,7 @@ An employee (identity redacted for educational purposes) was terminated on **Jan
 
 ### Evidence Recovery
 
-During a routine workspace audit conducted on January 16, 2024, a concealed USB storage device was discovered in the employee's desk drawer.
+During a routine workspace audit conducted on December 6, 2009, a concealed USB storage device was discovered in the employee's desk drawer.
 
 **Physical Evidence Details:**
 - **Device:** SanDisk Cruzer Blade USB 2.0 Flash Drive
@@ -130,7 +130,7 @@ Based on the whistleblower tip and initial log analysis, investigators should lo
 #### Anti-Forensic Activities:
 - **Deleted Files:** Evidence of recent mass deletions
 - **Archive Files:** ZIP, 7Z, or TAR files (data packaging for transfer)
-- **Encryption Tools:** Presence of encryption software or encrypted containers
+- **Malware Tools:** Presence of keyloggers or remote access tools
 - **Secure Deletion Tools:** Evidence of file wiping utilities
 
 #### Timeline Indicators:
@@ -145,7 +145,7 @@ Based on the whistleblower tip and initial log analysis, investigators should lo
 
 ### Evidence File
 
-**Filename:** `cloudcore_suspect_usb.E01`
+**Filename:** `usb.E01`
 **Format:** Expert Witness Format (EnCase Evidence File)
 **Location:** `/evidence/` directory (read-only mount)
 
@@ -155,11 +155,11 @@ Before beginning analysis, you **MUST** verify evidence integrity:
 
 ```bash
 # Verify E01 container integrity
-ewfverify /evidence/cloudcore_suspect_usb.E01
+ewfverify /evidence/usb.E01
 
 # Calculate hash values for chain of custody
-md5sum /evidence/cloudcore_suspect_usb.E01
-sha256sum /evidence/cloudcore_suspect_usb.E01
+md5sum /evidence/usb.E01
+sha256sum /evidence/usb.E01
 ```
 
 **Expected Results:**
@@ -176,7 +176,7 @@ E01 (Expert Witness Format) files must be mounted before analysis:
 mkdir -p /tmp/ewf
 
 # Mount the E01 file
-ewfmount /evidence/cloudcore_suspect_usb.E01 /tmp/ewf
+ewfmount /evidence/usb.E01 /tmp/ewf
 
 # The raw disk image is now accessible at:
 # /tmp/ewf/ewf1
@@ -195,17 +195,17 @@ This is a **triage investigation** only. Your objectives are:
 - Identification of obvious indicators of compromise
 - Documentation sufficient for escalation decisions
 
-This is **NOT** a full forensic examination. Advanced techniques (memory forensics, network traffic analysis, full timeline reconstruction) may be conducted later if triage findings warrant escalation.
+This is **NOT** a full forensic examination. Advanced techniques (memory forensics, network traffic analysis, full timeline reconstruction) will be conducted in subsequent labs to build a complete investigation.
 
 ### Time Constraints
 
-- **In-Lab Session:** 3 hours (Week 7 practical)
+- **In-Lab Session:** 3 hours (Week 1 practical)
 - **Independent Work:** 5-7 additional hours (report writing, detailed analysis)
-- **Submission Deadline:** End of Week 7
+- **Submission Deadline:** End of Week 1
 
 ### Resource Constraints
 
-- **Analysis Tools:** Limited to Sleuth Kit CLI (Autopsy GUI optional for students with higher-spec hardware)
+- **Analysis Tools:** Sleuth Kit CLI for primary analysis (Autopsy GUI available as optional supplement)
 - **Computing Environment:** Containerized Docker environment (lightweight, cross-platform compatible)
 - **Documentation:** All findings must be reproducible using only documented commands
 

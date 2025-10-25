@@ -62,7 +62,7 @@ Each walkthrough contains cross-references to help students correlate findings r
 
 ### Memory_Forensics Lab
 - **Key concept**: Process trees, network connections, evidence of malware
-- **Demo point**: TrueCrypt process with encryption volume - clear indicator of hiding intent
+- **Demo point**: ToolKeylogger.exe process with network libraries - clear indicator of credential theft
 - **Common struggles**:
   - Volatility output is dense and technical
   - Difficulty distinguishing suspicious vs. normal processes

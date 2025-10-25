@@ -124,11 +124,11 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
 - **Theory**:
   - Memory structure and processes
   - Live memory acquisition and analysis
-  - Detecting malware (TrueCrypt, keyloggers, rootkits)
+  - Detecting malware (keyloggers, rootkits, remote access tools)
   - Network connections in memory
 - **Readings**:
   - `cases/Memory_Forensics/WALKTHROUGH.md` (memory analysis lab)
-  - `glossary.md` (Volatility, TrueCrypt, keylogger, C2)
+  - `glossary.md` (Volatility, keylogger, C2, memory forensics)
 - **Activities**:
   - Full Memory_Forensics lab: Analyze memory dump with Volatility
   - Identify suspicious processes and network connections
@@ -321,7 +321,7 @@ This 12-week schedule maps theory, readings, and hands-on labs from the repo to 
 
 - **Longer course (16 weeks)**: Add deep dives on specific topics:
   - Advanced memory analysis (rootkit detection, kernel exploitation)
-  - Encrypted evidence (TrueCrypt volumes, BitLocker)
+  - Encrypted evidence (encrypted containers, file encryption)
   - Advanced network analysis (SSL/TLS certificate analysis, steganography)
   - Malware analysis (YARA rules, behavior analysis)
 

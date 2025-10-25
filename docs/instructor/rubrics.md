@@ -49,7 +49,7 @@ Labs can be assigned in any order (except Final_Report which synthesizes all evi
 
 **Process Analysis (30%)**
 - Process listing generated (pslist output)
-- Suspicious processes identified (ToolKeylogger.exe, TrueCrypt.exe, etc.)
+- Suspicious processes identified (ToolKeylogger.exe, unusual network processes, etc.)
 - Process hierarchy examined (parent-child relationships)
 - Network connections from processes analyzed (netscan output)
 

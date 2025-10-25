@@ -42,7 +42,7 @@ Your Role: As the forensic analyst, you must conduct advanced analysis of volati
 - Establish a comprehensive timeline of the insider threat activities
 
 Critical Intelligence: The suspect is believed to have:
-- Used TrueCrypt encryption to hide stolen data
+- Used keylogger malware to steal credentials and data
 - Communicated with external email accounts for data transfer
 - Employed anti-forensic techniques including process hiding and file deletion
 - Coordinated activities across multiple time periods on December 5-6, 2009
@@ -112,7 +112,7 @@ Objective: Analyze Windows XP memory image to identify malicious processes and d
         Note processes with unusual names or unexpected parent processes
 
     Targeted Process Extraction
-        Identify processes of interest (TrueCrypt, keyloggers, unusual executables)
+        Identify processes of interest (keyloggers, unusual network processes, suspicious executables)
         Use procdump to extract suspicious process executables
         Document PIDs, PPIDs, and process creation times
         Correlate with findings from Assignment 1 (USB analysis)
@@ -265,7 +265,7 @@ Special Considerations for This Case
 Look Specifically For:
 
 Memory Forensics Indicators:
-    TrueCrypt or other encryption processes
+    Keylogger processes or other credential theft malware
     Keylogger or monitoring software
     Unusual parent-child process relationships
     Network connections to external IPs

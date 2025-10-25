@@ -30,7 +30,7 @@
 
 - **Keylogger**: Software that captures keyboard input. Detected in memory analysis and filesystem examination.
 
-- **TrueCrypt**: Encryption tool for creating hidden volumes. Detected as running process in memory, evidence file on disk.
+- **ToolKeylogger.exe**: Specific keylogger malware that captures keystrokes and exfiltrates data via network libraries (WININET.dll, urlmon.dll). Detected running under explorer.exe (PID 280).
 
 - **IRC (Internet Relay Chat)**: Legacy chat protocol (ports 6667-6669) used by botnets for C2 communication.
 

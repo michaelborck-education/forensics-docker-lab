@@ -26,14 +26,9 @@ The following outlines the suspected exfiltration storyline, derived from artifa
 - **Link to Labs:** Lab 2 (Memory Forensics) – Analyse `evidence/memory.raw` (Windows XP SP3 memory dump) with Volatility 2. Plugins (pslist/pstree) reveal ToolKeylogger.e (PID 280, parent explorer.exe) running malicious keylogger; dlllist shows loaded keylogging DLL and internet libraries (WININET.dll, urlmon.dll, iertutil.dll) for remote data exfiltration. psscan verifies the process is not hidden (visible in process list). Process started at 2009-12-05 02:11:23 UTC.
 - **Key Findings:** Keylogger process tree shows malicious code spawned from normal user processes; loaded internet libraries prove data exfiltration capability; malware was active for 16+ hours before memory capture (18:47:28), capturing keystrokes and potentially passwords throughout the day. This is the mechanism for credential theft enabling later data access.
 
-### Phase 3: GUI Exploration and Deep Dive (2009-12-05, Afternoon)
-- **Activity:** Automated forensic tools (Autopsy) perform deeper analysis of USB evidence. GUI-based keyword searching confirms presence of sensitive data and correlates timeline with keylogger activity.
-- **Link to Labs:** Lab 3 (Autopsy GUI) – Load `usb.E01` into Autopsy via noVNC. Keyword search for sensitive data ("secret", "password", "project", "credential") yields hits in recovered files; recover file timestamps and metadata; correlate with keylogger timeline from Lab 2 (both active during same period).
-- **Key Findings:** Autopsy confirms deleted files were created/modified during period keylogger was active (02:11 onwards); database server IP 192.168.1.100 from USB secrets matches internal network; timestamp correlation shows files staged on USB before deletion; email draft about "unusual network activity" suggests Alex may have detected compromise.
-
-### Phase 4: Email and Log Correlation (2009-12-07)
+### Phase 3: Email and Log Correlation (2009-12-07)
 - **Activity:** Alex sends exfiltrated data directly to personal external email account. Email contains ZIP attachment with complete project secrets. This represents the final exfiltration phase before cleanup/covering tracks.
-- **Link to Labs:** Lab 4 (Email & Logs) – Parse `mail.mbox` for headers showing email from alex@cloudcore.com to exfil@personal.com with attached project_secrets.zip (2009-12-07 09:45:00 UTC). Verify attachment content matches USB evidence. Correlate email timestamp with USB removal and network exfiltration.
+- **Link to Labs:** Lab 3 (Email & Logs) – Parse `mail.mbox` for headers showing email from alex@cloudcore.com to exfil@personal.com with attached project_secrets.zip (2009-12-07 09:45:00 UTC). Verify attachment content matches USB evidence. Correlate email timestamp with USB removal and network exfiltration.
 - **Key Findings:**
   - **Sender:** alex@cloudcore.com
   - **Recipient:** exfil@personal.com (personal external account, not company domain)
@@ -42,14 +37,15 @@ The following outlines the suspected exfiltration storyline, derived from artifa
   - **Timestamp:** 2009-12-07 09:45:00 UTC
   - **Significance:** Direct evidence of intentional data exfiltration to external address; matches files recovered from USB (project_secrets.txt, etc.). This is the "smoking gun" proving intent to steal data.
 
-### Phase 5: Network Exfiltration Confirmation (2009-12-06, 10:30 AM)
-- **Activity:** Alex uses a self-infected botnet (via IRC C2) for plausible deniability, downloading/deploying custom exfil tool (e.g., ysbinstall_1000489_3.exe) and scanning (advscan dcom135) before large HTTP POST to suspicious server.
-- **Link to Labs:** Lab 5 (Network Analysis) – Tshark on `evidence/network.cap` (~114KB from ethical-hacking caps) reveals IRC connection to hunt3d.devilz.net (#s01/#sl0w3r), bot commands for exe downloads (bbnz.exe/jocker.exe/ysbinstall_1000489_3.exe), .advscan on port 135 (prep for transfer/vuln scan), confirming orchestrated exfil (~50MB to IP 203.0.113.50:8080 matching project_secrets.zip).
-- **Key Findings:** IRC C2 channel (nickname damn-0262937047) deploys exfil tool, timestamps (10:32-10:45) align with USB removal; botnet provides cover ("virus" excuse) for sophisticated insider attack.
+### Phase 4: Network Exfiltration Confirmation (2009-12-06, 10:30 AM)
+- **Activity:** Network traffic analysis confirms keylogger C2 communication and data exfiltration during the same period as USB staging and email preparation.
+- **Link to Labs:** Lab 4 (Network Analysis) – Tshark on `evidence/network.cap` reveals keylogger communication patterns, DNS queries for C2 domains, and data exfiltration timestamps that align with USB file creation/modification times.
+- **Key Findings:** Network traffic shows keylogger exfiltrating captured credentials to external server; timestamps overlap with USB staging period; confirms external malware enabled insider data theft.
 
-### Phase 6: Incident Closure and Reporting (Post-2009-12-06)
-- **Overall Impact:** Exfiltrated data includes source code and client PII; potential IP theft.
-- **Link to Labs:** Lab 6 (Consolidation) – Correlate all sources into a unified timeline (e.g., Plaso + PCAP + logs). Produce final report for management, recommending employee termination and system purge.
+### Phase 5: Incident Closure and Reporting (Post-2009-12-07)
+- **Activity:** Final synthesis of all evidence into comprehensive incident report showing coordinated insider attack enabled by external malware compromise.
+- **Link to Labs:** Lab 5 (Final_Report) – Correlate findings from USB_Imaging, Memory_Forensics, Email_Logs, and Network_Analysis into unified timeline and professional incident response report.
+- **Key Findings:** Evidence shows keylogger malware enabled credential theft, which facilitated staging of sensitive data on USB, exfiltration via personal email, and network C2 communication - all pointing to intentional data theft by insider with external assistance.
 
 ## Visual Timeline Reference
 See `forensic_case_timeline.png` (or `.svg`) for a graphical overview of correlated events across sources. Key markers:
@@ -59,8 +55,8 @@ See `forensic_case_timeline.png` (or `.svg`) for a graphical overview of correla
 - Green: Chain-of-custody verification points.
 
 ## Learning Progression
-- **Labs 1-3:** Build foundational skills (disk/memory analysis).
-- **Labs 4-5:** Add correlation (logs/email/network).
-- **Lab 6:** Synthesize into professional report.
+- **Labs 1-2:** Build foundational skills (disk/memory analysis).
+- **Labs 3-4:** Add correlation (logs/email/network).
+- **Lab 5:** Synthesize into professional report.
 
 This storyline ensures labs are interconnected: Start with isolated artifacts, end with holistic investigation. Update as needed based on your analysis findings.
