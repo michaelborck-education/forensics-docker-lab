@@ -1,5 +1,5 @@
 # Digital Forensics & Incident Response Laboratory
-## Complete 6-Lab Course on the Cloudcore 2009 Incident
+## Complete 5-Lab Course on the Cloudcore 2009 Incident
 
 ---
 
@@ -13,20 +13,19 @@ This is a comprehensive hands-on digital forensics course where you will conduct
 
 **Tools:** Sleuth Kit, Volatility, Autopsy GUI, Plaso, YARA, and more
 
-**Duration:** 6 progressive labs (one per week, ~8-10 hours each)
+**Duration:** 5 progressive labs (one per week, ~8-10 hours each)
 
 ---
 
-## 📚 The 6 Labs
+## 📚 The 5 Labs
 
 | Lab | Title | Skills | Key Tools |
 |-----|-------|--------|-----------|
 | **1** | **USB_Imaging** | Evidence handling, initial triage, deleted file recovery | Sleuth Kit, foremost, exiftool |
 | **2** | **Memory_Forensics** | Volatile memory analysis, process investigation | Volatility 2 (Windows XP) |
-| **3** | **Autopsy_GUI** | Graphical forensic investigation, case management | Autopsy, noVNC |
-| **4** | **Email_Logs** | Email artifact analysis, log examination | Python analysis, grep/awk |
-| **5** | **Network_Analysis** | Network traffic analysis, C2 detection, exfiltration | Wireshark, tshark, PCAP analysis |
-| **6** | **Final_Report** | Synthesis, timeline construction, professional reporting | All tools + reporting skills |
+| **3** | **Email_Logs** | Email artifact analysis, log examination | Python analysis, grep/awk |
+| **4** | **Network_Analysis** | Network traffic analysis, C2 detection, exfiltration | Wireshark, tshark, PCAP analysis |
+| **5** | **Final_Report** | Synthesis, timeline construction, professional reporting | All tools + reporting skills |
 
 ---
 
@@ -37,24 +36,20 @@ forensics-docker-lab/
 ├── README.md                           ← You are here (course overview)
 ├── docs/
 │   ├── README.md                       ← Student documentation index (START HERE)
-│   ├── SCENARIO.md                     ← Complete case background and context
-│   ├── SETUP.md                        ← Installation and Docker setup guide
-│   ├── COMMANDS.md                     ← Forensic commands quick reference
-│   ├── QUICK_REFERENCE.md              ← Command syntax for all labs
-│   ├── CHEATSHEET.md                   ← Quick reference (inside workstation)
-│   ├── STORYLINE.md                    ← Investigation timeline and narrative
-│   ├── GLOSSARY.md                     ← Forensics terminology
-│   ├── TROUBLESHOOTING.md              ← Common issues and solutions
-│   ├── COURSE_MAPPING.md               ← How labs fit into curriculum
+│   ├── scenario.md                     ← Complete case background and context
+│   ├── setup.md                        ← Installation and Docker setup guide
+│   ├── storyline.md                    ← Investigation timeline and narrative
+│   ├── glossary.md                     ← Forensics terminology
+│   ├── troubleshooting.md              ← Common issues and solutions
 │   └── instructor/                     ← Instructor materials (on instructor branch)
 │
-├── cases/                              ← YOUR WORKSPACE (6 lab folders)
+├── cases/                              ← YOUR WORKSPACE (5 lab folders)
 │   ├── USB_Imaging/                    ← Lab 1: Imaging, integrity & initial triage
 │   ├── Memory_Forensics/               ← Lab 2: Memory analysis with Volatility
-│   ├── Autopsy_GUI/                    ← Lab 3: Graphical forensic examination
-│   ├── Email_Logs/                     ← Lab 4: Email artifact analysis
-│   ├── Network_Analysis/               ← Lab 5: Network traffic and C2 detection
-│   └── Final_Report/                   ← Lab 6: Synthesis and final reporting
+│   ├── Email_Logs/                     ← Lab 3: Email artifact analysis
+│   ├── Network_Analysis/               ← Lab 4: Network traffic and C2 detection
+│   ├── Final_Report/                   ← Lab 5: Synthesis and final reporting
+│   └── Autopsy_GUI/                    ← Optional: Graphical forensic examination
 │
 ├── evidence/                           ← READ-ONLY evidence files
 │   ├── usb.img / usb.E01              ← USB device forensic image (~800MB)
@@ -62,13 +57,13 @@ forensics-docker-lab/
 │   └── network.cap                     ← Network traffic capture (~100MB)
 │
 ├── templates/                          ← Student report templates
-│   ├── WORKBOOK.md                     ← Report template (copy to each lab)
+│   ├── README.md                       ← Template documentation
+│   ├── lab_report_template.md          ← Individual lab report template
+│   ├── final_report_template.md        ← Final synthesis report template
 │   ├── chain_of_custody.csv            ← CoC log template
-│   ├── analysis_log.csv                ← Analysis tracking template
-│   └── timeline.csv                    ← Timeline template
+│   └── analysis_log.csv                ← Analysis tracking template
 │
 ├── guides/                             ← Interactive guides (HTML)
-│   ├── worksheet.html                  ← Lab 1 guided walkthrough
 │   ├── chain-custody-guide.html        ← Chain of custody reference
 │   └── forensic-image-primer.html      ← E01 format overview
 │
@@ -155,12 +150,12 @@ All checks should pass (✓ in green).
 ./scripts/forensics-workstation
 ```
 
-**Windows (Command Prompt or PowerShell):**
-```batch
-scripts\forensics-workstation.bat
+**Windows (PowerShell):**
+```powershell
+.\scripts\forensics-workstation.ps1
 ```
 
-> **Note:** Pure batch file - no PowerShell required, works everywhere on Windows.
+> **Note:** PowerShell script for Windows users.
 
 You'll be prompted for your analyst name, then you're inside:
 ```
@@ -200,7 +195,7 @@ exit
 
 1. **Read the Course Overview** (this page - 10 min)
 2. **Review `docs/README.md`** - Student documentation index (10 min)
-3. **Read `docs/SCENARIO.md`** - Complete case background (20 min)
+3. **Read `docs/scenario.md`** - Complete case background (20 min)
 4. **Build Docker environment** - Step 2 above (5 min)
 5. **Verify setup** - Step 3 above (5 min)
 6. **Enter workstation** - Step 4 above (1 min)
@@ -210,17 +205,17 @@ exit
 1. **Read the lab README** - e.g., `cases/USB_Imaging/README.md`
 2. **Review the walkthrough** - e.g., `cases/USB_Imaging/WALKTHROUGH.md`
 3. **Enter the workstation** - `./scripts/forensics-workstation`
-4. **Run analysis commands** - Use `docs/COMMANDS.md` as reference
-5. **Fill the report** - Copy `templates/WORKBOOK.md` to your lab folder
+4. **Run analysis commands** - Follow lab walkthrough commands
+5. **Fill the report** - Copy `templates/lab_report_template.md` to your lab folder
 6. **Log your actions** - Use `coc-log` for chain of custody
 
 ### Quick Reference:
 
-- **Quick cheatsheet** → See `docs/CHEATSHEET.md` (tools, commands for each lab)
-- **Need a command?** → See `docs/COMMANDS.md`
 - **Stuck on a lab?** → See that lab's `WALKTHROUGH.md`
-- **Want to understand the case?** → See `docs/SCENARIO.md`
-- **Terminology confused?** → See `docs/GLOSSARY.md`
+- **Want to understand the case?** → See `docs/scenario.md`
+- **Need timeline context?** → See `docs/storyline.md`
+- **Terminology confused?** → See `docs/glossary.md`
+- **Setup issues?** → See `docs/troubleshooting.md`
 
 ---
 
@@ -347,15 +342,13 @@ docker compose run --rm -it dfir bash
 ```
 
 **Windows:**
-```batch
-REM Enter the immersive workstation (RECOMMENDED)
-scripts\forensics-workstation.bat
+```powershell
+# Enter the immersive workstation (RECOMMENDED)
+.\scripts\forensics-workstation.ps1
 
-REM Or use Docker directly (for advanced users)
+# Or use Docker directly (for advanced users)
 docker compose run --rm -it dfir bash
 ```
-
-(Pure batch file - no PowerShell required)
 
 ### Inside the Workstation
 
@@ -471,7 +464,7 @@ See **`docs/TROUBLESHOOTING.md`** for more detailed troubleshooting.
 
 ## 🧠 Learning Objectives
 
-By completing all 6 labs, you will:
+By completing all 5 labs, you will:
 
 1. ✅ Understand proper digital evidence handling (chain of custody, hashing, integrity verification)
 2. ✅ Master industry-standard forensic tools (Sleuth Kit, Volatility, Autopsy, Wireshark)
@@ -505,10 +498,9 @@ By completing all 6 labs, you will:
 ### Coming Up:
 
 - Week 2: Memory_Forensics (Volatility)
-- Week 3: Autopsy_GUI (graphical analysis)
-- Week 4: Email_Logs (log analysis)
-- Week 5: Network_Analysis (PCAP analysis)
-- Week 6: Final_Report (synthesis + reporting)
+- Week 3: Email_Logs (log analysis)
+- Week 4: Network_Analysis (PCAP analysis)
+- Week 5: Final_Report (synthesis + reporting)
 
 ---
 
@@ -516,9 +508,9 @@ By completing all 6 labs, you will:
 
 **For Students (main branch):**
 - `docs/README.md` - Documentation index
-- `docs/SCENARIO.md` - Case background
-- `docs/SETUP.md` - Installation guide
-- `docs/COMMANDS.md` - Command reference
+- `docs/scenario.md` - Case background
+- `docs/setup.md` - Installation guide
+- `docs/storyline.md` - Investigation timeline
 - Lab folders: `cases/USB_Imaging/`, `cases/Memory_Forensics/`, etc.
 
 **For Instructors (instructor branch):**
@@ -546,13 +538,13 @@ git checkout instructor
 ## 🆘 Need Help?
 
 **Technical Issues:**
-- Check `docs/TROUBLESHOOTING.md`
+- Check `docs/troubleshooting.md`
 - Review error messages carefully
 - Search error online (with "docker" + tool name)
 - Post on LMS forum with: OS, error message, what you were trying, what you've tried
 
 **Forensic Concepts:**
-- Review `docs/SCENARIO.md` and `docs/COMMANDS.md`
+- Review `docs/scenario.md` and `docs/storyline.md`
 - Attend lab session and office hours
 - Check tool documentation (Sleuth Kit, Volatility, etc.)
 - Ask on LMS forum
@@ -560,7 +552,6 @@ git checkout instructor
 **Lab-Specific Help:**
 - Review that lab's `README.md`
 - Follow the lab's `WALKTHROUGH.md`
-- Check `docs/QUICK_REFERENCE.md` for syntax
 - Ask instructor during lab session
 
 ---
