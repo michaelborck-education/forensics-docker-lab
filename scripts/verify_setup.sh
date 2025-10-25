@@ -50,9 +50,6 @@ check "Evidence directory exists"
 [ -d "./cases" ]
 check "Cases directory exists"
 
-[ -d "./labs" ]
-check "Labs directory exists"
-
 [ -f "./Dockerfile" ]
 check "Dockerfile exists"
 
@@ -65,14 +62,8 @@ echo "Checking documentation..."
 [ -f "./README.md" ]
 check "README.md exists"
 
-[ -f "./SCENARIO.md" ]
-check "SCENARIO.md exists"
-
-[ -f "./ASSIGNMENT.md" ]
-check "ASSIGNMENT.md exists"
-
-[ -f "./COMMANDS.md" ]
-check "COMMANDS.md exists"
+[ -f "./docs/scenario.md" ]
+check "docs/scenario.md exists"
 echo ""
 
 # 5. Try to build the container
@@ -133,10 +124,9 @@ if [ $FAILED -eq 0 ]; then
     echo -e "${GREEN}🎉 All checks passed! Your environment is ready.${NC}"
     echo ""
     echo "Next steps:"
-    echo "  1. Read SCENARIO.md for the case background"
-    echo "  2. Review ASSIGNMENT.md for tasks and grading"
-    echo "  3. Check COMMANDS.md for forensic command reference"
-    echo "  4. Start your investigation:"
+    echo "  1. Read docs/scenario.md for the case background"
+    echo "  2. Explore the cases/ directory for available cases"
+    echo "  3. Start your investigation:"
     echo "     • Recommended: ./scripts/forensics-workstation"
     echo "     • Advanced: docker compose run --rm dfir"
     echo ""

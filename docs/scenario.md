@@ -1,5 +1,11 @@
+---
+format:
+  html:
+    embed-resources: true
+---
+
 # Cloudcore Inc. Data Breach Investigation
-## USB Evidence Triage Case
+## Multi-Faceted Forensic Analysis
 
 ---
 
@@ -46,17 +52,38 @@ An employee (identity redacted for educational purposes) was terminated on **Dec
 
 ### Evidence Recovery
 
-During a routine workspace audit conducted on December 6, 2009, a concealed USB storage device was discovered in the employee's desk drawer.
+During the investigation, multiple pieces of digital evidence were collected and preserved:
 
-**Physical Evidence Details:**
-- **Device:** SanDisk Cruzer Blade USB 2.0 Flash Drive
-- **Capacity:** 16GB
-- **Model:** SDCZ50-016G-A57
-- **Serial Number:** [Redacted for lab use]
-- **File System:** NTFS (Windows formatted)
-- **Condition:** Device appeared to have been recently used; no physical damage
+**Digital Evidence Collected:**
 
-The USB device is company property (issued equipment), therefore no search warrant was required for examination. However, proper chain of custody must be maintained for potential escalation to law enforcement under Australian Cybercrime legislation.
+1. **USB Storage Device** (Suspected primary exfiltration vector)
+   - **Device:** SanDisk Cruzer Blade USB 2.0 Flash Drive
+   - **Capacity:** 16GB
+   - **Serial Number:** [Redacted for lab use]
+   - **File System:** NTFS (Windows formatted)
+   - **Forensic Image:** `usb.E01` (Expert Witness Format)
+   - **Status:** Ready for carving and file system analysis
+
+2. **Network Traffic Capture** (Potential data transfer evidence)
+   - **Capture Source:** Corporate gateway firewall logs and PCAP files
+   - **Time Period:** December 1-5, 2009
+   - **Format:** PCAP network packet captures
+   - **Content:** Email communications, file transfers, and unusual outbound connections
+   - **Analysis Focus:** Identification of data exfiltration over network
+
+3. **Email Archives** (Communication evidence)
+   - **Source:** Corporate email server (Suspect's mailbox)
+   - **Format:** MBOX and PST files
+   - **Time Period:** Previous 6 months of correspondence
+   - **Analysis Focus:** Intent indicators, coordination, or confession evidence
+
+4. **System Memory Snapshot** (Volatile memory forensics)
+   - **Source:** Forensic acquisition of suspect workstation RAM
+   - **Format:** Memory dump file (volatile memory image)
+   - **Timing:** Captured during investigation period
+   - **Analysis Focus:** Active processes, hidden malware, encryption keys, or running malicious tools
+
+All evidence is company property (issued equipment), therefore no search warrant was required for examination. However, proper chain of custody must be maintained for potential escalation to law enforcement under Australian Cybercrime legislation.
 
 ---
 
@@ -69,24 +96,34 @@ This investigation operates under the framework of:
 1. **Criminal Code Act 1995 (Cth)**
    - Sections 477-478: Computer offences including unauthorized access and data theft
    - Potential referral to Australian Federal Police (AFP) if criminal activity confirmed
+   - https://www.legislation.gov.au/C2004A04868/2018-12-29/text
 
 2. **Privacy Act 1988**
    - Obligations to protect client personal information
    - Breach notification requirements if customer data compromised
+   - https://www.legislation.gov.au/C2004A03712/2014-03-12/text
 
 3. **Cybercrime Legislation Amendment (2012)**
    - Enhanced penalties for data theft and unauthorized disclosure
+   - https://www.legislation.gov.au/C2012A00120/latest/text
 
 ### Chain of Custody Requirements
 
 All forensic analysis must comply with:
-- **ISO 27037:2012** - Guidelines for identification, collection, acquisition and preservation of digital evidence
-- **Australian Government ISM** - Information Security Manual guidelines
-- **ACPO Principles** - Association of Chief Police Officers Good Practice Guide for Digital Evidence
+- **ISO 27037:2012** 
+  - Guidelines for identification, collection, acquisition and preservation of digital evidence
+  - https://www.iso.org/standard/44381.html
+- **Australian Government ISM** 
+  - Information Security Manual guidelines
+  - https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism
+- **ACPO Principles** 
+  - Association of Chief Police Officers Good Practice Guide for Digital Evidence
+  - https://www.digital-detective.net/digital-forensics-documents/ACPO_Good_Practice_Guide_for_Digital_Evidence_v5.pdf
 
 ### Real-World Context
 
 This scenario parallels recent Australian incidents including:
+
 - **Optus Data Breach (2022):** 9.8 million customer records exposed
 - **Medibank Breach (2022):** Customer health data exfiltration
 - Both cases highlighted the importance of rapid triage and proper evidence handling
@@ -97,8 +134,9 @@ This scenario parallels recent Australian incidents including:
 
 ### Your Role
 
-You are a **junior digital forensic analyst** on Cloudcore's incident response team. Your task is to conduct an **initial triage examination** of the seized USB device to:
+You are a **junior digital forensic analyst** on Cloudcore's incident response team. Multiple pieces of evidence require comprehensive analysis across different forensic domains:
 
+#### Case 1: USB Device Triage (Storage Media Forensics)
 1. **Identify Present Data**
    - What files currently exist on the device?
    - Are there any obvious signs of sensitive data storage?
@@ -116,24 +154,72 @@ You are a **junior digital forensic analyst** on Cloudcore's incident response t
    - When were files deleted (potential evidence of cover-up)?
    - Does device activity correlate with system access logs?
 
+#### Case 2: Network Traffic Analysis (Network Forensics)
+1. **Identify Suspicious Communications**
+   - What unusual network traffic occurred during the suspect window?
+   - Which external hosts were contacted?
+   - What protocols and ports were used?
+
+2. **Analyze Data Transfers**
+   - Evidence of large file uploads or downloads?
+   - Compressed archive transfers (ZIP, RAR)?
+   - Encrypted tunneling (VPN, SSH)?
+
+3. **Correlation with Timeline**
+   - When did suspicious network activity occur?
+   - Does it match the employee's documented access times?
+
+#### Case 3: Email Archive Analysis (Email Forensics)
+1. **Review Correspondence**
+   - Messages indicating intent or planning?
+   - Evidence of sharing credentials or access details?
+   - Discussions with external parties?
+
+2. **Artifact Recovery**
+   - Deleted messages that may indicate cover-up?
+   - Metadata analysis (timestamps, recipients)?
+   - Attachment analysis (what was being shared)?
+
+#### Case 4: Memory Forensics (Volatile Memory Analysis)
+1. **Process Analysis**
+   - What programs were running at the time of acquisition?
+   - Evidence of hidden or malicious processes?
+   - Command-line arguments and parameters?
+
+2. **Network Connections**
+   - Active network sockets and connections?
+   - Evidence of command-and-control communication?
+
+3. **Artifact Extraction**
+   - Encryption keys or credentials in memory?
+   - Clipboard contents or typed commands?
+   - File handles and open files?
+
 ### Critical Intelligence
 
 Based on the whistleblower tip and initial log analysis, investigators should look specifically for:
 
 #### Data Exfiltration Indicators:
+
 - **Client Lists:** CSV or Excel files containing customer information
 - **Database Exports:** Structured data files with multiple records
 - **Financial Documents:** PDF or DOCX files with billing/revenue data
 - **Source Code:** Programming files (.py, .java, .js, etc.)
 - **Email Archives:** PST, MBOX, or EML files
+- **Network Data Transfers:** Large uploads to external FTP, cloud services, or email
+- **Memory Artifacts:** Encryption keys, decrypted data, or running exfiltration tools
 
 #### Anti-Forensic Activities:
-- **Deleted Files:** Evidence of recent mass deletions
+
+- **Deleted Files:** Evidence of recent deletions (USB carving)
 - **Archive Files:** ZIP, 7Z, or TAR files (data packaging for transfer)
-- **Malware Tools:** Presence of keyloggers or remote access tools
+- **Malware Tools:** Presence of keyloggers or remote access tools (memory analysis)
 - **Secure Deletion Tools:** Evidence of file wiping utilities
+- **Encrypted Communications:** SSL/TLS tunnels, VPN usage (network traffic)
+- **Log Tampering:** Cleared event logs or suspicious system activity (memory forensics)
 
 #### Timeline Indicators:
+
 - **File Creation Times:** When data was first copied to USB
 - **File Modification Times:** When files were last accessed or edited
 - **File Deletion Times:** When deletion activity occurred
@@ -141,15 +227,39 @@ Based on the whistleblower tip and initial log analysis, investigators should lo
 
 ---
 
-## Forensic Image Details
+## Forensic Evidence Files
 
-### Evidence File
+### Evidence Location
 
-**Filename:** `usb.E01`
-**Format:** Expert Witness Format (EnCase Evidence File)
-**Location:** `/evidence/` directory (read-only mount)
+All forensic evidence files are located in the `/evidence/` directory (read-only mount within the Docker container).
 
-### Evidence Integrity
+### Available Evidence by Case Type
+
+**Case 1: USB Device Analysis**
+- **Filename:** `usb.E01`
+- **Format:** Expert Witness Format (EnCase Evidence File)
+- **Content:** NTFS filesystem image with allocated and deleted files
+- **Analysis Method:** File carving, deleted file recovery, timeline reconstruction
+
+**Case 2: Network Traffic Analysis**
+- **Filename:** `network.pcap` (or similar)
+- **Format:** PCAP network packet capture file
+- **Content:** Raw network packets from suspect communication period
+- **Analysis Method:** PCAP parsing, protocol analysis, flow reconstruction
+
+**Case 3: Email Archive Analysis**
+- **Filenames:** `suspect_mailbox.mbox` or `suspect_mailbox.pst`
+- **Format:** MBOX (standard email format) or PST (Outlook format)
+- **Content:** Email messages, metadata, and attachments
+- **Analysis Method:** Email parsing, metadata extraction, attachment analysis
+
+**Case 4: Memory Forensics**
+- **Filename:** `memory.dmp` or `RAM.dd`
+- **Format:** Raw memory dump or volatility-compatible format
+- **Content:** System RAM at time of acquisition
+- **Analysis Method:** Process analysis, DLL injection detection, artifact extraction
+
+### Evidence Integrity Verification
 
 Before beginning analysis, you **MUST** verify evidence integrity:
 
@@ -160,48 +270,37 @@ ewfverify /evidence/usb.E01
 # Calculate hash values for chain of custody
 md5sum /evidence/usb.E01
 sha256sum /evidence/usb.E01
+
+# Verify other evidence files
+md5sum /evidence/network.pcap
+md5sum /evidence/suspect_mailbox.mbox
+md5sum /evidence/memory.dmp
 ```
-
-**Expected Results:**
-- `ewfverify` should report: "SUCCESS: integrity verification succeeded"
-- Hash values must be documented in your Chain of Custody form
-- Any verification failures must be reported immediately
-
-### Working with E01 Files
-
-E01 (Expert Witness Format) files must be mounted before analysis:
-
-```bash
-# Create mount point
-mkdir -p /tmp/ewf
-
-# Mount the E01 file
-ewfmount /evidence/usb.E01 /tmp/ewf
-
-# The raw disk image is now accessible at:
-# /tmp/ewf/ewf1
-```
-
-All Sleuth Kit commands should then be run against `/tmp/ewf/ewf1`.
 
 ---
 
 ## Investigation Constraints
 
-### Scope Limitations
+### Scope and Available Labs
 
-This is a **triage investigation** only. Your objectives are:
-- Rapid assessment of evidence content
-- Identification of obvious indicators of compromise
-- Documentation sufficient for escalation decisions
+This multi-case investigation allows you to work across different forensic domains:
 
-This is **NOT** a full forensic examination. Advanced techniques (memory forensics, network traffic analysis, full timeline reconstruction) will be conducted in subsequent labs to build a complete investigation.
+- **Storage Media Forensics (USB Lab):** File carving, deleted file recovery, filesystem analysis
+- **Network Forensics (PCAP Lab):** Packet analysis, flow reconstruction, protocol examination
+- **Email Forensics (MBOX Lab):** Message parsing, attachment analysis, metadata extraction
+- **Memory Forensics (Volatility Lab):** Process analysis, malware detection, artifact recovery
 
-### Time Constraints
+Each case provides independent evidence that may corroborate or contradict other findings. You may analyze one case in depth or perform comparative analysis across multiple evidence types.
 
-- **In-Lab Session:** 3 hours (Week 1 practical)
-- **Independent Work:** 5-7 additional hours (report writing, detailed analysis)
-- **Submission Deadline:** End of Week 1
+### Time Recommendations
+
+Each case can be completed independently:
+- **USB Imaging Case:** 2-3 hours
+- **Network Traffic Analysis:** 2-3 hours
+- **Email Archive Analysis:** 1-2 hours
+- **Memory Forensics:** 2-3 hours
+
+You may choose to complete all cases or focus on specific domains depending on your interests and course requirements.
 
 ### Resource Constraints
 
@@ -245,17 +344,6 @@ Your analysis may be used in:
 - **Civil Litigation:** If clients sue for data breach damages
 
 The outcome could significantly affect someone's career, liberty, and livelihood. **Accuracy and objectivity are paramount.**
-
----
-
-## Next Steps
-
-1. **Read the Assignment Brief** (`ASSIGNMENT.md`) for detailed task requirements and grading rubric
-2. **Review the Command Reference** (`COMMANDS.md`) for forensic tool usage
-3. **Begin Your Investigation** following proper chain of custody procedures
-4. **Document Everything** using the provided workbook template
-
-Remember: This case may seem like a training exercise, but the skills you develop here directly apply to real-world investigations that have serious consequences. Treat this evidence with the professionalism it deserves.
 
 ---
 

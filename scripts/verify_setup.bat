@@ -54,6 +54,14 @@ if exist "cases\" (
     set /A FAILED+=1
 )
 
+if exist "Dockerfile" (
+    echo [OK] Dockerfile exists
+    set /A PASSED+=1
+) else (
+    echo [FAIL] Dockerfile exists
+    set /A FAILED+=1
+)
+
 if exist "docker-compose.yml" (
     echo [OK] docker-compose.yml exists
     set /A PASSED+=1
@@ -147,10 +155,9 @@ if %FAILED% EQU 0 (
     echo [SUCCESS] All checks passed! Your environment is ready.
     echo.
     echo Next steps:
-    echo   1. Read docs\scenario.md for case background
-    echo   2. Review cases\USB_Imaging\README.md for lab tasks
-    echo   3. Check lab WALKTHROUGH.md files for step-by-step guides
-    echo   4. Start your investigation:
+    echo   1. Read docs\scenario.md for the case background
+    echo   2. Explore the cases\ directory for available cases
+    echo   3. Start your investigation:
     echo     • Recommended: scripts\forensics-workstation.bat
     echo     • Advanced: docker compose run --rm dfir
     echo.

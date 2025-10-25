@@ -28,20 +28,20 @@ Investigation Background
 
 📖 This assessment continues the Cloudcore Corporation investigation from Assignment 1.
 
-Quick Summary
+**Quick Summary**
 
 Date: December 5-6, 2009
 Case Number: CLOUDCORE-2009-INS-002
 
-Following the USB device analysis from Assignment 1, investigators have expanded the scope to include memory capture and communications analysis. The suspect "Alex Doe" was found to have been active on their workstation during the critical period when data exfiltration occurred. IT security captured a memory image of the suspect's Windows XP workstation and obtained email archives showing communications with external parties.
+Following the USB device analysis from Assignment 1, investigators have expanded the scope to include memory capture and communications analysis. The suspect was found to have been active on their workstation during the critical period when data exfiltration occurred. IT security captured a memory image of the suspect's Windows XP workstation and obtained email archives showing communications with external parties.
 
-Your Role: As the forensic analyst, you must conduct advanced analysis of volatile memory and email evidence to:
+**Your Role:** As the forensic analyst, conduct advanced analysis of volatile memory and email evidence to:
 - Identify malicious processes and encryption tools used to conceal data
 - Detect email-based data exfiltration attempts
 - Correlate memory findings with email timestamps and log entries
 - Establish a comprehensive timeline of the insider threat activities
 
-Critical Intelligence: The suspect is believed to have:
+**Critical Intelligence:** The suspect is believed to have:
 - Used keylogger malware to steal credentials and data
 - Communicated with external email accounts for data transfer
 - Employed anti-forensic techniques including process hiding and file deletion
