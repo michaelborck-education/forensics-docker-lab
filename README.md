@@ -602,8 +602,3 @@ git checkout instructor
 ---
 
 **Good luck with your investigation! Remember: professionalism, documentation, and objectivity are the hallmarks of excellent forensic work.**
-
----
-
-*Last updated: October 2024 | Version 3.0*
-*Forensic Workstation: Ready to investigate*
