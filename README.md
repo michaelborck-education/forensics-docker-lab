@@ -91,7 +91,35 @@ forensics-docker-lab/
 
 ## 🚀 Quick Start (5 Minutes)
 
-### Step 1: Prerequisites
+### TL;DR - Just Run These Commands
+
+**First time setup (choose one):**
+
+**Option A: Using Make (recommended - simplest)**
+```bash
+cd forensics-docker-lab
+make setup
+make verify
+make start
+```
+
+**Option B: Direct scripts**
+```bash
+cd forensics-docker-lab
+docker compose build
+./start.sh          # or start.bat on Windows
+```
+
+**Every other time:**
+```bash
+make start          # or ./start.sh / start.bat
+```
+
+---
+
+### Detailed Setup
+
+#### Step 1: Prerequisites
 
 **Install Docker Desktop:**
 - **Windows/Mac:** Download from https://www.docker.com/products/docker-desktop
@@ -114,48 +142,40 @@ docker compose version
 - 15GB free disk space (for all evidence files)
 - Internet connection (first build only)
 
-### Step 2: Build the Forensic Environment
+#### Step 2: Build the Forensic Environment
 
 ```bash
-# Navigate to this directory
 cd /path/to/forensics-docker-lab
+make setup
+```
 
-# Build the main container (first time: ~2-5 minutes)
+Or manually:
+```bash
 docker compose build
-
-# Verify build succeeded
 docker compose run --rm dfir echo "Environment ready!"
 ```
 
-You should see the forensic lab banner!
+#### Step 3: Verify Your Setup (Recommended)
 
-### Step 3: Verify Your Setup (Recommended)
-
-**Windows:**
-```batch
-scripts\verify_setup.bat
-```
-
-**macOS/Linux:**
 ```bash
-./scripts/verify_setup.sh
+make verify
 ```
+
+Or manually:
+- **Windows:** `scripts\verify_setup.bat`
+- **macOS/Linux:** `./scripts/verify_setup.sh`
 
 All checks should pass (✓ in green).
 
-### Step 4: Enter the Immersive Forensic Workstation
+#### Step 4: Enter the Forensic Workstation
 
-**Mac/Linux/Windows WSL:**
 ```bash
-./scripts/forensics-workstation
+make start
 ```
 
-**Windows (Batch):**
-```batch
-scripts\forensics-workstation.bat
-```
-
-> **Note:** Batch script for Windows users (no PowerShell required).
+Or directly:
+- **Mac/Linux:** `./start.sh` (or `./scripts/forensics-workstation`)
+- **Windows:** `start.bat` (or `scripts\forensics-workstation.bat`)
 
 You'll be prompted for your analyst name, then you're inside:
 ```
@@ -204,7 +224,7 @@ exit
 
 1. **Read the lab README** - e.g., `cases/USB_Imaging/README.md`
 2. **Review the walkthrough** - e.g., `cases/USB_Imaging/WALKTHROUGH.md`
-3. **Enter the workstation** - `./scripts/forensics-workstation`
+3. **Enter the workstation** - `make start` (or `./start.sh` / `start.bat`)
 4. **Run analysis commands** - Follow lab walkthrough commands
 5. **Fill the report** - Copy `templates/lab_report_template.md` to your lab folder
 6. **Log your actions** - Use `coc-log` for chain of custody
@@ -225,7 +245,11 @@ exit
 
 Instead of typing `docker compose run --rm dfir` every time, use:
 ```bash
-./scripts/forensics-workstation
+make start          # Recommended: simplest option
+# or
+./start.sh          # Direct on Linux/Mac
+start.bat           # Direct on Windows
+./scripts/forensics-workstation     # Full path (equivalent to start.sh)
 ```
 
 **Benefits:**
