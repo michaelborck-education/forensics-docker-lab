@@ -5,7 +5,7 @@
 
 ## 🎯 Course Overview
 
-This is a comprehensive hands-on digital forensics course where you will conduct a real-world style investigation of a data exfiltration incident at Cloudcore Inc. You'll work through 6 progressive labs using professional forensic tools in a containerized environment to analyze evidence, recover deleted files, perform memory analysis, and produce professional incident response reports.
+This is a comprehensive hands-on digital forensics course where you will conduct a real-world style investigation of a data exfiltration incident at Cloudcore Inc. You'll work through 5 progressive labs using professional forensic tools in a containerized environment to analyze evidence, recover deleted files, perform memory analysis, and produce professional incident response reports.
 
 **Case:** CLOUDCORE-2009-INS-001 - Data Exfiltration Investigation
 
@@ -131,9 +131,9 @@ You should see the forensic lab banner!
 
 ### Step 3: Verify Your Setup (Recommended)
 
-**Windows (PowerShell):**
-```powershell
-.\scripts\verify_setup.ps1
+**Windows:**
+```batch
+scripts\verify_setup.bat
 ```
 
 **macOS/Linux:**
@@ -150,12 +150,12 @@ All checks should pass (✓ in green).
 ./scripts/forensics-workstation
 ```
 
-**Windows (PowerShell):**
-```powershell
-.\scripts\forensics-workstation.ps1
+**Windows (Batch):**
+```batch
+scripts\forensics-workstation.bat
 ```
 
-> **Note:** PowerShell script for Windows users.
+> **Note:** Batch script for Windows users (no PowerShell required).
 
 You'll be prompted for your analyst name, then you're inside:
 ```
@@ -271,7 +271,7 @@ Read-only to prevent accidental modification. All analysis happens in writable `
 
 ### Windows Users
 
-**Terminal:** Use Windows Terminal with PowerShell (recommended)
+**Terminal:** Use Windows Terminal with Command Prompt or PowerShell (both work)
 
 **Docker Desktop Setup:**
 - Enable WSL 2 backend (default)
@@ -279,10 +279,10 @@ Read-only to prevent accidental modification. All analysis happens in writable `
 - Ensure Docker Desktop is running
 
 **Commands:**
-```powershell
-# Use PowerShell scripts for Windows:
-.\scripts\verify_setup.ps1
-.\scripts\forensics-workstation.ps1
+```batch
+# Use batch scripts for Windows:
+scripts\verify_setup.bat
+scripts\forensics-workstation.bat
 
 # Docker commands work the same:
 docker compose build
@@ -290,11 +290,10 @@ docker compose run --rm dfir
 ```
 
 **Common Issues:**
-- "Command not found": Restart Docker Desktop and PowerShell
-- Execution policy error: Run as Administrator:
-  ```powershell
-  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-  ```
+- "Command not found": Restart Docker Desktop
+- "Access denied": Run Command Prompt as Administrator  
+- Batch file won't run: Ensure you're in the correct directory
+- PowerShell execution policy: Use batch files instead (no PowerShell required)
 
 ### macOS Users (Intel and Apple Silicon)
 
@@ -342,9 +341,9 @@ docker compose run --rm -it dfir bash
 ```
 
 **Windows:**
-```powershell
+```batch
 # Enter the immersive workstation (RECOMMENDED)
-.\scripts\forensics-workstation.ps1
+scripts\forensics-workstation.bat
 
 # Or use Docker directly (for advanced users)
 docker compose run --rm -it dfir bash
