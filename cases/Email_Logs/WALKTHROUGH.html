@@ -2364,12 +2364,19 @@ vertical-align: -.125em;
 <hr>
 </section>
 </section>
-<section id="connecting-to-the-dfir-workstation" class="level2">
-<h2 class="anchored" data-anchor-id="connecting-to-the-dfir-workstation">🚀 Connecting to the DFIR Workstation</h2>
+<section id="connecting-to-the-dfir-forensic-workstation" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-to-the-dfir-forensic-workstation">🚀 Connecting to the DFIR Forensic Workstation</h2>
+<p>The <code>scripts/forensics-workstation</code> script provides an immersive forensic environment that hides Docker complexity and simulates logging into a professional forensic workstation.</p>
 <p><strong>On macOS/Linux:</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/forensics-workstation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>On Windows (PowerShell):</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">.</span>\scripts\forensics-workstation<span class="op">.</span><span class="fu">bat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You’ll see:</p>
+<ol type="1">
+<li>A welcome banner asking for your analyst name</li>
+<li>A lab summary showing all available cases</li>
+<li>A connection message, then you’ll see the forensic workstation prompt</li>
+</ol>
 <hr>
 </section>
 <section id="part-1-chain-of-custody---hash-email-evidence" class="level2">
@@ -2594,8 +2601,8 @@ email_3</code></pre>
 <p>(3 emails total = 3 files + 1 empty header file)</p>
 <hr>
 </section>
-<section id="part-5-analyze-email-content" class="level2">
-<h2 class="anchored" data-anchor-id="part-5-analyze-email-content">📝 Part 5: Analyse Email Content</h2>
+<section id="part-5-analyse-email-content" class="level2">
+<h2 class="anchored" data-anchor-id="part-5-analyse-email-content">📝 Part 5: Analyse Email Content</h2>
 <p><strong>Why this step matters:</strong> Now that we have individual emails, we can do detailed analysis. We’re looking for:</p>
 <ul>
 <li>Specific suspicious communications (intent)</li>
@@ -2806,8 +2813,8 @@ note: COMPARISON - Ran automated analysis script to verify manual findings and d
 <hr>
 </section>
 </section>
-<section id="part-6-analyze-system-logs-optional" class="level2">
-<h2 class="anchored" data-anchor-id="part-6-analyze-system-logs-optional">📋 Part 6: Analyse System Logs (Optional)</h2>
+<section id="part-6-analyse-system-logs-optional" class="level2">
+<h2 class="anchored" data-anchor-id="part-6-analyse-system-logs-optional">📋 Part 6: Analyse System Logs (Optional)</h2>
 <p>If log files exist, analyse them:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check what logs are available</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> /evidence/logs/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

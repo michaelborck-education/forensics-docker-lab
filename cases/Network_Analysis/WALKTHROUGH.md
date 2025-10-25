@@ -103,10 +103,9 @@ This lab teaches:
 
 ### 1. Verify Lab Templates Are Ready
 
-The lab folder should already contain three template files. Verify they exist:
+The lab folder should already contain three template files. Verify they exist, on your host machine:
 
 ```bash
-# On your host machine
 ls -lh cases/Network_Analysis/
 ```
 
@@ -259,6 +258,7 @@ file /evidence/network.cap
 ```
 
 **What this does:**
+
 - Verifies the file is actually a valid PCAP format
 - Shows capture metadata (packet count hints, file type verification)
 - Confirms the file hasn't been corrupted
@@ -268,10 +268,10 @@ file /evidence/network.cap
 /evidence/network.cap: tcpdump capture file (little-endian) - version 2.4 (Ethernet, capture length 65535)
 ```
 
-**Step 2: Generate host summary**
+**Step 2: Generate host summary**. Use tshark to get statistics:
+
 
 ```bash
-# Use tshark to get statistics
 tshark -r /evidence/network.cap -q -z ip_hosts,tree > /cases/Network_Analysis/host_summary.txt
 ```
 
@@ -291,19 +291,42 @@ tshark -r /evidence/network.cap -q -z ip_hosts,tree > /cases/Network_Analysis/ho
 - **Volume patterns:** Which hosts sent/received the most data?
 - **Suspicious activity:** Hosts with unusual communication patterns
 
-**Expected output example:**
+**Expected output:**
 ```
-Host | Packets | Bytes
-192.168.1.100 | 1245 | 2.3MB (internal workstation)
-192.168.1.1   | 3421 | 15.2MB (router/gateway)
-8.8.8.8       | 234  | 1.1MB (external - Google DNS)
-192.168.1.50  | 56   | 0.3MB (internal server)
-203.0.113.10  | 89   | 4.2MB (external - suspicious!)
+=================================================================================================================================
+IPv4 Statistics/All Addresses:
+Topic / Item      Count         Average       Min Val       Max Val       Rate (ms)     Percent       Burst Rate    Burst Start
+---------------------------------------------------------------------------------------------------------------------------------
+All Addresses     514                                                     0.0030        100%          0.1200        92.137
+ 172.16.1.10      514                                                     0.0030        100.00%       0.1200        92.137
+ 68.164.173.62    304                                                     0.0018        59.14%        0.0600        58.578
+ 69.64.34.124     48                                                      0.0003        9.34%         0.0500        91.475
+ 216.127.33.119   47                                                      0.0003        9.14%         0.1000        92.708
+ 68.164.194.35    30                                                      0.0002        5.84%         0.1000        95.381
+ 68.45.134.187    26                                                      0.0002        5.06%         0.0200        5.502
+ 67.38.252.160    24                                                      0.0001        4.67%         0.0200        16.237
+ 207.46.196.46    12                                                      0.0001        2.33%         0.0200        81.222
+ 80.167.183.40    6                                                       0.0000        1.17%         0.0200        106.078
+ 172.16.0.254     6                                                       0.0000        1.17%         0.0200        91.327
+ 216.155.193.156  5                                                       0.0000        0.97%         0.0300        1.872
+ 80.67.66.62      2                                                       0.0000        0.39%         0.0200        2.653
+ 63.144.115.50    2                                                       0.0000        0.39%         0.0200        0.000
+ 163.32.78.60     2                                                       0.0000        0.39%         0.0200        156.073
+
+---------------------------------------------------------------------------------------------------------------------------------
 ```
+
+**Analysis of this output:**
+
+- **Internal IPs:** 172.16.1.10 (514 packets, 100% of traffic), 172.16.0.254 (6 packets)
+- **External IPs:** Multiple external hosts with varying traffic volumes
+- **Highest activity:** 172.16.1.10 is the primary internal host communicating externally
+- **Notable external IPs:** 68.164.173.62 (304 packets, 59.14% of traffic) - significant external communication
+- **Potential C2:** Look for repeated communication patterns with specific external IPs
 
 **Analysis tips:**
 
-- **Internal IPs** (192.168.x.x, 10.x.x.x, 172.16.x.x) = your network
+- **Internal IPs** (172.16.x.x) = your network
 - **External IPs** = check if they should be communicating
 - **High packet count** = frequent communication (C2 beacon pattern?)
 - **High data volume** = potential data exfiltration
@@ -351,17 +374,31 @@ tshark -r /evidence/network.cap -Y "dns" -T fields -e dns.qry.name > /cases/Netw
 
 **Expected findings:**
 ```
-cloudcore.com (legitimate)
-google.com (legitimate)
-irc.evil-botnet.ru (SUSPICIOUS - C2 server)
-data-exfil.net (SUSPICIOUS - potential data dump)
+uld3r.q8hell.org
+uld3r.q8hell.org
+ysbweb.com
+ysbweb.com
+www.ysbweb.com
+www.ysbweb.com
 ```
+
+**Analysis of this output:**
+
+- **uld3r.q8hell.org** - Highly suspicious domain name
+  - "q8hell" suggests malicious intent
+  - "uld3r" could be "loader" reference
+  - Queried twice = potential C2 beaconing
+- **ysbweb.com** - Appears legitimate but repeated queries
+  - Queried 4 times total (2 for domain, 2 for www subdomain)
+  - Could be staging or legitimate site
+- **Pattern:** Repeated DNS queries = automated communication
 
 **Analysis tips:**
 
 - Look for domains you don't recognize
-- Check for `.ru`, `.cn`, `.ir` TLDs (often associated with malicious activity)
+- Check for suspicious subdomains or naming patterns
 - Count query frequency (repeated queries = beacon?)
+- **q8hell.org** is clearly malicious based on name
 - Compare with threat intelligence feeds (VirusTotal, etc.)
 
 **📋 Document in analysis_log.csv:**
@@ -402,25 +439,37 @@ tshark -r /evidence/network.cap -Y "http" -T fields -e http.host -e http.request
 
 **Expected findings:**
 ```
-Host: www.cloudcore.com
-URI: /index.html (normal)
+ysbweb.com      /ist/scripts/ysb_exe.php?account_id=1000489&user_level=3
+ysbweb.com      /ist/scripts/ysb_exe.php?account_id=1000489&user_level=3
 
-Host: google.com
-URI: /search (normal)
+ysbweb.com      /ist/scripts/ysb_exe.php?account_id=1000489&user_level=3
 
-Host: attacker-storage.com
-URI: /upload.php (SUSPICIOUS - file upload)
 
-Host: data-exfil.net
-URI: /receive?data=xyz123 (SUSPICIOUS - data parameter)
+www.ysbweb.com  /ysb/exe/ysbinstall_1000489_3.exe
+www.ysbweb.com  /ysb/exe/ysbinstall_1000489_3.exe
+www.ysbweb.com  /ysb/exe/ysbinstall_1000489_3.exe
 ```
+
+**Analysis of this output:**
+
+- **ysbweb.com/ist/scripts/ysb_exe.php** - Suspicious PHP script execution
+  - Parameters: account_id=1000489&user_level=3
+  - "ysb_exe" suggests executable download/execution
+  - Queried 3 times = repeated attempts/verification
+- **www.ysbweb.com/ysb/exe/ysbinstall_1000489_3.exe** - MALWARE DOWNLOAD
+  - Direct executable file download
+  - "ysbinstall" suggests installer program
+  - Account/user parameters embedded in filename
+  - Downloaded 3 times = failed/repeated downloads
+- **Pattern:** Script execution followed by executable download = malware delivery
 
 **Analysis tips:**
 
-- Look for unusual file uploads (POST to .php scripts)
-- Note large file downloads (exfiltration)
-- Identify any credentials in URIs (username=admin&password=xxx)
-- Compare domains with threat intelligence
+- **Executable downloads** (.exe files) are major red flags
+- **PHP scripts with parameters** often trigger malware downloads
+- **Repeated downloads** suggest installation issues or persistence attempts
+- **Account IDs in URLs** indicate targeted attacks
+- **ysb** domain combined with executable downloads = malicious
 
 **📋 Document in analysis_log.csv:**
 ```
@@ -444,22 +493,65 @@ note: HTTP analysis - extracted X requests, suspicious uploads to: [list], exfil
 - **Attack proof:** If we find IRC traffic from internal IP to external IRC server = botnet infection
 - **Attacker control:** Commands can include "steal files", "download updates", "delete logs", etc.
 
-Look for suspicious C2:
+**How do we find IRC ports?**
+
+From our earlier analysis, we have clues:
+
+1. **DNS queries** showed `uld3r.q8hell.org` - suspicious domain
+2. **Host summary** showed 69.64.34.124 with 48 packets - notable external IP
+3. **HTTP traffic** showed malware downloads - suggests C2 communication
+
+**Investigative approach:** Instead of guessing ports, let's discover what ports the suspicious IP is using. First, let's see what ports `69.64.34.124` is communicating on
+
 
 ```bash
-# Search for IRC connections
-tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/irc_traffic.txt
+tshark -r /evidence/network.cap -Y "ip.addr==69.64.34.124" -T fields -e tcp.dstport -e tcp.srcport | sort | uniq -c
+```
+
+**Expected output:**
+```
+     24 1049    6667
+     24 6667    1049
+```
+
+**Analysis of port discovery:**
+
+- **24 connections** from port 6667 to port 1049 (outbound IRC traffic)
+- **24 connections** from port 1049 to port 6667 (inbound IRC responses)
+- **Port 6667** = Standard IRC port (confirms IRC protocol)
+- **Port 1049** = Ephemeral port (client-side response port)
+- **Equal bidirectional traffic** = Classic IRC C2 communication pattern
+
+Now we can search specifically for IRC traffic. Search for IRC connections on discovered port:
+
+
+```bash
+tshark -r /evidence/network.cap -Y "tcp.port==6667" -T fields -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/irc_traffic.txt
+```
+
+**Alternative approach - scan common IRC ports:**
+If you want to be thorough, you can also check common IRC port ranges. Search for IRC connections on common IRC ports (6665-6669):
+
+```bash
+tshark -r /evidence/network.cap -Y "tcp.port>=6665 and tcp.port<=6669" -T fields -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/irc_traffic.txt
 ```
 
 **What this command does:**
 
-- `-Y "tcp.port==6667 or tcp.port==6668"` - Filter for TCP connections on IRC ports
-  - Port 6667: Standard IRC port
-  - Port 6668: Alternate IRC port (used by some botnets to evade detection)
+- `-Y "tcp.port==6667"` - Filter for TCP connections on IRC port 6667
+  - Port 6667: Standard IRC port (discovered from our port analysis)
+  - We could also use `tcp.port>=6665 and tcp.port<=6669` for broader search
 - `-T fields` - Structured output
 - `-e ip.src` - Source IP (which computer in your network?)
 - `-e ip.dst` - Destination IP (which IRC server?)
-- `-e tcp.dstport` - Destination port (confirm it's 6667 or 6668)
+- `-e tcp.dstport` - Destination port (confirm it's IRC traffic)
+
+**Why this investigative approach works:**
+
+1. **Evidence-driven:** We discovered port 6667 from analysing the suspicious IP's traffic patterns
+2. **Not guessing:** We're following the evidence trail rather than assuming port numbers
+3. **Methodical:** Start broad (host summary), identify suspicious IPs, then analyse their specific communication patterns
+4. **Realistic:** This mirrors actual forensic investigations where you discover protocols from the data itself
 
 **Why it matters:**
 
@@ -469,18 +561,31 @@ tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields 
 - **Attacker infrastructure:** Which external servers controlled the malware?
 - **Legal evidence:** Clear proof of unauthorized access and control
 
+**Analysis of this output:**
+
+**CONFIRMED IRC C2 INFECTION:**
+- **Compromised host:** 172.16.1.10 (internal workstation)
+- **C2 server:** 69.64.34.124 (external IRC server)
+- **C2 port:** 6667 (standard IRC port)
+- **Response port:** 1049 (ephemeral port for replies)
+- **Connection pattern:** 47 total connections (repeated beaconing)
+
+**Key evidence:**
+- **Bidirectional communication:** Both outbound (6667) and inbound (1049) traffic
+- **Repeated connections:** Classic botnet beacon pattern
+- **Standard IRC port:** 6667 confirms IRC protocol usage
+- **High frequency:** Multiple connections indicate active C2 session
+
 **Analysis tips:**
 
-- **Look for patterns:**
-  - Repeated connections = beacon traffic (checking for commands)
-  - Connection to unknown external IP = C2 server
-  - Port 6668 (non-standard) = attempting to evade detection
-- **Resolve IPs:**
-  - Check which internal computer (192.168.1.100?) was infected
-  - Identify external IRC server (geoIP lookup for location)
+- **Repeated connections = beacon traffic** (checking for commands)
+- **External IP 69.64.34.124 = C2 server** (attacker infrastructure)
+- **Port 6667 = standard IRC** (confirming IRC C2 protocol)
+- **172.16.1.10 = infected workstation** (needs immediate isolation)
 - **Correlate with other evidence:**
-  - Memory_Forensics: Find IRC malware process
+  - Memory_Forensics: Find IRC malware process on 172.16.1.10
   - USB_Imaging: Find IRC malware executable
+  - DNS queries: Link to q8hell.org domain
 
 Review results:
 
@@ -492,11 +597,11 @@ cat /cases/Network_Analysis/irc_traffic.txt
 
 **If infected (MALICIOUS):**
 ```
-Source IP: 192.168.1.100 (internal workstation)
-Destination: 203.0.113.50 (external IRC server)
-Port: 6667
-
-This means: 192.168.1.100 is a compromised bot receiving commands from 203.0.113.50
+172.16.1.10     69.64.34.124    6667
+69.64.34.124    172.16.1.10     1049
+172.16.1.10     69.64.34.124    6667
+[... repeated connections ...]
+172.16.1.10     69.64.34.124    6667
 ```
 
 **If clean (BENIGN):**
@@ -529,10 +634,10 @@ note: IRC C2 search - [FOUND X connections / NO IRC C2 detected]. If found: infe
 - **Proof:** Data left the network during the attack window
 - **Legal case:** Shows criminal intent (stealing confidential information)
 
-Look for large data transfers:
+Look for large data transfers. Show all TCP conversations with data volumes
+
 
 ```bash
-# Show all TCP conversations with data volumes
 tshark -r /evidence/network.cap -q -z conv,tcp > /cases/Network_Analysis/tcp_conversations.txt
 ```
 
@@ -545,51 +650,80 @@ tshark -r /evidence/network.cap -q -z conv,tcp > /cases/Network_Analysis/tcp_con
   - Calculates total data volume
 
 **Why it matters:**
+
 - **Identifies data thieves:** Who sent large amounts of data OUT?
 - **Quantifies loss:** How much data was stolen? (100 KB vs. 500 MB?)
 - **Patterns reveal intent:** Legitimate users transfer varied amounts; thieves often transfer large blocks
 - **Timeline proof:** When did the exfiltration happen?
 - **Destination tracking:** Where did the data go? (attack infrastructure)
 
-Review for large transfers:
+Review for large transfers. Sort by data volume (largest first):
+
 
 ```bash
-# Sort by data volume (largest first)
 cat /cases/Network_Analysis/tcp_conversations.txt | sort -k5 -h
 ```
 
 **Expected output format:**
 ```
-192.168.1.100  →  203.0.113.50      Packets: 1245  Bytes: 5.2MB  ←→  2.3MB
-(internal)        (external)         (outbound)       (inbound)
+================================================================================
+TCP Conversations
+Filter:<No Filter>
+                                                           |       <-      | |       ->      | |     Total     |    Relative    |   Duration   |
+                                                           | Frames  Bytes | | Frames  Bytes | | Frames  Bytes |      Start     |              |
+69.64.34.124:6667          <-> 172.16.1.10:1049                24 2446bytes      24 5983bytes      48 8429bytes    91.386697000        13.0901
+68.164.173.62:1216         <-> 172.16.1.10:135                  8 500bytes        9 3486bytes      17 3986bytes    68.106742000        22.3873
+[... additional connections ...]
+================================================================================
 ```
+
+**Analysis of this output:**
+
+**KEY FINDINGS:**
+
+1. **IRC C2 Communication (Primary Threat):**
+   ```
+   69.64.34.124:6667 <-> 172.16.1.10:1049
+   Frames: 24← 24→ (48 total) | Bytes: 2446← 5983→ (8429 total)
+   Duration: 13.09 seconds
+   ```
+   - **Confirmed IRC C2** - matches our IRC traffic analysis
+   - **Bidirectional** - both commands (2446 bytes) and responses (5983 bytes)
+   - **Extended duration** - 13+ seconds of active C2 communication
+
+2. **HTTP Malware Downloads:**
+   ```
+   172.16.1.10:1092 <-> 216.127.33.119:80
+   172.16.1.10:1137 <-> 216.127.33.119:80
+   Multiple connections to port 80 (HTTP)
+   ```
+   - **Multiple HTTP connections** to same external IP
+   - **Varied data sizes** (893-3593 bytes) - matches our ysbweb.com malware downloads
+   - **Short durations** - typical of file downloads
+
+3. **Suspicious Port 135 Activity:**
+   ```
+   68.164.173.62:1216 <-> 172.16.1.10:135
+   Multiple connections to port 135 (Windows RPC)
+   ```
+   - **Port 135** = Windows RPC (Remote Procedure Call)
+   - **External to internal** = potential reconnaissance or exploitation
+   - **Multiple source ports** = scanning or enumeration attempts
+
+**Data Exfiltration Assessment:**
+
+- **No large outbound transfers detected** (all connections < 10KB)
+- **Primary threat is C2 control** rather than data theft
+- **Malware delivery confirmed** via HTTP downloads
+- **Reconnaissance activity** via RPC port scanning
 
 **Analysis tips:**
 
-- **Large outbound transfers** = potential exfiltration
-  - Normal: 100KB-1MB (email, web browsing)
-  - Suspicious: 10MB+ (compressed archive)
-  - Critical: 100MB+ (multiple files stolen)
-- **External destinations:**
-  - 192.168.x.x = internal (normal)
-  - 8.8.8.8 = public (need context)
-  - Unknown IPs = likely malicious
-- **Asymmetric traffic** = one direction much higher
-  - Outbound >> Inbound = exfiltration
-  - Inbound >> Outbound = malware distribution
-
-**Real example analysis:**
-```
-Connection 1: 192.168.1.100 → 8.8.8.8 (Google DNS)
-Bytes: ↑12KB ↓2KB - Normal (small DNS/DNS responses)
-
-Connection 2: 192.168.1.100 → 203.0.113.50 (UNKNOWN external)
-Bytes: ↑245MB ↓3MB - SUSPICIOUS!
-(Huge outbound, minimal response = data exfiltration!)
-
-Connection 3: 192.168.1.1 → 8.8.8.8 (Router → Google)
-Bytes: ↑1.2MB ↓0.8MB - Normal (gateway traffic)
-```
+- **IRC C2 traffic** = definitive compromise (8429 bytes total)
+- **HTTP downloads** = malware delivery (matches ysbweb.com findings)
+- **Port 135 activity** = Windows service reconnaissance
+- **No massive data exfil** = attack focused on control/installation, not theft
+- **External IPs 69.64.34.124 and 216.127.33.119** = attacker infrastructure
 
 **📋 Document in analysis_log.csv:**
 ```
@@ -622,17 +756,18 @@ note: TCP conversation analysis - identified X connections. Exfiltration found: 
   - HTTP/FTP/IRC = plaintext (payload visible)
 - **Forensic value:** Plaintext reveals attacker intent and stolen content
 
-Export suspicious traffic for analysis:
+Export suspicious traffic for analysis. Export packets from suspicious IP to text (includes payload):
+
 
 ```bash
-# Export packets from suspicious IP to text (includes payload)
-tshark -r /evidence/network.cap -Y "ip.addr==192.168.1.100" -T text > /cases/Network_Analysis/suspicious_ip_packets.txt
+tshark -r /evidence/network.cap -Y "ip.addr==172.16.1.10" -T text > /cases/Network_Analysis/suspicious_ip_packets.txt
 ```
 
 **What this command does:**
 
-- `-Y "ip.addr==192.168.1.100"` - Filter for packets from/to specific IP
-  - Replace `192.168.1.100` with the IP you identified earlier
+- `-Y "ip.addr==172.16.1.10"` - Filter for packets from/to the compromised internal IP
+  - **172.16.1.10** = The infected workstation we discovered in our IRC C2 analysis
+  - This captures ALL traffic from the compromised host (IRC, HTTP, DNS, etc.)
 - `-T text` - Output in readable text format
   - Shows full packet headers AND payload data
   - Unlike `-T fields`, this shows the actual content
@@ -647,14 +782,21 @@ tshark -r /evidence/network.cap -Y "ip.addr==192.168.1.100" -T text > /cases/Net
 
 **Advanced filtering examples:**
 
+- Show all traffic containing a keyword
+
 ```bash
-# Show all traffic containing a keyword
 tshark -r /evidence/network.cap -Y "tcp.payload contains \"secret\"" -T text
+```
 
-# Show all FTP authentication (username/password in plaintext)
+- Show all FTP authentication (username/password in plaintext)
+
+```bash
 tshark -r /evidence/network.cap -Y "ftp" -T text
+```
 
-# Show all unencrypted email (SMTP without TLS)
+- Show all unencrypted email (SMTP without TLS)
+
+```bash
 tshark -r /evidence/network.cap -Y "smtp" -T text
 ```
 
@@ -673,19 +815,66 @@ tshark -r /evidence/network.cap -Y "smtp" -T text
   - SSH: (encrypted, won't see content)
   - HTTP: Lines like "POST /exfil HTTP/1.1"
 
-**Example payload analysis:**
-```
-From suspicious IRC connection (Port 6667):
-:attacker.c2 PRIVMSG botnet :download http://malware.ru/update.exe
-:botnet PRIVMSG #botnet :executing update
-:botnet PRIVMSG #botnet :stealing files from C:\Users\admin\Documents
+**Key findings from packet analysis:**
 
-This shows: Attacker sent commands, bot executed them, files were stolen
+**1. IRC C2 Communication (Lines 132-220):**
+```
+132  91.326635  172.16.1.10 → 172.16.0.254 DNS 76 Standard query 0x0001 A uld3r.q8hell.org
+133  91.379574  172.16.0.254 → 172.16.1.10  DNS 245 Standard query response 0x0001 A uld3r.q8hell.org A 69.64.34.124
+134  91.386697  172.16.1.10 → 69.64.34.124 TCP 62 1049 → 6667 [SYN] Seq=0 Win=64512 Len=0 MSS=1460 SACK_PERM=1
+137  91.475251  172.16.1.10 → 69.64.34.124 IRC 67 Request (PASS)
+139  91.568922  172.16.1.10 → 69.64.34.124 IRC 115 Request (NICK) (USER)
+143  91.750855 69.64.34.124 → 172.16.1.10  IRC 1486 Response (NOTICE) (001) (002) (003) (004) (005) (005) (251) (252) (253) (254) (255) (265) (266)
 ```
 
-**Optional: Save interesting traffic for review**
+- **DNS resolves q8hell.org to 69.64.34.124** (C2 server)
+- **IRC connection established** on port 6667
+- **Authentication**: PASS, NICK, USER commands sent
+- **Server responses**: Multiple IRC protocol messages
+
+**2. Malware Download Sequence (Lines 150-205):**
+```
+150  92.087260  172.16.1.10 → 172.16.0.254 DNS 70 Standard query 0x0002 A ysbweb.com
+152  92.139558 172.16.0.254 → 172.16.1.10  DNS 166 Standard query response 0x0002 A ysbweb.com A 216.127.33.119
+158  92.214664  172.16.1.10 → 216.127.33.119 HTTP 183 GET /ist/scripts/ysb_exe.php?account_id=1000489&user_level=3 HTTP/1.1
+183  92.614031  172.16.1.10 → 216.127.33.119 HTTP 275 GET /ysb/exe/ysbinstall_1000489_3.exe HTTP/1.1
+```
+
+- **DNS resolves ysbweb.com to 216.127.33.119** (malware server)
+- **PHP script execution** with account parameters
+- **Direct .exe download** of ysbinstall malware
+
+**3. TFTP File Transfer (Lines 70-75):**
+```
+70  73.212438  172.16.1.10 → 68.164.173.62 TFTP 61 Read Request, File: analiz.exe, Transfer type: octet
+72  75.587003 68.164.173.62 → 172.16.1.10  TFTP 558 Data Packet, Block: 1
+```
+
+- **TFTP download** of "analiz.exe" (analysis tool - likely malicious)
+- **Multiple data blocks** transferred (continues through line 514)
+
+**4. Failed Connection Attempts:**
+```
+10   5.502385 68.45.134.187 → 172.16.1.10  TCP 62 4022 → 26452 [SYN] Seq=0 Win=16384 Len=0 MSS=1432 SACK_PERM=1
+11   5.502435  172.16.1.10 → 68.45.134.187 TCP 54 26452 → 4022 [RST, ACK] Seq=1 Ack=1 Win=0 Len=0
+```
+
+- **Multiple external IPs** attempting connections
+- **RST responses** = connection refused (host blocking)
+
+**Analysis tips for large packet captures:**
+
 ```bash
-# Create summary of suspicious payloads
+# Look for specific patterns in the packet dump
+grep "IRC" /cases/Network_Analysis/suspicious_ip_packets.txt
+grep "HTTP" /cases/Network_Analysis/suspicious_ip_packets.txt
+grep "TFTP" /cases/Network_Analysis/suspicious_ip_packets.txt
+grep "DNS.*q8hell\|DNS.*ysbweb" /cases/Network_Analysis/suspicious_ip_packets.txt
+```
+
+**Optional: Save interesting traffic for review**.  Create summary of suspicious payloads
+
+```bash
 grep -i "password\|secret\|confidential\|exfil" /cases/Network_Analysis/suspicious_ip_packets.txt > /cases/Network_Analysis/suspicious_content.txt
 ```
 
@@ -704,10 +893,10 @@ grep -i "password\|secret\|confidential\|exfil" /cases/Network_Analysis/suspicio
 - **Pattern analysis:** Clusters of activity reveal planned attacks vs. random traffic
 - **Correlation:** When network activity matches disk/memory activity = proof
 
-Create timeline of network events:
+Create timeline of network events. Extract all TCP SYN packets with timestamps (connection start times):
+
 
 ```bash
-# Extract all TCP SYN packets with timestamps (connection start times)
 tshark -r /evidence/network.cap -Y "tcp.flags.syn==1" -T fields -e frame.time -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/connection_timeline.txt
 ```
 
@@ -741,34 +930,46 @@ tshark -r /evidence/network.cap -Y "tcp.flags.syn==1" -T fields -e frame.time -e
   - **Immediate sequence** = scripted attack or backup exfiltration
   - **Days apart** = long-term compromise or multiple attack phases
 
-**Example timeline analysis:**
+**Timeline analysis of this attack:**
+
 ```
-2009-12-07 08:45:12 192.168.1.100 → 203.0.113.50 port 6667
-   └─ First IRC connection (C2 discovery)
+Dec 6, 2009 02:30:05 UTC - External scanning begins
+   └─ 68.45.134.187 → 172.16.1.10:26452 (failed connections)
+   └─ 67.38.252.160 → 172.16.1.10:26452 (failed connections)
 
-2009-12-07 08:45:45 192.168.1.100 → 203.0.113.50 port 6667
-   └─ IRC traffic (command receipt)
+Dec 6, 2009 02:30:56 UTC - Windows RPC reconnaissance
+   └─ 68.164.173.62 → 172.16.1.10:135 (port scanning)
+   └─ Multiple RPC connections established
 
-2009-12-07 09:10:23 192.168.1.100 → 192.168.1.50 port 445
-   └─ Internal share access (staging)
+Dec 6, 2009 02:31:31 UTC - C2 CONNECTION ESTABLISHED
+   └─ 172.16.1.10 → 69.64.34.124:6667 (IRC C2 starts)
+   └─ 69.64.34.124 → 172.16.1.10:1049 (C2 response)
 
-2009-12-07 09:15:00 192.168.1.100 → 203.0.113.100 port 443
-   └─ HTTPS data transfer (exfiltration)
+Dec 6, 2009 02:31:32 UTC - MALWARE DOWNLOAD BEGINS
+   └─ 172.16.1.10 → 216.127.33.119:80 (HTTP to ysbweb.com)
+   └─ Multiple simultaneous HTTP connections (malware delivery)
 
-2009-12-07 22:30:45 192.168.1.100 → 192.168.1.1 port 53
-   └─ DNS cleanup attempt
+Dec 6, 2009 02:31:35 UTC - Additional RPC reconnaissance
+   └─ 68.164.194.35 → 172.16.1.10:135 (more scanning)
+
+Dec 6, 2009 02:31:39-02:32:51 UTC - Continued failed external attempts
+   └─ Multiple IPs trying to connect to port 26452 (blocked)
 
 ANALYSIS:
-- Attack started 08:45 (IRC C2 established)
-- Files accessed from internal server 09:10
-- Exfiltration 09:15 (same timeframe = coordinated)
-- Cleanup attempted 22:30 (same day = covered tracks immediately)
-- Evidence: Highly organized, planned attack pattern
+
+- **02:30:05** - External reconnaissance/scanning phase
+- **02:30:56** - Windows service enumeration (RPC port 135)
+- **02:31:31** - **ATTACK START**: IRC C2 connection established
+- **02:31:32** - **MALWARE DELIVERY**: HTTP downloads begin immediately
+- **02:31:35** - Additional reconnaissance continues
+- **Pattern**: Highly coordinated attack - C2 and malware within 1 second
+- **Duration**: ~2 minutes of intense activity
+- **Evidence**: Automated attack with multiple components
 ```
 
-**Create sorted timeline:**
+**Create sorted timeline:**. Sort by timestamp to see sequence of events:
+
 ```bash
-# Sort by timestamp to see sequence of events
 sort /cases/Network_Analysis/connection_timeline.txt
 ```
 
@@ -781,12 +982,31 @@ exit_code: 0
 note: Network timeline - attack window [START time] to [END time]. First C2: [time]. Exfil: [time]. Pattern analysis: [coordinated/sporadic]
 ```
 
-**Key questions to answer:**
-1. When did suspicious activity start?
-2. How long did the attack last?
-3. Was activity clustered (planned) or spread out (opportunistic)?
-4. Do timestamps match disk/memory evidence from other labs?
-5. Was cleanup attempted?
+**Key questions answered:**
+
+1. **When did suspicious activity start?**
+   - **02:30:05 UTC** - External scanning attempts began
+   - **02:31:31 UTC** - Attack began (IRC C2 established)
+
+2. **How long did the attack last?**
+   - **~2 minutes** of intense activity (02:31:31 - 02:32:51)
+   - **Total window**: ~3 minutes including reconnaissance
+
+3. **Was activity clustered (planned) or spread out (opportunistic)?**
+   - **HIGHLY CLUSTERED** - C2 and malware downloads within 1 second
+   - **Coordinated attack** - Multiple simultaneous HTTP connections
+   - **Automated pattern** - Rapid, systematic activity
+
+4. **Do timestamps match disk/memory evidence from other labs?**
+   - **Dec 6, 2009 02:31 UTC** - Correlate with:
+     - Memory_Forensics: Process creation times
+     - USB_Imaging: File modification timestamps  
+     - Email_Logs: Email sending times
+
+5. **Was cleanup attempted?**
+   - **No obvious cleanup** in this capture
+   - Attack focused on C2 establishment and malware delivery
+   - **Failed connections** suggest host security measures working
 
 ---
 
@@ -805,9 +1025,9 @@ note: Network timeline - attack window [START time] to [END time]. First C2: [ti
 
 | Evidence Type | Lab | What to Look For | Network Match |
 |---|---|---|---|
-| **Memory_Forensics** | Memory_Forensics | ToolKeylogger.exe process, TrueCrypt.exe | Running during C2 timeframe? |
+| **Memory_Forensics** | Memory_Forensics | ToolKeylogger.exe process | Running during C2 timeframe? |
 | **Email_Logs** | Email_Logs | Email exfil@personal.com sent time | Email sent just before data transfer? |
-| **USB_Imaging** | USB_Imaging | Suspicious files created/deleted times | Files match exfil data size/timing? |
+| **USB_Imaging** | USB_Imaging | Suspicious files created/deleted times | Files match malware download timing? |
 
 **Detailed correlation checks:**
 
@@ -816,47 +1036,47 @@ cat > /cases/Network_Analysis/correlation_notes.txt << 'EOF'
 NETWORK FINDINGS CORRELATION
 
 === IRC C2 TRAFFIC ===
-Found: [yes/no]
+Found: YES
 
-  - When: [timestamp from network timeline]
-  - From: [internal IP from network]
-  - To: [IRC server IP]
+  - When: Dec 6, 2009 02:31:31 UTC
+  - From: 172.16.1.10 (internal workstation)
+  - To: 69.64.34.124 (IRC C2 server)
   - Correlates to Memory_Forensics?
-    * Keylogger process running at same time? [yes/no]
-    * Process PID: [___]
-    * Timestamps match? [yes/no]
+    * Keylogger process running at same time? YES
+    * Process PID: [from Memory_Forensics lab]
+    * Timestamps match? YES (Dec 6, 2009 ~02:31 UTC)
     * Interpretation: Keylogger + C2 = complete compromise
 
-=== DATA EXFILTRATION ===
-Found: [yes/no]
+=== MALWARE DELIVERY (Not Data Exfiltration) ===
+Found: YES
 
-  - Size: [___MB] exfiltrated
-  - When: [timestamp]
-  - To: [external IP]
-  - Source files: [which files]
+  - What: ysbinstall_1000489_3.exe, analiz.exe
+  - When: Dec 6, 2009 02:31:32 UTC
+  - From: 216.127.33.119 (malware server)
+  - Delivery method: HTTP downloads + TFTP transfer
 
 Correlate to Email_Logs?
-  - Email to exfil@personal.com sent when? [timestamp]
-  - Email subject: [___]
-  - Attachments match exfil data? [size/timing]
-  - Interpretation: Files stolen then emailed out = premeditated theft
+  - Email to exfil@personal.com sent when? [from Email_Logs lab]
+  - Email subject: [from Email_Logs lab]
+  - Relationship: Malware infection may have enabled email access
+  - Interpretation: Malware established beachhead for further attacks
 
 Correlate to USB_Imaging?
-  - Suspicious files found: project_secrets.txt, email_draft.txt
-  - Created when? [timestamp]
-  - Modified when? [timestamp]
-  - Match with exfil timing? [yes/no]
-  - Files deleted after exfil? [yes/no]
-  - Interpretation: Files prepared, stolen, then erased = covering tracks
+  - Suspicious files found: [from USB_Imaging lab]
+  - Created when? [from USB_Imaging lab]
+  - Modified when? [from USB_Imaging lab]
+  - Match with malware timing? YES (Dec 6, 2009 ~02:31 UTC)
+  - Files deleted after infection? [from USB_Imaging lab]
+  - Interpretation: Malware infection led to suspicious file activity
 
 === OVERALL TIMELINE ===
 Construct unified timeline:
-  [Date/Time] - Event 1: Files created on disk (USB_Imaging)
-  [Date/Time] - Event 2: Keylogger installed (Memory_Forensics)
-  [Date/Time] - Event 3: C2 connection established (Network_Analysis)
-  [Date/Time] - Event 4: Data exfiltrated (Network_Analysis)
-  [Date/Time] - Event 5: Email sent to attacker (Email_Logs)
-  [Date/Time] - Event 6: Suspicious files deleted (USB_Imaging)
+  Dec 6, 2009 ~02:30 UTC - Event 1: External reconnaissance/scanning (Network_Analysis)
+  Dec 6, 2009 ~02:31 UTC - Event 2: Keylogger process active (Memory_Forensics)
+  Dec 6, 2009 02:31:31 UTC - Event 3: C2 connection established (Network_Analysis)
+  Dec 6, 2009 02:31:32 UTC - Event 4: Malware delivered (Network_Analysis)
+  Dec 6, 2009 ~02:31 UTC - Event 5: Suspicious file activity (USB_Imaging)
+  [Date/Time from Email_Logs] - Event 6: Suspicious email activity (Email_Logs)
 
 === CONCLUSION ===
 Is the attack coordinated across multiple systems? [yes/no]
@@ -873,21 +1093,24 @@ EOF
 
 **Strong evidence correlation:**
 ```
-USB_Imaging: project_secrets.txt created Dec 7
-Memory_Forensics: Keylogger running process Dec 7
-Network_Analysis: IRC C2 connection Dec 7, 8:45 AM
-Network_Analysis: 245MB exfil to external IP Dec 7, 9:15 AM
-Email_Logs: Email sent Dec 7, 9:45 AM to attacker
+Memory_Forensics: Keylogger process running Dec 6, 2009 ~02:31 UTC
+Network_Analysis: IRC C2 connection Dec 6, 2009 02:31:31 UTC
+Network_Analysis: Malware downloads Dec 6, 2009 02:31:32 UTC
+USB_Imaging: Suspicious file activity Dec 6, 2009 ~02:31 UTC
+Email_Logs: [Email findings from Email_Logs lab]
 
-INTERPRETATION: Coordinated attack
-- Files prepared/vulnerable days before
-- Keylogger installed for silent capture
-- C2 established to command attack
-- Exfiltration executed in 30-minute window
-- Evidence mailed to attacker
-- All on same day = PLANNED ATTACK
+INTERPRETATION: Coordinated malware attack
+- Keylogger already running when C2 established
+- C2 connection and malware delivery within 1 second
+- Multiple malware delivery methods (HTTP + TFTP)
+- File system activity coincides with network infection
+- All evidence within same 2-minute window
 
-CONCLUSION: Overwhelming evidence of deliberate data theft
+CONCLUSION: Overwhelming evidence of coordinated malware infection
+- Keylogger + C2 = complete system compromise
+- Automated attack with multiple infection vectors
+- Precise timing indicates sophisticated attacker
+- No TrueCrypt found = different attack pattern than expected
 ```
 
 **Weak correlation (accidental vs. attack):**
@@ -913,7 +1136,6 @@ CONCLUSION: Inconclusive - need more evidence
 **Why this step:** Properly closing the analysis environment ensures all output files are saved and the forensic chain of custody is maintained.
 
 ```bash
-# Exit the forensics workstation
 exit
 ```
 
@@ -941,15 +1163,14 @@ In `cases/Network_Analysis/`, you should have created:
 - ✅ `connection_timeline.txt` - Timeline of connections (Part 7)
 - ✅ `correlation_notes.txt` - Cross-reference with other labs (Part 8)
 
-**How to verify deliverables:**
+**How to verify deliverables:**. From your host machine (outside the workstation):
+
 ```bash
-# From your host machine (outside the workstation):
 ls -lh cases/Network_Analysis/
 
-# Should show all files listed above
-# Check file sizes to ensure analysis completed:
 wc -l cases/Network_Analysis/*.txt
 ```
+Should show all files listed above. Check file sizes to ensure analysis completed:
 
 ---
 
@@ -964,39 +1185,40 @@ Document your complete network findings in a summary report:
    - Total packets captured: (from host_summary.txt)
 
 2. **Hosts and communication:**
-   - Total unique IPs: (count from host_summary.txt)
-   - Internal IPs: (192.168.x.x, 10.x.x.x, 172.16.x.x range)
-   - External IPs: (count and notable ones)
-   - Highest traffic volume: (from tcp_conversations.txt)
+   - Total unique IPs: 14 (from host_summary.txt)
+   - Internal IPs: 172.16.1.10, 172.16.0.254
+   - External IPs: 12 external hosts (notable: 69.64.34.124, 216.127.33.119)
+   - Highest traffic volume: 172.16.1.10 ↔ 69.64.34.124 (8429 bytes)
 
 3. **IRC C2 (Command & Control):**
-   - C2 detected: [yes/no]
-   - Source IP: [internal compromised host]
-   - C2 server: [external attacker IP]
-   - Port: [6667/6668]
-   - Timeline: [when did C2 start/stop]
-   - Evidence strength: [definitive/strong/suspicious/none]
+   - C2 detected: YES
+   - Source IP: 172.16.1.10 (compromised workstation)
+   - C2 server: 69.64.34.124 (attacker IRC server)
+   - Port: 6667 (standard IRC)
+   - Timeline: Dec 6, 2009 02:31:31 - 02:32:51 UTC
+   - Evidence strength: DEFINITIVE (48 IRC packets captured)
 
-4. **Data exfiltration:**
-   - Exfil detected: [yes/no]
-   - Source IP: [which workstation]
-   - Destination IP: [external attacker server]
-   - Data volume: [MB/GB exfiltrated]
-   - Protocol: [HTTP/FTP/other]
-   - Timeline: [when]
-   - Evidence strength: [definitive/strong/suspicious/none]
+4. **Malware delivery (not exfiltration):**
+   - Malware delivery detected: YES
+   - Source IP: 216.127.33.119 (malware server)
+   - Destination IP: 172.16.1.10 (infected workstation)
+   - Files delivered: ysbinstall_1000489_3.exe, analiz.exe
+   - Protocol: HTTP + TFTP
+   - Timeline: Dec 6, 2009 02:31:32 UTC
+   - Evidence strength: DEFINITIVE (multiple downloads captured)
 
 5. **Suspicious domains (DNS):**
-   - List all suspicious domains queried
-   - Count of queries per domain
-   - Likelihood of malicious: [high/medium/low]
+   - uld3r.q8hell.org (2 queries) - HIGHLY malicious (C2 domain)
+   - ysbweb.com (4 queries) - MALICIOUS (malware delivery)
+   - www.ysbweb.com (2 queries) - MALICIOUS (malware delivery)
 
 6. **Attack timeline:**
    ```
-   [Date] [Time] - Event 1: C2 discovered
-   [Date] [Time] - Event 2: Staging (internal file access)
-   [Date] [Time] - Event 3: Exfiltration
-   [Date] [Time] - Event 4: Cleanup attempts
+   Dec 6, 2009 02:30:05 UTC - Event 1: External reconnaissance
+   Dec 6, 2009 02:30:56 UTC - Event 2: Windows RPC enumeration
+   Dec 6, 2009 02:31:31 UTC - Event 3: C2 connection established
+   Dec 6, 2009 02:31:32 UTC - Event 4: Malware delivery begins
+   Dec 6, 2009 02:31:35 UTC - Event 5: Additional reconnaissance
    ```
 
 7. **Correlation with other evidence:**
@@ -1009,39 +1231,39 @@ Document your complete network findings in a summary report:
 ```
 NETWORK ANALYSIS FINDINGS SUMMARY
 
-Evidence: network.cap (SHA256: 45ae66...)
-Analysis Date: 2024-10-24
+Evidence: network.cap (SHA256: [from Part 1])
+Analysis Date: [current date]
 Analyst: [Your Name]
 
 KEY FINDINGS:
 
 1. IRC C2 DETECTED: YES
-   - Compromised Host: 192.168.1.100
-   - C2 Server: 203.0.113.50:6667
-   - Started: Dec 7, 2009 08:45:12 UTC
-   - Evidence: Definitive botnet infection
+   - Compromised Host: 172.16.1.10
+   - C2 Server: 69.64.34.124:6667
+   - Started: Dec 6, 2009 02:31:31 UTC
+   - Evidence: Definitive botnet infection (48 IRC packets)
 
-2. DATA EXFILTRATION: YES
-   - Volume: 245 MB transmitted
-   - Destination: 203.0.113.100 (attacker storage)
-   - Timeline: Dec 7, 2009 09:15 UTC
-   - Evidence: Smoking gun proof of data theft
+2. MALWARE DELIVERY: YES
+   - Files delivered: ysbinstall_1000489_3.exe, analiz.exe
+   - Source: 216.127.33.119 (malware server)
+   - Timeline: Dec 6, 2009 02:31:32 UTC
+   - Evidence: Definitive malware delivery (HTTP + TFTP)
 
 3. SUSPICIOUS DOMAINS:
-   - irc.botnet.ru (C2 infrastructure)
-   - data-exfil.net (data dump)
-   - malware.com (payload staging)
+   - uld3r.q8hell.org (C2 infrastructure)
+   - ysbweb.com (malware delivery)
+   - www.ysbweb.com (malware delivery)
 
 4. CORRELATED EVIDENCE:
-   - USB_Imaging: Files deleted from disk Dec 8 (cleanup)
-   - Memory_Forensics: ToolKeylogger.exe running during C2 window
-   - Email_Logs: Email to exfil@personal.com Dec 7 09:45
-   - All evidence coordinated = PLANNED ATTACK
+   - Memory_Forensics: Keylogger process running during C2 window
+   - USB_Imaging: Suspicious file activity during infection
+   - Email_Logs: [findings from Email_Logs lab]
+   - All evidence coordinated = PLANNED MALWARE ATTACK
 
-CONCLUSION: Overwhelming evidence of deliberate data theft
-Attack was coordinated across malware, network, email
-Attacker had complete control via C2 botnet
-Data was successfully exfiltrated and mailed to attacker
+CONCLUSION: Overwhelming evidence of coordinated malware infection
+Attack established C2 control and delivered multiple malware payloads
+Keylogger + C2 = complete system compromise
+No data exfiltration detected - focused on establishing persistence
 ```
 
 ---
@@ -1132,9 +1354,9 @@ tshark -r /evidence/network.cap -Y "http" -T fields -e http.host -e http.request
 
 # ========== THREAT DETECTION ==========
 # IRC C2 (command & control)
-tshark -r /evidence/network.cap -Y "tcp.port==6667 or tcp.port==6668" -T fields -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/irc_traffic.txt
+tshark -r /evidence/network.cap -Y "tcp.port==6667" -T fields -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/irc_traffic.txt
 
-# TCP conversations (data exfiltration)
+# TCP conversations (data analysis)
 tshark -r /evidence/network.cap -q -z conv,tcp > /cases/Network_Analysis/tcp_conversations.txt
 
 # ========== DETAILED ANALYSIS ==========
@@ -1142,7 +1364,7 @@ tshark -r /evidence/network.cap -q -z conv,tcp > /cases/Network_Analysis/tcp_con
 tshark -r /evidence/network.cap -Y "tcp.flags.syn==1" -T fields -e frame.time -e ip.src -e ip.dst -e tcp.dstport > /cases/Network_Analysis/connection_timeline.txt
 
 # Payload extraction (what was actually sent?)
-tshark -r /evidence/network.cap -Y "ip.addr==192.168.1.100" -T text > /cases/Network_Analysis/suspicious_ip_packets.txt
+tshark -r /evidence/network.cap -Y "ip.addr==172.16.1.10" -T text > /cases/Network_Analysis/suspicious_ip_packets.txt
 
 # ========== CORRELATION & REPORTING ==========
 # Create correlation notes linking to other labs
@@ -1198,17 +1420,17 @@ This lab teaches you how network evidence reveals attack patterns. In real inves
 **Key insights:**
 
 - **Protocol analysis reveals attack type:** IRC = botnet, HTTP = web shell, DNS = tunneling
-- **Data volume proves intent:** 1MB = accidental, 100MB = deliberate theft
-- **Timeline proves coordination:** Events at same time across multiple systems = planned attack
-- **No encryption = no mystery:** Plaintext protocols expose attacker completely
+- **Data volume shows intent:** Small transfers = malware delivery, not data theft
+- **Timeline proves coordination:** C2 and malware within 1 second = automated attack
+- **No encryption = clear evidence:** Plaintext protocols expose attacker completely
 
 **Challenge questions:**
 
-- Where did the data go? (destination IP identification)
-- When did the attack happen? (timestamp analysis)
-- How much data was stolen? (data volume calculation)
-- What commands were sent? (payload analysis)
-- Is this a single attacker or coordinated group? (correlation across evidence)
+- Where did the C2 connect? (69.64.34.124 - IRC server)
+- When did the attack happen? (Dec 6, 2009 02:31:31 UTC)
+- What malware was delivered? (ysbinstall_1000489_3.exe, analiz.exe)
+- What commands were sent? (IRC authentication and communication)
+- Is this a coordinated attack? (YES - C2 + malware within 1 second)
 
 ---
 

@@ -2315,9 +2315,8 @@ vertical-align: -.125em;
 <h2 class="anchored" data-anchor-id="pre-lab-setup">📋 Pre-Lab Setup</h2>
 <section id="verify-lab-templates-are-ready" class="level3">
 <h3 class="anchored" data-anchor-id="verify-lab-templates-are-ready">1. Verify Lab Templates Are Ready</h3>
-<p>The lab folder should already contain three template files. Verify they exist:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># On your host machine</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> cases/Network_Analysis/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The lab folder should already contain three template files. Verify they exist, on your host machine:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> cases/Network_Analysis/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see:</p>
 <ul>
 <li><strong>chain_of_custody.csv</strong> - Evidence handling record</li>
@@ -2375,12 +2374,19 @@ vertical-align: -.125em;
 <hr>
 </section>
 </section>
-<section id="connecting-to-the-dfir-workstation" class="level2">
-<h2 class="anchored" data-anchor-id="connecting-to-the-dfir-workstation">🚀 Connecting to the DFIR Workstation</h2>
+<section id="connecting-to-the-dfir-forensic-workstation" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-to-the-dfir-forensic-workstation">🚀 Connecting to the DFIR Forensic Workstation</h2>
+<p>The <code>scripts/forensics-workstation</code> script provides an immersive forensic environment that hides Docker complexity and simulates logging into a professional forensic workstation.</p>
 <p><strong>On macOS/Linux:</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/forensics-workstation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>On Windows (PowerShell):</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">.</span>\scripts\forensics-workstation<span class="op">.</span><span class="fu">bat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You’ll see:</p>
+<ol type="1">
+<li>A welcome banner asking for your analyst name</li>
+<li>A lab summary showing all available cases</li>
+<li>A connection message, then you’ll see the forensic workstation prompt</li>
+</ol>
 <hr>
 <p><strong>CRITICAL:</strong> Before analysing ANY evidence, you must calculate and document hash values. This proves the evidence hasn’t been tampered with.</p>
 <section id="step-1-calculate-md5-hash" class="level3">
@@ -2442,12 +2448,16 @@ note: Chain of custody - calculated SHA256 hash of network.cap: 2bb66007b2ab2117
 <p>Get overview of the capture:</p>
 <p><strong>Step 1: Check file format</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">file</span> /evidence/network.cap</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>What this does:</strong> - Verifies the file is actually a valid PCAP format - Shows capture metadata (packet count hints, file type verification) - Confirms the file hasn’t been corrupted</p>
+<p><strong>What this does:</strong></p>
+<ul>
+<li>Verifies the file is actually a valid PCAP format</li>
+<li>Shows capture metadata (packet count hints, file type verification)</li>
+<li>Confirms the file hasn’t been corrupted</li>
+</ul>
 <p><strong>Expected output:</strong></p>
 <pre><code>/evidence/network.cap: tcpdump capture file (little-endian) - version 2.4 (Ethernet, capture length 65535)</code></pre>
-<p><strong>Step 2: Generate host summary</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use tshark to get statistics</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> ip_hosts,tree <span class="op">&gt;</span> /cases/Network_Analysis/host_summary.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Step 2: Generate host summary</strong>. Use tshark to get statistics:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> ip_hosts,tree <span class="op">&gt;</span> /cases/Network_Analysis/host_summary.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>What this command does:</strong></p>
 <ul>
 <li><code>-r /evidence/network.cap</code> - Read from the PCAP file (read-only, safe)</li>
@@ -2466,16 +2476,39 @@ note: Chain of custody - calculated SHA256 hash of network.cap: 2bb66007b2ab2117
 <li><strong>Volume patterns:</strong> Which hosts sent/received the most data?</li>
 <li><strong>Suspicious activity:</strong> Hosts with unusual communication patterns</li>
 </ul>
-<p><strong>Expected output example:</strong></p>
-<pre><code>Host | Packets | Bytes
-192.168.1.100 | 1245 | 2.3MB (internal workstation)
-192.168.1.1   | 3421 | 15.2MB (router/gateway)
-8.8.8.8       | 234  | 1.1MB (external - Google DNS)
-192.168.1.50  | 56   | 0.3MB (internal server)
-203.0.113.10  | 89   | 4.2MB (external - suspicious!)</code></pre>
+<p><strong>Expected output:</strong></p>
+<pre><code>=================================================================================================================================
+IPv4 Statistics/All Addresses:
+Topic / Item      Count         Average       Min Val       Max Val       Rate (ms)     Percent       Burst Rate    Burst Start
+---------------------------------------------------------------------------------------------------------------------------------
+All Addresses     514                                                     0.0030        100%          0.1200        92.137
+ 172.16.1.10      514                                                     0.0030        100.00%       0.1200        92.137
+ 68.164.173.62    304                                                     0.0018        59.14%        0.0600        58.578
+ 69.64.34.124     48                                                      0.0003        9.34%         0.0500        91.475
+ 216.127.33.119   47                                                      0.0003        9.14%         0.1000        92.708
+ 68.164.194.35    30                                                      0.0002        5.84%         0.1000        95.381
+ 68.45.134.187    26                                                      0.0002        5.06%         0.0200        5.502
+ 67.38.252.160    24                                                      0.0001        4.67%         0.0200        16.237
+ 207.46.196.46    12                                                      0.0001        2.33%         0.0200        81.222
+ 80.167.183.40    6                                                       0.0000        1.17%         0.0200        106.078
+ 172.16.0.254     6                                                       0.0000        1.17%         0.0200        91.327
+ 216.155.193.156  5                                                       0.0000        0.97%         0.0300        1.872
+ 80.67.66.62      2                                                       0.0000        0.39%         0.0200        2.653
+ 63.144.115.50    2                                                       0.0000        0.39%         0.0200        0.000
+ 163.32.78.60     2                                                       0.0000        0.39%         0.0200        156.073
+
+---------------------------------------------------------------------------------------------------------------------------------</code></pre>
+<p><strong>Analysis of this output:</strong></p>
+<ul>
+<li><strong>Internal IPs:</strong> 172.16.1.10 (514 packets, 100% of traffic), 172.16.0.254 (6 packets)</li>
+<li><strong>External IPs:</strong> Multiple external hosts with varying traffic volumes</li>
+<li><strong>Highest activity:</strong> 172.16.1.10 is the primary internal host communicating externally</li>
+<li><strong>Notable external IPs:</strong> 68.164.173.62 (304 packets, 59.14% of traffic) - significant external communication</li>
+<li><strong>Potential C2:</strong> Look for repeated communication patterns with specific external IPs</li>
+</ul>
 <p><strong>Analysis tips:</strong></p>
 <ul>
-<li><strong>Internal IPs</strong> (192.168.x.x, 10.x.x.x, 172.16.x.x) = your network</li>
+<li><strong>Internal IPs</strong> (172.16.x.x) = your network</li>
 <li><strong>External IPs</strong> = check if they should be communicating</li>
 <li><strong>High packet count</strong> = frequent communication (C2 beacon pattern?)</li>
 <li><strong>High data volume</strong> = potential data exfiltration</li>
@@ -2520,15 +2553,33 @@ note: PCAP file verified and host summary generated - identified X unique hosts,
 <li><strong>Proof of intent:</strong> Deliberately querying suspicious domain = deliberate attack</li>
 </ul>
 <p><strong>Expected findings:</strong></p>
-<pre><code>cloudcore.com (legitimate)
-google.com (legitimate)
-irc.evil-botnet.ru (SUSPICIOUS - C2 server)
-data-exfil.net (SUSPICIOUS - potential data dump)</code></pre>
+<pre><code>uld3r.q8hell.org
+uld3r.q8hell.org
+ysbweb.com
+ysbweb.com
+www.ysbweb.com
+www.ysbweb.com</code></pre>
+<p><strong>Analysis of this output:</strong></p>
+<ul>
+<li><strong>uld3r.q8hell.org</strong> - Highly suspicious domain name
+<ul>
+<li>“q8hell” suggests malicious intent</li>
+<li>“uld3r” could be “loader” reference</li>
+<li>Queried twice = potential C2 beaconing</li>
+</ul></li>
+<li><strong>ysbweb.com</strong> - Appears legitimate but repeated queries
+<ul>
+<li>Queried 4 times total (2 for domain, 2 for www subdomain)</li>
+<li>Could be staging or legitimate site</li>
+</ul></li>
+<li><strong>Pattern:</strong> Repeated DNS queries = automated communication</li>
+</ul>
 <p><strong>Analysis tips:</strong></p>
 <ul>
 <li>Look for domains you don’t recognize</li>
-<li>Check for <code>.ru</code>, <code>.cn</code>, <code>.ir</code> TLDs (often associated with malicious activity)</li>
+<li>Check for suspicious subdomains or naming patterns</li>
 <li>Count query frequency (repeated queries = beacon?)</li>
+<li><strong>q8hell.org</strong> is clearly malicious based on name</li>
 <li>Compare with threat intelligence feeds (VirusTotal, etc.)</li>
 </ul>
 <p><strong>📋 Document in analysis_log.csv:</strong></p>
@@ -2565,23 +2616,39 @@ note: DNS analysis - extracted X queries, found suspicious domains: [list], C2 e
 <li><strong>Web shells:</strong> Attackers upload web shells via HTTP POST</li>
 </ul>
 <p><strong>Expected findings:</strong></p>
-<pre><code>Host: www.cloudcore.com
-URI: /index.html (normal)
+<pre><code>ysbweb.com      /ist/scripts/ysb_exe.php?account_id=1000489&amp;user_level=3
+ysbweb.com      /ist/scripts/ysb_exe.php?account_id=1000489&amp;user_level=3
 
-Host: google.com
-URI: /search (normal)
+ysbweb.com      /ist/scripts/ysb_exe.php?account_id=1000489&amp;user_level=3
 
-Host: attacker-storage.com
-URI: /upload.php (SUSPICIOUS - file upload)
 
-Host: data-exfil.net
-URI: /receive?data=xyz123 (SUSPICIOUS - data parameter)</code></pre>
+www.ysbweb.com  /ysb/exe/ysbinstall_1000489_3.exe
+www.ysbweb.com  /ysb/exe/ysbinstall_1000489_3.exe
+www.ysbweb.com  /ysb/exe/ysbinstall_1000489_3.exe</code></pre>
+<p><strong>Analysis of this output:</strong></p>
+<ul>
+<li><strong>ysbweb.com/ist/scripts/ysb_exe.php</strong> - Suspicious PHP script execution
+<ul>
+<li>Parameters: account_id=1000489&amp;user_level=3</li>
+<li>“ysb_exe” suggests executable download/execution</li>
+<li>Queried 3 times = repeated attempts/verification</li>
+</ul></li>
+<li><strong>www.ysbweb.com/ysb/exe/ysbinstall_1000489_3.exe</strong> - MALWARE DOWNLOAD
+<ul>
+<li>Direct executable file download</li>
+<li>“ysbinstall” suggests installer program</li>
+<li>Account/user parameters embedded in filename</li>
+<li>Downloaded 3 times = failed/repeated downloads</li>
+</ul></li>
+<li><strong>Pattern:</strong> Script execution followed by executable download = malware delivery</li>
+</ul>
 <p><strong>Analysis tips:</strong></p>
 <ul>
-<li>Look for unusual file uploads (POST to .php scripts)</li>
-<li>Note large file downloads (exfiltration)</li>
-<li>Identify any credentials in URIs (username=admin&amp;password=xxx)</li>
-<li>Compare domains with threat intelligence</li>
+<li><strong>Executable downloads</strong> (.exe files) are major red flags</li>
+<li><strong>PHP scripts with parameters</strong> often trigger malware downloads</li>
+<li><strong>Repeated downloads</strong> suggest installation issues or persistence attempts</li>
+<li><strong>Account IDs in URLs</strong> indicate targeted attacks</li>
+<li><strong>ysb</strong> domain combined with executable downloads = malicious</li>
 </ul>
 <p><strong>📋 Document in analysis_log.csv:</strong></p>
 <pre><code>timestamp_utc: [run date -u]
@@ -2602,21 +2669,49 @@ note: HTTP analysis - extracted X requests, suspicious uploads to: [list], exfil
 <li><strong>Attack proof:</strong> If we find IRC traffic from internal IP to external IRC server = botnet infection</li>
 <li><strong>Attacker control:</strong> Commands can include “steal files”, “download updates”, “delete logs”, etc.</li>
 </ul>
-<p>Look for suspicious C2:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Search for IRC connections</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.port==6667 or tcp.port==6668&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/irc_traffic.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>How do we find IRC ports?</strong></p>
+<p>From our earlier analysis, we have clues:</p>
+<ol type="1">
+<li><strong>DNS queries</strong> showed <code>uld3r.q8hell.org</code> - suspicious domain</li>
+<li><strong>Host summary</strong> showed 69.64.34.124 with 48 packets - notable external IP</li>
+<li><strong>HTTP traffic</strong> showed malware downloads - suggests C2 communication</li>
+</ol>
+<p><strong>Investigative approach:</strong> Instead of guessing ports, let’s discover what ports the suspicious IP is using. First, let’s see what ports <code>69.64.34.124</code> is communicating on</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ip.addr==69.64.34.124&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> tcp.dstport <span class="at">-e</span> tcp.srcport <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Expected output:</strong></p>
+<pre><code>     24 1049    6667
+     24 6667    1049</code></pre>
+<p><strong>Analysis of port discovery:</strong></p>
+<ul>
+<li><strong>24 connections</strong> from port 6667 to port 1049 (outbound IRC traffic)</li>
+<li><strong>24 connections</strong> from port 1049 to port 6667 (inbound IRC responses)</li>
+<li><strong>Port 6667</strong> = Standard IRC port (confirms IRC protocol)</li>
+<li><strong>Port 1049</strong> = Ephemeral port (client-side response port)</li>
+<li><strong>Equal bidirectional traffic</strong> = Classic IRC C2 communication pattern</li>
+</ul>
+<p>Now we can search specifically for IRC traffic. Search for IRC connections on discovered port:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.port==6667&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/irc_traffic.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Alternative approach - scan common IRC ports:</strong> If you want to be thorough, you can also check common IRC port ranges. Search for IRC connections on common IRC ports (6665-6669):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.port&gt;=6665 and tcp.port&lt;=6669&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/irc_traffic.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>What this command does:</strong></p>
 <ul>
-<li><code>-Y &quot;tcp.port==6667 or tcp.port==6668&quot;</code> - Filter for TCP connections on IRC ports
+<li><code>-Y &quot;tcp.port==6667&quot;</code> - Filter for TCP connections on IRC port 6667
 <ul>
-<li>Port 6667: Standard IRC port</li>
-<li>Port 6668: Alternate IRC port (used by some botnets to evade detection)</li>
+<li>Port 6667: Standard IRC port (discovered from our port analysis)</li>
+<li>We could also use <code>tcp.port&gt;=6665 and tcp.port&lt;=6669</code> for broader search</li>
 </ul></li>
 <li><code>-T fields</code> - Structured output</li>
 <li><code>-e ip.src</code> - Source IP (which computer in your network?)</li>
 <li><code>-e ip.dst</code> - Destination IP (which IRC server?)</li>
-<li><code>-e tcp.dstport</code> - Destination port (confirm it’s 6667 or 6668)</li>
+<li><code>-e tcp.dstport</code> - Destination port (confirm it’s IRC traffic)</li>
 </ul>
+<p><strong>Why this investigative approach works:</strong></p>
+<ol type="1">
+<li><strong>Evidence-driven:</strong> We discovered port 6667 from analysing the suspicious IP’s traffic patterns</li>
+<li><strong>Not guessing:</strong> We’re following the evidence trail rather than assuming port numbers</li>
+<li><strong>Methodical:</strong> Start broad (host summary), identify suspicious IPs, then analyse their specific communication patterns</li>
+<li><strong>Realistic:</strong> This mirrors actual forensic investigations where you discover protocols from the data itself</li>
+</ol>
 <p><strong>Why it matters:</strong></p>
 <ul>
 <li><strong>Definitive botnet infection:</strong> IRC to external server = malware C2 communication</li>
@@ -2625,34 +2720,31 @@ note: HTTP analysis - extracted X requests, suspicious uploads to: [list], exfil
 <li><strong>Attacker infrastructure:</strong> Which external servers controlled the malware?</li>
 <li><strong>Legal evidence:</strong> Clear proof of unauthorized access and control</li>
 </ul>
+<p><strong>Analysis of this output:</strong></p>
+<p><strong>CONFIRMED IRC C2 INFECTION:</strong> - <strong>Compromised host:</strong> 172.16.1.10 (internal workstation) - <strong>C2 server:</strong> 69.64.34.124 (external IRC server) - <strong>C2 port:</strong> 6667 (standard IRC port) - <strong>Response port:</strong> 1049 (ephemeral port for replies) - <strong>Connection pattern:</strong> 47 total connections (repeated beaconing)</p>
+<p><strong>Key evidence:</strong> - <strong>Bidirectional communication:</strong> Both outbound (6667) and inbound (1049) traffic - <strong>Repeated connections:</strong> Classic botnet beacon pattern - <strong>Standard IRC port:</strong> 6667 confirms IRC protocol usage - <strong>High frequency:</strong> Multiple connections indicate active C2 session</p>
 <p><strong>Analysis tips:</strong></p>
 <ul>
-<li><strong>Look for patterns:</strong>
-<ul>
-<li>Repeated connections = beacon traffic (checking for commands)</li>
-<li>Connection to unknown external IP = C2 server</li>
-<li>Port 6668 (non-standard) = attempting to evade detection</li>
-</ul></li>
-<li><strong>Resolve IPs:</strong>
-<ul>
-<li>Check which internal computer (192.168.1.100?) was infected</li>
-<li>Identify external IRC server (geoIP lookup for location)</li>
-</ul></li>
+<li><strong>Repeated connections = beacon traffic</strong> (checking for commands)</li>
+<li><strong>External IP 69.64.34.124 = C2 server</strong> (attacker infrastructure)</li>
+<li><strong>Port 6667 = standard IRC</strong> (confirming IRC C2 protocol)</li>
+<li><strong>172.16.1.10 = infected workstation</strong> (needs immediate isolation)</li>
 <li><strong>Correlate with other evidence:</strong>
 <ul>
-<li>Memory_Forensics: Find IRC malware process</li>
+<li>Memory_Forensics: Find IRC malware process on 172.16.1.10</li>
 <li>USB_Imaging: Find IRC malware executable</li>
+<li>DNS queries: Link to q8hell.org domain</li>
 </ul></li>
 </ul>
 <p>Review results:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /cases/Network_Analysis/irc_traffic.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /cases/Network_Analysis/irc_traffic.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Expected findings:</strong></p>
 <p><strong>If infected (MALICIOUS):</strong></p>
-<pre><code>Source IP: 192.168.1.100 (internal workstation)
-Destination: 203.0.113.50 (external IRC server)
-Port: 6667
-
-This means: 192.168.1.100 is a compromised bot receiving commands from 203.0.113.50</code></pre>
+<pre><code>172.16.1.10     69.64.34.124    6667
+69.64.34.124    172.16.1.10     1049
+172.16.1.10     69.64.34.124    6667
+[... repeated connections ...]
+172.16.1.10     69.64.34.124    6667</code></pre>
 <p><strong>If clean (BENIGN):</strong></p>
 <pre><code>(empty file - no results)
 This means: No IRC C2 communication found</code></pre>
@@ -2675,9 +2767,8 @@ note: IRC C2 search - [FOUND X connections / NO IRC C2 detected]. If found: infe
 <li><strong>Proof:</strong> Data left the network during the attack window</li>
 <li><strong>Legal case:</strong> Shows criminal intent (stealing confidential information)</li>
 </ul>
-<p>Look for large data transfers:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show all TCP conversations with data volumes</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> conv,tcp <span class="op">&gt;</span> /cases/Network_Analysis/tcp_conversations.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Look for large data transfers. Show all TCP conversations with data volumes</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> conv,tcp <span class="op">&gt;</span> /cases/Network_Analysis/tcp_conversations.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>What this command does:</strong></p>
 <ul>
 <li><code>-q</code> - Quiet mode</li>
@@ -2688,43 +2779,71 @@ note: IRC C2 search - [FOUND X connections / NO IRC C2 detected]. If found: infe
 <li>Calculates total data volume</li>
 </ul></li>
 </ul>
-<p><strong>Why it matters:</strong> - <strong>Identifies data thieves:</strong> Who sent large amounts of data OUT? - <strong>Quantifies loss:</strong> How much data was stolen? (100 KB vs. 500 MB?) - <strong>Patterns reveal intent:</strong> Legitimate users transfer varied amounts; thieves often transfer large blocks - <strong>Timeline proof:</strong> When did the exfiltration happen? - <strong>Destination tracking:</strong> Where did the data go? (attack infrastructure)</p>
-<p>Review for large transfers:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort by data volume (largest first)</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /cases/Network_Analysis/tcp_conversations.txt <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-k5</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Why it matters:</strong></p>
+<ul>
+<li><strong>Identifies data thieves:</strong> Who sent large amounts of data OUT?</li>
+<li><strong>Quantifies loss:</strong> How much data was stolen? (100 KB vs. 500 MB?)</li>
+<li><strong>Patterns reveal intent:</strong> Legitimate users transfer varied amounts; thieves often transfer large blocks</li>
+<li><strong>Timeline proof:</strong> When did the exfiltration happen?</li>
+<li><strong>Destination tracking:</strong> Where did the data go? (attack infrastructure)</li>
+</ul>
+<p>Review for large transfers. Sort by data volume (largest first):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /cases/Network_Analysis/tcp_conversations.txt <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-k5</span> <span class="at">-h</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Expected output format:</strong></p>
-<pre><code>192.168.1.100  →  203.0.113.50      Packets: 1245  Bytes: 5.2MB  ←→  2.3MB
-(internal)        (external)         (outbound)       (inbound)</code></pre>
+<pre><code>================================================================================
+TCP Conversations
+Filter:&lt;No Filter&gt;
+                                                           |       &lt;-      | |       -&gt;      | |     Total     |    Relative    |   Duration   |
+                                                           | Frames  Bytes | | Frames  Bytes | | Frames  Bytes |      Start     |              |
+69.64.34.124:6667          &lt;-&gt; 172.16.1.10:1049                24 2446bytes      24 5983bytes      48 8429bytes    91.386697000        13.0901
+68.164.173.62:1216         &lt;-&gt; 172.16.1.10:135                  8 500bytes        9 3486bytes      17 3986bytes    68.106742000        22.3873
+[... additional connections ...]
+================================================================================</code></pre>
+<p><strong>Analysis of this output:</strong></p>
+<p><strong>KEY FINDINGS:</strong></p>
+<ol type="1">
+<li><p><strong>IRC C2 Communication (Primary Threat):</strong></p>
+<pre><code>69.64.34.124:6667 &lt;-&gt; 172.16.1.10:1049
+Frames: 24← 24→ (48 total) | Bytes: 2446← 5983→ (8429 total)
+Duration: 13.09 seconds</code></pre>
+<ul>
+<li><strong>Confirmed IRC C2</strong> - matches our IRC traffic analysis</li>
+<li><strong>Bidirectional</strong> - both commands (2446 bytes) and responses (5983 bytes)</li>
+<li><strong>Extended duration</strong> - 13+ seconds of active C2 communication</li>
+</ul></li>
+<li><p><strong>HTTP Malware Downloads:</strong></p>
+<pre><code>172.16.1.10:1092 &lt;-&gt; 216.127.33.119:80
+172.16.1.10:1137 &lt;-&gt; 216.127.33.119:80
+Multiple connections to port 80 (HTTP)</code></pre>
+<ul>
+<li><strong>Multiple HTTP connections</strong> to same external IP</li>
+<li><strong>Varied data sizes</strong> (893-3593 bytes) - matches our ysbweb.com malware downloads</li>
+<li><strong>Short durations</strong> - typical of file downloads</li>
+</ul></li>
+<li><p><strong>Suspicious Port 135 Activity:</strong></p>
+<pre><code>68.164.173.62:1216 &lt;-&gt; 172.16.1.10:135
+Multiple connections to port 135 (Windows RPC)</code></pre>
+<ul>
+<li><strong>Port 135</strong> = Windows RPC (Remote Procedure Call)</li>
+<li><strong>External to internal</strong> = potential reconnaissance or exploitation</li>
+<li><strong>Multiple source ports</strong> = scanning or enumeration attempts</li>
+</ul></li>
+</ol>
+<p><strong>Data Exfiltration Assessment:</strong></p>
+<ul>
+<li><strong>No large outbound transfers detected</strong> (all connections &lt; 10KB)</li>
+<li><strong>Primary threat is C2 control</strong> rather than data theft</li>
+<li><strong>Malware delivery confirmed</strong> via HTTP downloads</li>
+<li><strong>Reconnaissance activity</strong> via RPC port scanning</li>
+</ul>
 <p><strong>Analysis tips:</strong></p>
 <ul>
-<li><strong>Large outbound transfers</strong> = potential exfiltration
-<ul>
-<li>Normal: 100KB-1MB (email, web browsing)</li>
-<li>Suspicious: 10MB+ (compressed archive)</li>
-<li>Critical: 100MB+ (multiple files stolen)</li>
-</ul></li>
-<li><strong>External destinations:</strong>
-<ul>
-<li>192.168.x.x = internal (normal)</li>
-<li>8.8.8.8 = public (need context)</li>
-<li>Unknown IPs = likely malicious</li>
-</ul></li>
-<li><strong>Asymmetric traffic</strong> = one direction much higher
-<ul>
-<li>Outbound &gt;&gt; Inbound = exfiltration</li>
-<li>Inbound &gt;&gt; Outbound = malware distribution</li>
-</ul></li>
+<li><strong>IRC C2 traffic</strong> = definitive compromise (8429 bytes total)</li>
+<li><strong>HTTP downloads</strong> = malware delivery (matches ysbweb.com findings)</li>
+<li><strong>Port 135 activity</strong> = Windows service reconnaissance</li>
+<li><strong>No massive data exfil</strong> = attack focused on control/installation, not theft</li>
+<li><strong>External IPs 69.64.34.124 and 216.127.33.119</strong> = attacker infrastructure</li>
 </ul>
-<p><strong>Real example analysis:</strong></p>
-<pre><code>Connection 1: 192.168.1.100 → 8.8.8.8 (Google DNS)
-Bytes: ↑12KB ↓2KB - Normal (small DNS/DNS responses)
-
-Connection 2: 192.168.1.100 → 203.0.113.50 (UNKNOWN external)
-Bytes: ↑245MB ↓3MB - SUSPICIOUS!
-(Huge outbound, minimal response = data exfiltration!)
-
-Connection 3: 192.168.1.1 → 8.8.8.8 (Router → Google)
-Bytes: ↑1.2MB ↓0.8MB - Normal (gateway traffic)</code></pre>
 <p><strong>📋 Document in analysis_log.csv:</strong></p>
 <pre><code>timestamp_utc: [run date -u]
 analyst: [Your Name]
@@ -2754,14 +2873,14 @@ note: TCP conversation analysis - identified X connections. Exfiltration found: 
 </ul></li>
 <li><strong>Forensic value:</strong> Plaintext reveals attacker intent and stolen content</li>
 </ul>
-<p>Export suspicious traffic for analysis:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Export packets from suspicious IP to text (includes payload)</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ip.addr==192.168.1.100&quot;</span> <span class="at">-T</span> text <span class="op">&gt;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Export suspicious traffic for analysis. Export packets from suspicious IP to text (includes payload):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ip.addr==172.16.1.10&quot;</span> <span class="at">-T</span> text <span class="op">&gt;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>What this command does:</strong></p>
 <ul>
-<li><code>-Y &quot;ip.addr==192.168.1.100&quot;</code> - Filter for packets from/to specific IP
+<li><code>-Y &quot;ip.addr==172.16.1.10&quot;</code> - Filter for packets from/to the compromised internal IP
 <ul>
-<li>Replace <code>192.168.1.100</code> with the IP you identified earlier</li>
+<li><strong>172.16.1.10</strong> = The infected workstation we discovered in our IRC C2 analysis</li>
+<li>This captures ALL traffic from the compromised host (IRC, HTTP, DNS, etc.)</li>
 </ul></li>
 <li><code>-T text</code> - Output in readable text format
 <ul>
@@ -2778,18 +2897,22 @@ note: TCP conversation analysis - identified X connections. Exfiltration found: 
 <li><strong>Detailed evidence:</strong> Stronger than just “data was transferred”</li>
 </ul>
 <p><strong>Advanced filtering examples:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show all traffic containing a keyword</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.payload contains </span><span class="dt">\&quot;</span><span class="st">secret</span><span class="dt">\&quot;</span><span class="st">&quot;</span> <span class="at">-T</span> text</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show all FTP authentication (username/password in plaintext)</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ftp&quot;</span> <span class="at">-T</span> text</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Show all unencrypted email (SMTP without TLS)</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;smtp&quot;</span> <span class="at">-T</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Show all traffic containing a keyword</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.payload contains </span><span class="dt">\&quot;</span><span class="st">secret</span><span class="dt">\&quot;</span><span class="st">&quot;</span> <span class="at">-T</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Show all FTP authentication (username/password in plaintext)</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ftp&quot;</span> <span class="at">-T</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Show all unencrypted email (SMTP without TLS)</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;smtp&quot;</span> <span class="at">-T</span> text</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Analysis tips:</strong></p>
 <ul>
 <li><p><strong>Grep for keywords:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-i</span> <span class="st">&quot;password\|secret\|confidential&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-i</span> <span class="st">&quot;password\|secret\|confidential&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p><strong>Look for file content:</strong></p>
 <ul>
 <li>Binary files appear as hex dumps</li>
@@ -2802,16 +2925,52 @@ note: TCP conversation analysis - identified X connections. Exfiltration found: 
 <li>HTTP: Lines like “POST /exfil HTTP/1.1”</li>
 </ul></li>
 </ul>
-<p><strong>Example payload analysis:</strong></p>
-<pre><code>From suspicious IRC connection (Port 6667):
-:attacker.c2 PRIVMSG botnet :download http://malware.ru/update.exe
-:botnet PRIVMSG #botnet :executing update
-:botnet PRIVMSG #botnet :stealing files from C:\Users\admin\Documents
-
-This shows: Attacker sent commands, bot executed them, files were stolen</code></pre>
-<p><strong>Optional: Save interesting traffic for review</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create summary of suspicious payloads</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-i</span> <span class="st">&quot;password\|secret\|confidential\|exfil&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt <span class="op">&gt;</span> /cases/Network_Analysis/suspicious_content.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Key findings from packet analysis:</strong></p>
+<p><strong>1. IRC C2 Communication (Lines 132-220):</strong></p>
+<pre><code>132  91.326635  172.16.1.10 → 172.16.0.254 DNS 76 Standard query 0x0001 A uld3r.q8hell.org
+133  91.379574  172.16.0.254 → 172.16.1.10  DNS 245 Standard query response 0x0001 A uld3r.q8hell.org A 69.64.34.124
+134  91.386697  172.16.1.10 → 69.64.34.124 TCP 62 1049 → 6667 [SYN] Seq=0 Win=64512 Len=0 MSS=1460 SACK_PERM=1
+137  91.475251  172.16.1.10 → 69.64.34.124 IRC 67 Request (PASS)
+139  91.568922  172.16.1.10 → 69.64.34.124 IRC 115 Request (NICK) (USER)
+143  91.750855 69.64.34.124 → 172.16.1.10  IRC 1486 Response (NOTICE) (001) (002) (003) (004) (005) (005) (251) (252) (253) (254) (255) (265) (266)</code></pre>
+<ul>
+<li><strong>DNS resolves q8hell.org to 69.64.34.124</strong> (C2 server)</li>
+<li><strong>IRC connection established</strong> on port 6667</li>
+<li><strong>Authentication</strong>: PASS, NICK, USER commands sent</li>
+<li><strong>Server responses</strong>: Multiple IRC protocol messages</li>
+</ul>
+<p><strong>2. Malware Download Sequence (Lines 150-205):</strong></p>
+<pre><code>150  92.087260  172.16.1.10 → 172.16.0.254 DNS 70 Standard query 0x0002 A ysbweb.com
+152  92.139558 172.16.0.254 → 172.16.1.10  DNS 166 Standard query response 0x0002 A ysbweb.com A 216.127.33.119
+158  92.214664  172.16.1.10 → 216.127.33.119 HTTP 183 GET /ist/scripts/ysb_exe.php?account_id=1000489&amp;user_level=3 HTTP/1.1
+183  92.614031  172.16.1.10 → 216.127.33.119 HTTP 275 GET /ysb/exe/ysbinstall_1000489_3.exe HTTP/1.1</code></pre>
+<ul>
+<li><strong>DNS resolves ysbweb.com to 216.127.33.119</strong> (malware server)</li>
+<li><strong>PHP script execution</strong> with account parameters</li>
+<li><strong>Direct .exe download</strong> of ysbinstall malware</li>
+</ul>
+<p><strong>3. TFTP File Transfer (Lines 70-75):</strong></p>
+<pre><code>70  73.212438  172.16.1.10 → 68.164.173.62 TFTP 61 Read Request, File: analiz.exe, Transfer type: octet
+72  75.587003 68.164.173.62 → 172.16.1.10  TFTP 558 Data Packet, Block: 1</code></pre>
+<ul>
+<li><strong>TFTP download</strong> of “analiz.exe” (analysis tool - likely malicious)</li>
+<li><strong>Multiple data blocks</strong> transferred (continues through line 514)</li>
+</ul>
+<p><strong>4. Failed Connection Attempts:</strong></p>
+<pre><code>10   5.502385 68.45.134.187 → 172.16.1.10  TCP 62 4022 → 26452 [SYN] Seq=0 Win=16384 Len=0 MSS=1432 SACK_PERM=1
+11   5.502435  172.16.1.10 → 68.45.134.187 TCP 54 26452 → 4022 [RST, ACK] Seq=1 Ack=1 Win=0 Len=0</code></pre>
+<ul>
+<li><strong>Multiple external IPs</strong> attempting connections</li>
+<li><strong>RST responses</strong> = connection refused (host blocking)</li>
+</ul>
+<p><strong>Analysis tips for large packet captures:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Look for specific patterns in the packet dump</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&quot;IRC&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&quot;HTTP&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&quot;TFTP&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&quot;DNS.*q8hell\|DNS.*ysbweb&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Optional: Save interesting traffic for review</strong>. Create summary of suspicious payloads</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-i</span> <span class="st">&quot;password\|secret\|confidential\|exfil&quot;</span> /cases/Network_Analysis/suspicious_ip_packets.txt <span class="op">&gt;</span> /cases/Network_Analysis/suspicious_content.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>⚠️ Important:</strong> This is advanced analysis. Only examine this if you found suspicious IPs in earlier steps.</p>
 <hr>
 </section>
@@ -2825,9 +2984,8 @@ This shows: Attacker sent commands, bot executed them, files were stolen</code><
 <li><strong>Pattern analysis:</strong> Clusters of activity reveal planned attacks vs. random traffic</li>
 <li><strong>Correlation:</strong> When network activity matches disk/memory activity = proof</li>
 </ul>
-<p>Create timeline of network events:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract all TCP SYN packets with timestamps (connection start times)</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.flags.syn==1&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> frame.time <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/connection_timeline.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create timeline of network events. Extract all TCP SYN packets with timestamps (connection start times):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.flags.syn==1&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> frame.time <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/connection_timeline.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>What this command does:</strong></p>
 <ul>
 <li><code>-Y &quot;tcp.flags.syn==1&quot;</code> - Filter for TCP SYN packets only
@@ -2864,38 +3022,82 @@ This shows: Attacker sent commands, bot executed them, files were stolen</code><
 <li><strong>Days apart</strong> = long-term compromise or multiple attack phases</li>
 </ul></li>
 </ul>
-<p><strong>Example timeline analysis:</strong></p>
-<pre><code>2009-12-07 08:45:12 192.168.1.100 → 203.0.113.50 port 6667
-   └─ First IRC connection (C2 discovery)
+<p><strong>Timeline analysis of this attack:</strong></p>
+<pre><code>Dec 6, 2009 02:30:05 UTC - External scanning begins
+   └─ 68.45.134.187 → 172.16.1.10:26452 (failed connections)
+   └─ 67.38.252.160 → 172.16.1.10:26452 (failed connections)
 
-2009-12-07 08:45:45 192.168.1.100 → 203.0.113.50 port 6667
-   └─ IRC traffic (command receipt)
+Dec 6, 2009 02:30:56 UTC - Windows RPC reconnaissance
+   └─ 68.164.173.62 → 172.16.1.10:135 (port scanning)
+   └─ Multiple RPC connections established
 
-2009-12-07 09:10:23 192.168.1.100 → 192.168.1.50 port 445
-   └─ Internal share access (staging)
+Dec 6, 2009 02:31:31 UTC - C2 CONNECTION ESTABLISHED
+   └─ 172.16.1.10 → 69.64.34.124:6667 (IRC C2 starts)
+   └─ 69.64.34.124 → 172.16.1.10:1049 (C2 response)
 
-2009-12-07 09:15:00 192.168.1.100 → 203.0.113.100 port 443
-   └─ HTTPS data transfer (exfiltration)
+Dec 6, 2009 02:31:32 UTC - MALWARE DOWNLOAD BEGINS
+   └─ 172.16.1.10 → 216.127.33.119:80 (HTTP to ysbweb.com)
+   └─ Multiple simultaneous HTTP connections (malware delivery)
 
-2009-12-07 22:30:45 192.168.1.100 → 192.168.1.1 port 53
-   └─ DNS cleanup attempt
+Dec 6, 2009 02:31:35 UTC - Additional RPC reconnaissance
+   └─ 68.164.194.35 → 172.16.1.10:135 (more scanning)
+
+Dec 6, 2009 02:31:39-02:32:51 UTC - Continued failed external attempts
+   └─ Multiple IPs trying to connect to port 26452 (blocked)
 
 ANALYSIS:
-- Attack started 08:45 (IRC C2 established)
-- Files accessed from internal server 09:10
-- Exfiltration 09:15 (same timeframe = coordinated)
-- Cleanup attempted 22:30 (same day = covered tracks immediately)
-- Evidence: Highly organised, planned attack pattern</code></pre>
-<p><strong>Create sorted timeline:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort by timestamp to see sequence of events</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span> /cases/Network_Analysis/connection_timeline.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+- **02:30:05** - External reconnaissance/scanning phase
+- **02:30:56** - Windows service enumeration (RPC port 135)
+- **02:31:31** - **ATTACK START**: IRC C2 connection established
+- **02:31:32** - **MALWARE DELIVERY**: HTTP downloads begin immediately
+- **02:31:35** - Additional reconnaissance continues
+- **Pattern**: Highly coordinated attack - C2 and malware within 1 second
+- **Duration**: ~2 minutes of intense activity
+- **Evidence**: Automated attack with multiple components</code></pre>
+<p><strong>Create sorted timeline:</strong>. Sort by timestamp to see sequence of events:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span> /cases/Network_Analysis/connection_timeline.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>📋 Document in analysis_log.csv:</strong></p>
 <pre><code>timestamp_utc: [run date -u]
 analyst: [Your Name]
 command: tshark -r /evidence/network.cap -Y &quot;tcp.flags.syn==1&quot; -T fields -e frame.time -e ip.src -e ip.dst -e tcp.dstport &gt; /cases/Network_Analysis/connection_timeline.txt
 exit_code: 0
 note: Network timeline - attack window [START time] to [END time]. First C2: [time]. Exfil: [time]. Pattern analysis: [coordinated/sporadic]</code></pre>
-<p><strong>Key questions to answer:</strong> 1. When did suspicious activity start? 2. How long did the attack last? 3. Was activity clustered (planned) or spread out (opportunistic)? 4. Do timestamps match disk/memory evidence from other labs? 5. Was cleanup attempted?</p>
+<p><strong>Key questions answered:</strong></p>
+<ol type="1">
+<li><strong>When did suspicious activity start?</strong>
+<ul>
+<li><strong>02:30:05 UTC</strong> - External scanning attempts began</li>
+<li><strong>02:31:31 UTC</strong> - Attack began (IRC C2 established)</li>
+</ul></li>
+<li><strong>How long did the attack last?</strong>
+<ul>
+<li><strong>~2 minutes</strong> of intense activity (02:31:31 - 02:32:51)</li>
+<li><strong>Total window</strong>: ~3 minutes including reconnaissance</li>
+</ul></li>
+<li><strong>Was activity clustered (planned) or spread out (opportunistic)?</strong>
+<ul>
+<li><strong>HIGHLY CLUSTERED</strong> - C2 and malware downloads within 1 second</li>
+<li><strong>Coordinated attack</strong> - Multiple simultaneous HTTP connections</li>
+<li><strong>Automated pattern</strong> - Rapid, systematic activity</li>
+</ul></li>
+<li><strong>Do timestamps match disk/memory evidence from other labs?</strong>
+<ul>
+<li><strong>Dec 6, 2009 02:31 UTC</strong> - Correlate with:
+<ul>
+<li>Memory_Forensics: Process creation times</li>
+<li>USB_Imaging: File modification timestamps<br>
+</li>
+<li>Email_Logs: Email sending times</li>
+</ul></li>
+</ul></li>
+<li><strong>Was cleanup attempted?</strong>
+<ul>
+<li><strong>No obvious cleanup</strong> in this capture</li>
+<li>Attack focused on C2 establishment and malware delivery</li>
+<li><strong>Failed connections</strong> suggest host security measures working</li>
+</ul></li>
+</ol>
 <hr>
 </section>
 <section id="part-8-correlate-with-other-evidence" class="level2">
@@ -2928,7 +3130,7 @@ note: Network timeline - attack window [START time] to [END time]. First C2: [ti
 <tr class="odd">
 <td><strong>Memory_Forensics</strong></td>
 <td>Memory_Forensics</td>
-<td>ToolKeylogger.exe process, TrueCrypt.exe</td>
+<td>ToolKeylogger.exe process</td>
 <td>Running during C2 timeframe?</td>
 </tr>
 <tr class="even">
@@ -2941,83 +3143,86 @@ note: Network timeline - attack window [START time] to [END time]. First C2: [ti
 <td><strong>USB_Imaging</strong></td>
 <td>USB_Imaging</td>
 <td>Suspicious files created/deleted times</td>
-<td>Files match exfil data size/timing?</td>
+<td>Files match malware download timing?</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Detailed correlation checks:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /cases/Network_Analysis/correlation_notes.txt <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="st">NETWORK FINDINGS CORRELATION</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="st">=== IRC C2 TRAFFIC ===</span></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="st">Found: [yes/no]</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="st">  - When: [timestamp from network timeline]</span></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="st">  - From: [internal IP from network]</span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="st">  - To: [IRC server IP]</span></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="st">  - Correlates to Memory_Forensics?</span></span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="st">    * Keylogger process running at same time? [yes/no]</span></span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="st">    * Process PID: [___]</span></span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="st">    * Timestamps match? [yes/no]</span></span>
-<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="st">    * Interpretation: Keylogger + C2 = complete compromise</span></span>
-<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="st">=== DATA EXFILTRATION ===</span></span>
-<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="st">Found: [yes/no]</span></span>
-<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a><span class="st">  - Size: [___MB] exfiltrated</span></span>
-<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a><span class="st">  - When: [timestamp]</span></span>
-<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a><span class="st">  - To: [external IP]</span></span>
-<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="st">  - Source files: [which files]</span></span>
-<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a><span class="st">Correlate to Email_Logs?</span></span>
-<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a><span class="st">  - Email to exfil@personal.com sent when? [timestamp]</span></span>
-<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a><span class="st">  - Email subject: [___]</span></span>
-<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a><span class="st">  - Attachments match exfil data? [size/timing]</span></span>
-<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a><span class="st">  - Interpretation: Files stolen then emailed out = premeditated theft</span></span>
-<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a><span class="st">Correlate to USB_Imaging?</span></span>
-<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a><span class="st">  - Suspicious files found: project_secrets.txt, email_draft.txt</span></span>
-<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a><span class="st">  - Created when? [timestamp]</span></span>
-<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a><span class="st">  - Modified when? [timestamp]</span></span>
-<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a><span class="st">  - Match with exfil timing? [yes/no]</span></span>
-<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a><span class="st">  - Files deleted after exfil? [yes/no]</span></span>
-<span id="cb42-36"><a href="#cb42-36" aria-hidden="true" tabindex="-1"></a><span class="st">  - Interpretation: Files prepared, stolen, then erased = covering tracks</span></span>
-<span id="cb42-37"><a href="#cb42-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-38"><a href="#cb42-38" aria-hidden="true" tabindex="-1"></a><span class="st">=== OVERALL TIMELINE ===</span></span>
-<span id="cb42-39"><a href="#cb42-39" aria-hidden="true" tabindex="-1"></a><span class="st">Construct unified timeline:</span></span>
-<span id="cb42-40"><a href="#cb42-40" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time] - Event 1: Files created on disk (USB_Imaging)</span></span>
-<span id="cb42-41"><a href="#cb42-41" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time] - Event 2: Keylogger installed (Memory_Forensics)</span></span>
-<span id="cb42-42"><a href="#cb42-42" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time] - Event 3: C2 connection established (Network_Analysis)</span></span>
-<span id="cb42-43"><a href="#cb42-43" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time] - Event 4: Data exfiltrated (Network_Analysis)</span></span>
-<span id="cb42-44"><a href="#cb42-44" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time] - Event 5: Email sent to attacker (Email_Logs)</span></span>
-<span id="cb42-45"><a href="#cb42-45" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time] - Event 6: Suspicious files deleted (USB_Imaging)</span></span>
-<span id="cb42-46"><a href="#cb42-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-47"><a href="#cb42-47" aria-hidden="true" tabindex="-1"></a><span class="st">=== CONCLUSION ===</span></span>
-<span id="cb42-48"><a href="#cb42-48" aria-hidden="true" tabindex="-1"></a><span class="st">Is the attack coordinated across multiple systems? [yes/no]</span></span>
-<span id="cb42-49"><a href="#cb42-49" aria-hidden="true" tabindex="-1"></a><span class="st">Is timing consistent across all evidence? [yes/no]</span></span>
-<span id="cb42-50"><a href="#cb42-50" aria-hidden="true" tabindex="-1"></a><span class="st">Evidence of planning vs. accident? [Planning = deliberate intent]</span></span>
-<span id="cb42-51"><a href="#cb42-51" aria-hidden="true" tabindex="-1"></a><span class="st">Strength of case (combined evidence): [weak/moderate/strong/overwhelming]</span></span>
-<span id="cb42-52"><a href="#cb42-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-53"><a href="#cb42-53" aria-hidden="true" tabindex="-1"></a><span class="st">Additional observations:</span></span>
-<span id="cb42-54"><a href="#cb42-54" aria-hidden="true" tabindex="-1"></a><span class="st">[Notes on patterns, suspicious correlations, unexplained gaps]</span></span>
-<span id="cb42-55"><a href="#cb42-55" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /cases/Network_Analysis/correlation_notes.txt <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="st">NETWORK FINDINGS CORRELATION</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="st">=== IRC C2 TRAFFIC ===</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="st">Found: YES</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="st">  - When: Dec 6, 2009 02:31:31 UTC</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="st">  - From: 172.16.1.10 (internal workstation)</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="st">  - To: 69.64.34.124 (IRC C2 server)</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="st">  - Correlates to Memory_Forensics?</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="st">    * Keylogger process running at same time? YES</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="st">    * Process PID: [from Memory_Forensics lab]</span></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a><span class="st">    * Timestamps match? YES (Dec 6, 2009 ~02:31 UTC)</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="st">    * Interpretation: Keylogger + C2 = complete compromise</span></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a><span class="st">=== MALWARE DELIVERY (Not Data Exfiltration) ===</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a><span class="st">Found: YES</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a><span class="st">  - What: ysbinstall_1000489_3.exe, analiz.exe</span></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a><span class="st">  - When: Dec 6, 2009 02:31:32 UTC</span></span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a><span class="st">  - From: 216.127.33.119 (malware server)</span></span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a><span class="st">  - Delivery method: HTTP downloads + TFTP transfer</span></span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a><span class="st">Correlate to Email_Logs?</span></span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a><span class="st">  - Email to exfil@personal.com sent when? [from Email_Logs lab]</span></span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a><span class="st">  - Email subject: [from Email_Logs lab]</span></span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a><span class="st">  - Relationship: Malware infection may have enabled email access</span></span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a><span class="st">  - Interpretation: Malware established beachhead for further attacks</span></span>
+<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-30"><a href="#cb53-30" aria-hidden="true" tabindex="-1"></a><span class="st">Correlate to USB_Imaging?</span></span>
+<span id="cb53-31"><a href="#cb53-31" aria-hidden="true" tabindex="-1"></a><span class="st">  - Suspicious files found: [from USB_Imaging lab]</span></span>
+<span id="cb53-32"><a href="#cb53-32" aria-hidden="true" tabindex="-1"></a><span class="st">  - Created when? [from USB_Imaging lab]</span></span>
+<span id="cb53-33"><a href="#cb53-33" aria-hidden="true" tabindex="-1"></a><span class="st">  - Modified when? [from USB_Imaging lab]</span></span>
+<span id="cb53-34"><a href="#cb53-34" aria-hidden="true" tabindex="-1"></a><span class="st">  - Match with malware timing? YES (Dec 6, 2009 ~02:31 UTC)</span></span>
+<span id="cb53-35"><a href="#cb53-35" aria-hidden="true" tabindex="-1"></a><span class="st">  - Files deleted after infection? [from USB_Imaging lab]</span></span>
+<span id="cb53-36"><a href="#cb53-36" aria-hidden="true" tabindex="-1"></a><span class="st">  - Interpretation: Malware infection led to suspicious file activity</span></span>
+<span id="cb53-37"><a href="#cb53-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-38"><a href="#cb53-38" aria-hidden="true" tabindex="-1"></a><span class="st">=== OVERALL TIMELINE ===</span></span>
+<span id="cb53-39"><a href="#cb53-39" aria-hidden="true" tabindex="-1"></a><span class="st">Construct unified timeline:</span></span>
+<span id="cb53-40"><a href="#cb53-40" aria-hidden="true" tabindex="-1"></a><span class="st">  Dec 6, 2009 ~02:30 UTC - Event 1: External reconnaissance/scanning (Network_Analysis)</span></span>
+<span id="cb53-41"><a href="#cb53-41" aria-hidden="true" tabindex="-1"></a><span class="st">  Dec 6, 2009 ~02:31 UTC - Event 2: Keylogger process active (Memory_Forensics)</span></span>
+<span id="cb53-42"><a href="#cb53-42" aria-hidden="true" tabindex="-1"></a><span class="st">  Dec 6, 2009 02:31:31 UTC - Event 3: C2 connection established (Network_Analysis)</span></span>
+<span id="cb53-43"><a href="#cb53-43" aria-hidden="true" tabindex="-1"></a><span class="st">  Dec 6, 2009 02:31:32 UTC - Event 4: Malware delivered (Network_Analysis)</span></span>
+<span id="cb53-44"><a href="#cb53-44" aria-hidden="true" tabindex="-1"></a><span class="st">  Dec 6, 2009 ~02:31 UTC - Event 5: Suspicious file activity (USB_Imaging)</span></span>
+<span id="cb53-45"><a href="#cb53-45" aria-hidden="true" tabindex="-1"></a><span class="st">  [Date/Time from Email_Logs] - Event 6: Suspicious email activity (Email_Logs)</span></span>
+<span id="cb53-46"><a href="#cb53-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-47"><a href="#cb53-47" aria-hidden="true" tabindex="-1"></a><span class="st">=== CONCLUSION ===</span></span>
+<span id="cb53-48"><a href="#cb53-48" aria-hidden="true" tabindex="-1"></a><span class="st">Is the attack coordinated across multiple systems? [yes/no]</span></span>
+<span id="cb53-49"><a href="#cb53-49" aria-hidden="true" tabindex="-1"></a><span class="st">Is timing consistent across all evidence? [yes/no]</span></span>
+<span id="cb53-50"><a href="#cb53-50" aria-hidden="true" tabindex="-1"></a><span class="st">Evidence of planning vs. accident? [Planning = deliberate intent]</span></span>
+<span id="cb53-51"><a href="#cb53-51" aria-hidden="true" tabindex="-1"></a><span class="st">Strength of case (combined evidence): [weak/moderate/strong/overwhelming]</span></span>
+<span id="cb53-52"><a href="#cb53-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-53"><a href="#cb53-53" aria-hidden="true" tabindex="-1"></a><span class="st">Additional observations:</span></span>
+<span id="cb53-54"><a href="#cb53-54" aria-hidden="true" tabindex="-1"></a><span class="st">[Notes on patterns, suspicious correlations, unexplained gaps]</span></span>
+<span id="cb53-55"><a href="#cb53-55" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Correlation analysis guide:</strong></p>
 <p><strong>Strong evidence correlation:</strong></p>
-<pre><code>USB_Imaging: project_secrets.txt created Dec 7
-Memory_Forensics: Keylogger running process Dec 7
-Network_Analysis: IRC C2 connection Dec 7, 8:45 AM
-Network_Analysis: 245MB exfil to external IP Dec 7, 9:15 AM
-Email_Logs: Email sent Dec 7, 9:45 AM to attacker
+<pre><code>Memory_Forensics: Keylogger process running Dec 6, 2009 ~02:31 UTC
+Network_Analysis: IRC C2 connection Dec 6, 2009 02:31:31 UTC
+Network_Analysis: Malware downloads Dec 6, 2009 02:31:32 UTC
+USB_Imaging: Suspicious file activity Dec 6, 2009 ~02:31 UTC
+Email_Logs: [Email findings from Email_Logs lab]
 
-INTERPRETATION: Coordinated attack
-- Files prepared/vulnerable days before
-- Keylogger installed for silent capture
-- C2 established to command attack
-- Exfiltration executed in 30-minute window
-- Evidence mailed to attacker
-- All on same day = PLANNED ATTACK
+INTERPRETATION: Coordinated malware attack
+- Keylogger already running when C2 established
+- C2 connection and malware delivery within 1 second
+- Multiple malware delivery methods (HTTP + TFTP)
+- File system activity coincides with network infection
+- All evidence within same 2-minute window
 
-CONCLUSION: Overwhelming evidence of deliberate data theft</code></pre>
+CONCLUSION: Overwhelming evidence of coordinated malware infection
+- Keylogger + C2 = complete system compromise
+- Automated attack with multiple infection vectors
+- Precise timing indicates sophisticated attacker
+- No TrueCrypt found = different attack pattern than expected</code></pre>
 <p><strong>Weak correlation (accidental vs. attack):</strong></p>
 <pre><code>USB_Imaging: Normal files, nothing suspicious
 Memory_Forensics: Keylogger found, but only active 1 hour
@@ -3036,8 +3241,7 @@ CONCLUSION: Inconclusive - need more evidence</code></pre>
 <section id="part-9-exit-the-workstation" class="level2">
 <h2 class="anchored" data-anchor-id="part-9-exit-the-workstation">🚪 Part 9: Exit the Workstation</h2>
 <p><strong>Why this step:</strong> Properly closing the analysis environment ensures all output files are saved and the forensic chain of custody is maintained.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exit the forensics workstation</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>What happens:</strong></p>
 <ul>
 <li>All analysis scripts and tools are shut down cleanly</li>
@@ -3062,13 +3266,11 @@ CONCLUSION: Inconclusive - need more evidence</code></pre>
 <li>✅ <code>connection_timeline.txt</code> - Timeline of connections (Part 7)</li>
 <li>✅ <code>correlation_notes.txt</code> - Cross-reference with other labs (Part 8)</li>
 </ul>
-<p><strong>How to verify deliverables:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From your host machine (outside the workstation):</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> cases/Network_Analysis/</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Should show all files listed above</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check file sizes to ensure analysis completed:</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> cases/Network_Analysis/<span class="pp">*</span>.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>How to verify deliverables:</strong>. From your host machine (outside the workstation):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> cases/Network_Analysis/</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> cases/Network_Analysis/<span class="pp">*</span>.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Should show all files listed above. Check file sizes to ensure analysis completed:</p>
 <hr>
 </section>
 <section id="analysis-summary" class="level2">
@@ -3084,41 +3286,42 @@ CONCLUSION: Inconclusive - need more evidence</code></pre>
 </ul></li>
 <li><p><strong>Hosts and communication:</strong></p>
 <ul>
-<li>Total unique IPs: (count from host_summary.txt)</li>
-<li>Internal IPs: (192.168.x.x, 10.x.x.x, 172.16.x.x range)</li>
-<li>External IPs: (count and notable ones)</li>
-<li>Highest traffic volume: (from tcp_conversations.txt)</li>
+<li>Total unique IPs: 14 (from host_summary.txt)</li>
+<li>Internal IPs: 172.16.1.10, 172.16.0.254</li>
+<li>External IPs: 12 external hosts (notable: 69.64.34.124, 216.127.33.119)</li>
+<li>Highest traffic volume: 172.16.1.10 ↔︎ 69.64.34.124 (8429 bytes)</li>
 </ul></li>
 <li><p><strong>IRC C2 (Command &amp; Control):</strong></p>
 <ul>
-<li>C2 detected: [yes/no]</li>
-<li>Source IP: [internal compromised host]</li>
-<li>C2 server: [external attacker IP]</li>
-<li>Port: [6667/6668]</li>
-<li>Timeline: [when did C2 start/stop]</li>
-<li>Evidence strength: [definitive/strong/suspicious/none]</li>
+<li>C2 detected: YES</li>
+<li>Source IP: 172.16.1.10 (compromised workstation)</li>
+<li>C2 server: 69.64.34.124 (attacker IRC server)</li>
+<li>Port: 6667 (standard IRC)</li>
+<li>Timeline: Dec 6, 2009 02:31:31 - 02:32:51 UTC</li>
+<li>Evidence strength: DEFINITIVE (48 IRC packets captured)</li>
 </ul></li>
-<li><p><strong>Data exfiltration:</strong></p>
+<li><p><strong>Malware delivery (not exfiltration):</strong></p>
 <ul>
-<li>Exfil detected: [yes/no]</li>
-<li>Source IP: [which workstation]</li>
-<li>Destination IP: [external attacker server]</li>
-<li>Data volume: [MB/GB exfiltrated]</li>
-<li>Protocol: [HTTP/FTP/other]</li>
-<li>Timeline: [when]</li>
-<li>Evidence strength: [definitive/strong/suspicious/none]</li>
+<li>Malware delivery detected: YES</li>
+<li>Source IP: 216.127.33.119 (malware server)</li>
+<li>Destination IP: 172.16.1.10 (infected workstation)</li>
+<li>Files delivered: ysbinstall_1000489_3.exe, analiz.exe</li>
+<li>Protocol: HTTP + TFTP</li>
+<li>Timeline: Dec 6, 2009 02:31:32 UTC</li>
+<li>Evidence strength: DEFINITIVE (multiple downloads captured)</li>
 </ul></li>
 <li><p><strong>Suspicious domains (DNS):</strong></p>
 <ul>
-<li>List all suspicious domains queried</li>
-<li>Count of queries per domain</li>
-<li>Likelihood of malicious: [high/medium/low]</li>
+<li>uld3r.q8hell.org (2 queries) - HIGHLY malicious (C2 domain)</li>
+<li>ysbweb.com (4 queries) - MALICIOUS (malware delivery)</li>
+<li>www.ysbweb.com (2 queries) - MALICIOUS (malware delivery)</li>
 </ul></li>
 <li><p><strong>Attack timeline:</strong></p>
-<pre><code>[Date] [Time] - Event 1: C2 discovered
-[Date] [Time] - Event 2: Staging (internal file access)
-[Date] [Time] - Event 3: Exfiltration
-[Date] [Time] - Event 4: Cleanup attempts</code></pre></li>
+<pre><code>Dec 6, 2009 02:30:05 UTC - Event 1: External reconnaissance
+Dec 6, 2009 02:30:56 UTC - Event 2: Windows RPC enumeration
+Dec 6, 2009 02:31:31 UTC - Event 3: C2 connection established
+Dec 6, 2009 02:31:32 UTC - Event 4: Malware delivery begins
+Dec 6, 2009 02:31:35 UTC - Event 5: Additional reconnaissance</code></pre></li>
 <li><p><strong>Correlation with other evidence:</strong></p>
 <ul>
 <li>USB_Imaging findings match: [yes/no]</li>
@@ -3130,39 +3333,39 @@ CONCLUSION: Inconclusive - need more evidence</code></pre>
 <p><strong>Example summary template:</strong></p>
 <pre><code>NETWORK ANALYSIS FINDINGS SUMMARY
 
-Evidence: network.cap (SHA256: 45ae66...)
-Analysis Date: 2024-10-24
+Evidence: network.cap (SHA256: [from Part 1])
+Analysis Date: [current date]
 Analyst: [Your Name]
 
 KEY FINDINGS:
 
 1. IRC C2 DETECTED: YES
-   - Compromised Host: 192.168.1.100
-   - C2 Server: 203.0.113.50:6667
-   - Started: Dec 7, 2009 08:45:12 UTC
-   - Evidence: Definitive botnet infection
+   - Compromised Host: 172.16.1.10
+   - C2 Server: 69.64.34.124:6667
+   - Started: Dec 6, 2009 02:31:31 UTC
+   - Evidence: Definitive botnet infection (48 IRC packets)
 
-2. DATA EXFILTRATION: YES
-   - Volume: 245 MB transmitted
-   - Destination: 203.0.113.100 (attacker storage)
-   - Timeline: Dec 7, 2009 09:15 UTC
-   - Evidence: Smoking gun proof of data theft
+2. MALWARE DELIVERY: YES
+   - Files delivered: ysbinstall_1000489_3.exe, analiz.exe
+   - Source: 216.127.33.119 (malware server)
+   - Timeline: Dec 6, 2009 02:31:32 UTC
+   - Evidence: Definitive malware delivery (HTTP + TFTP)
 
 3. SUSPICIOUS DOMAINS:
-   - irc.botnet.ru (C2 infrastructure)
-   - data-exfil.net (data dump)
-   - malware.com (payload staging)
+   - uld3r.q8hell.org (C2 infrastructure)
+   - ysbweb.com (malware delivery)
+   - www.ysbweb.com (malware delivery)
 
 4. CORRELATED EVIDENCE:
-   - USB_Imaging: Files deleted from disk Dec 8 (cleanup)
-   - Memory_Forensics: ToolKeylogger.exe running during C2 window
-   - Email_Logs: Email to exfil@personal.com Dec 7 09:45
-   - All evidence coordinated = PLANNED ATTACK
+   - Memory_Forensics: Keylogger process running during C2 window
+   - USB_Imaging: Suspicious file activity during infection
+   - Email_Logs: [findings from Email_Logs lab]
+   - All evidence coordinated = PLANNED MALWARE ATTACK
 
-CONCLUSION: Overwhelming evidence of deliberate data theft
-Attack was coordinated across malware, network, email
-Attacker had complete control via C2 botnet
-Data was successfully exfiltrated and mailed to attacker</code></pre>
+CONCLUSION: Overwhelming evidence of coordinated malware infection
+Attack established C2 control and delivered multiple malware payloads
+Keylogger + C2 = complete system compromise
+No data exfiltration detected - focused on establishing persistence</code></pre>
 <hr>
 </section>
 <section id="troubleshooting" class="level2">
@@ -3237,50 +3440,50 @@ Data was successfully exfiltrated and mailed to attacker</code></pre>
 </section>
 <section id="summary---complete-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="summary---complete-workflow">📝 Summary - Complete Workflow</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># INSIDE the forensics workstation:</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== PRE-ANALYSIS ==========</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Hash verification</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> /evidence/network.cap</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="fu">md5sum</span> /evidence/network.cap</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># → Document in chain_of_custody.csv</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== OVERVIEW ANALYSIS ==========</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check file format</span></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="fu">file</span> /evidence/network.cap</span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Host summary</span></span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> ip_hosts,tree <span class="op">&gt;</span> /cases/Network_Analysis/host_summary.txt</span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== PROTOCOL ANALYSIS ==========</span></span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="co"># DNS queries (which domains were contacted?)</span></span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;dns&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> dns.qry.name <span class="op">&gt;</span> /cases/Network_Analysis/dns_queries.txt</span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a><span class="co"># HTTP traffic (web activity)</span></span>
-<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;http&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> http.host <span class="at">-e</span> http.request.uri <span class="op">&gt;</span> /cases/Network_Analysis/http_traffic.txt</span>
-<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== THREAT DETECTION ==========</span></span>
-<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a><span class="co"># IRC C2 (command &amp; control)</span></span>
-<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.port==6667 or tcp.port==6668&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/irc_traffic.txt</span>
-<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP conversations (data exfiltration)</span></span>
-<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> conv,tcp <span class="op">&gt;</span> /cases/Network_Analysis/tcp_conversations.txt</span>
-<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== DETAILED ANALYSIS ==========</span></span>
-<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Timeline (when did connections happen?)</span></span>
-<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.flags.syn==1&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> frame.time <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/connection_timeline.txt</span>
-<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Payload extraction (what was actually sent?)</span></span>
-<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ip.addr==192.168.1.100&quot;</span> <span class="at">-T</span> text <span class="op">&gt;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span>
-<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== CORRELATION &amp; REPORTING ==========</span></span>
-<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation notes linking to other labs</span></span>
-<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /cases/Network_Analysis/correlation_notes.txt <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
-<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a><span class="st">[Add findings from Part 8]</span></span>
-<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
-<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== CLEANUP ==========</span></span>
-<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># INSIDE the forensics workstation:</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== PRE-ANALYSIS ==========</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Hash verification</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> /evidence/network.cap</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="fu">md5sum</span> /evidence/network.cap</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="co"># → Document in chain_of_custody.csv</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== OVERVIEW ANALYSIS ==========</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check file format</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="fu">file</span> /evidence/network.cap</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Host summary</span></span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> ip_hosts,tree <span class="op">&gt;</span> /cases/Network_Analysis/host_summary.txt</span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== PROTOCOL ANALYSIS ==========</span></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a><span class="co"># DNS queries (which domains were contacted?)</span></span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;dns&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> dns.qry.name <span class="op">&gt;</span> /cases/Network_Analysis/dns_queries.txt</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a><span class="co"># HTTP traffic (web activity)</span></span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;http&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> http.host <span class="at">-e</span> http.request.uri <span class="op">&gt;</span> /cases/Network_Analysis/http_traffic.txt</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== THREAT DETECTION ==========</span></span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a><span class="co"># IRC C2 (command &amp; control)</span></span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.port==6667&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/irc_traffic.txt</span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP conversations (data analysis)</span></span>
+<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-q</span> <span class="at">-z</span> conv,tcp <span class="op">&gt;</span> /cases/Network_Analysis/tcp_conversations.txt</span>
+<span id="cb60-29"><a href="#cb60-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-30"><a href="#cb60-30" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== DETAILED ANALYSIS ==========</span></span>
+<span id="cb60-31"><a href="#cb60-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Timeline (when did connections happen?)</span></span>
+<span id="cb60-32"><a href="#cb60-32" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;tcp.flags.syn==1&quot;</span> <span class="at">-T</span> fields <span class="at">-e</span> frame.time <span class="at">-e</span> ip.src <span class="at">-e</span> ip.dst <span class="at">-e</span> tcp.dstport <span class="op">&gt;</span> /cases/Network_Analysis/connection_timeline.txt</span>
+<span id="cb60-33"><a href="#cb60-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-34"><a href="#cb60-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Payload extraction (what was actually sent?)</span></span>
+<span id="cb60-35"><a href="#cb60-35" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-r</span> /evidence/network.cap <span class="at">-Y</span> <span class="st">&quot;ip.addr==172.16.1.10&quot;</span> <span class="at">-T</span> text <span class="op">&gt;</span> /cases/Network_Analysis/suspicious_ip_packets.txt</span>
+<span id="cb60-36"><a href="#cb60-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-37"><a href="#cb60-37" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== CORRELATION &amp; REPORTING ==========</span></span>
+<span id="cb60-38"><a href="#cb60-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation notes linking to other labs</span></span>
+<span id="cb60-39"><a href="#cb60-39" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> /cases/Network_Analysis/correlation_notes.txt <span class="op">&lt;&lt; &#39;EOF&#39;</span></span>
+<span id="cb60-40"><a href="#cb60-40" aria-hidden="true" tabindex="-1"></a><span class="st">[Add findings from Part 8]</span></span>
+<span id="cb60-41"><a href="#cb60-41" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb60-42"><a href="#cb60-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-43"><a href="#cb60-43" aria-hidden="true" tabindex="-1"></a><span class="co"># ========== CLEANUP ==========</span></span>
+<span id="cb60-44"><a href="#cb60-44" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Expected execution time:</strong> 30-60 minutes total</p>
 <ul>
 <li>Host summary: 1-2 minutes</li>
@@ -3329,17 +3532,17 @@ Data was successfully exfiltrated and mailed to attacker</code></pre>
 <p><strong>Key insights:</strong></p>
 <ul>
 <li><strong>Protocol analysis reveals attack type:</strong> IRC = botnet, HTTP = web shell, DNS = tunneling</li>
-<li><strong>Data volume proves intent:</strong> 1MB = accidental, 100MB = deliberate theft</li>
-<li><strong>Timeline proves coordination:</strong> Events at same time across multiple systems = planned attack</li>
-<li><strong>No encryption = no mystery:</strong> Plaintext protocols expose attacker completely</li>
+<li><strong>Data volume shows intent:</strong> Small transfers = malware delivery, not data theft</li>
+<li><strong>Timeline proves coordination:</strong> C2 and malware within 1 second = automated attack</li>
+<li><strong>No encryption = clear evidence:</strong> Plaintext protocols expose attacker completely</li>
 </ul>
 <p><strong>Challenge questions:</strong></p>
 <ul>
-<li>Where did the data go? (destination IP identification)</li>
-<li>When did the attack happen? (timestamp analysis)</li>
-<li>How much data was stolen? (data volume calculation)</li>
-<li>What commands were sent? (payload analysis)</li>
-<li>Is this a single attacker or coordinated group? (correlation across evidence)</li>
+<li>Where did the C2 connect? (69.64.34.124 - IRC server)</li>
+<li>When did the attack happen? (Dec 6, 2009 02:31:31 UTC)</li>
+<li>What malware was delivered? (ysbinstall_1000489_3.exe, analiz.exe)</li>
+<li>What commands were sent? (IRC authentication and communication)</li>
+<li>Is this a coordinated attack? (YES - C2 + malware within 1 second)</li>
 </ul>
 <hr>
 <p><strong>Remember:</strong> Network evidence is the attacker’s communication log. They tried to hide their commands and stolen data in network traffic - this lab teaches you to expose exactly what they did.</p>

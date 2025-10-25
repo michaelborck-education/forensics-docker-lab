@@ -2342,11 +2342,17 @@ vertical-align: -.125em;
 </section>
 <section id="connecting-to-the-dfir-forensic-workstation" class="level2">
 <h2 class="anchored" data-anchor-id="connecting-to-the-dfir-forensic-workstation">🚀 Connecting to the DFIR Forensic Workstation</h2>
+<p>The <code>scripts/forensics-workstation</code> script provides an immersive forensic environment that hides Docker complexity and simulates logging into a professional forensic workstation.</p>
 <p><strong>On macOS/Linux:</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/forensics-workstation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>On Windows (PowerShell):</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">.</span>\scripts\forensics-workstation<span class="op">.</span><span class="fu">bat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You’re now inside the forensic environment. All commands below run WITHOUT Docker prefixes.</p>
+<p>You’ll see:</p>
+<ol type="1">
+<li>A welcome banner asking for your analyst name</li>
+<li>A lab summary showing all available cases</li>
+<li>A connection message, then you’ll see the forensic workstation prompt</li>
+</ol>
 <hr>
 </section>
 <section id="part-1-chain-of-custody---hash-the-memory-file" class="level2">

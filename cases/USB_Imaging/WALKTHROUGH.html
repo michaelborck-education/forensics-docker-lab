@@ -2435,8 +2435,8 @@ note: Chain of custody - calculated SHA256 hash of usb.E01: 45ae66a11ff995a1a6e7
 <hr>
 </section>
 </section>
-<section id="part-3-analyze-file-system-structure" class="level2">
-<h2 class="anchored" data-anchor-id="part-3-analyze-file-system-structure">🗂️ Part 3: Analyse File System Structure</h2>
+<section id="part-3-analyse-file-system-structure" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-analyse-file-system-structure">🗂️ Part 3: Analyse File System Structure</h2>
 <p><strong>Why this step matters:</strong> Before we can list files, we need to understand the filesystem structure. Is it FAT32? NTFS? What’s the cluster size? These details affect how we recover deleted files and interpret timestamps. We also check if the drive has multiple partitions - some USB drives have hidden recovery partitions.</p>
 <p><strong>How we know to do this:</strong> Forensic investigators follow a systematic approach: understand the storage layout → find files → recover deleted data. Skipping filesystem analysis means missing important details about how data was stored and deleted.</p>
 <section id="step-1-get-file-system-information" class="level3">
@@ -2931,8 +2931,8 @@ note: EVIDENCE ANALYSIS - Extracted readable strings from malware.exe - found C2
 </ol>
 <hr>
 </section>
-<section id="step-2-analyze-extracted-content" class="level3">
-<h3 class="anchored" data-anchor-id="step-2-analyze-extracted-content">Step 2: Analyse Extracted Content</h3>
+<section id="step-2-analyse-extracted-content" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-analyse-extracted-content">Step 2: Analyse Extracted Content</h3>
 <p><strong>Key Questions to Answer:</strong></p>
 <ol type="1">
 <li><strong>project_secrets.txt:</strong> What sensitive information was deleted?</li>
@@ -3046,8 +3046,8 @@ command: yara -r /rules/ /cases/USB_Imaging/recovered_files &gt; /cases/USB_Imag
 exit_code: 0
 note: MALWARE DETECTION - Scanned recovered deleted files - Found [X] matches in [files]</code></pre>
 </section>
-<section id="step-3-analyze-yara-matches" class="level3">
-<h3 class="anchored" data-anchor-id="step-3-analyze-yara-matches">Step 3: Analyse YARA Matches</h3>
+<section id="step-3-analyse-yara-matches" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-analyse-yara-matches">Step 3: Analyse YARA Matches</h3>
 <p><strong>If YARA found matches:</strong></p>
 <ol type="1">
 <li><p><strong>Identify which files matched:</strong></p>

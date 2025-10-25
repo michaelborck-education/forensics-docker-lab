@@ -17,7 +17,7 @@ format:
 
 ## 🎯 Mission
 
-Synthesize findings from all 5 labs (USB_Imaging, Memory_Forensics, Autopsy_GUI, Email_Logs, Network_Analysis) into a unified, professional investigation report. This is where individual artifacts become a coherent narrative proving guilt or innocence.
+Synthesize findings from all 4 labs (USB_Imaging, Memory_Forensics, Email_Logs, Network_Analysis) into a unified, professional investigation report. This is where individual artifacts become a coherent narrative proving guilt or innocence.
 
 ---
 
@@ -73,7 +73,6 @@ Open these folders and review all findings and evidence:
 ```bash
 cases/USB_Imaging/        # Files, deleted items, lab_report.md, chain_of_custody.csv, analysis_log.csv
 cases/Memory_Forensics/   # Processes, network connections, lab_report.md, chain_of_custody.csv, analysis_log.csv
-cases/Autopsy_GUI/        # Timeline, artifacts, lab_report.md, chain_of_custody.csv, analysis_log.csv
 cases/Email_Logs/         # Communications, lab_report.md, chain_of_custody.csv, analysis_log.csv
 cases/Network_Analysis/   # Traffic, exfiltration, lab_report.md, chain_of_custody.csv, analysis_log.csv
 ```
@@ -94,14 +93,13 @@ Combine hashes from all 5 labs into a master file.
 
 - cases/USB_Imaging/chain_of_custody.csv
 - cases/Memory_Forensics/chain_of_custody.csv
-- cases/Autopsy_GUI/chain_of_custody.csv
 - cases/Email_Logs/chain_of_custody.csv
 - cases/Network_Analysis/chain_of_custody.csv
 
 **In cases/Final_Report/master_chain_of_custody.csv:**
 Add one row for EACH evidence item with:
 
-- Evidence_ID: USB-001, MEMORY-001, EMAIL-001, etc.
+- Evidence_ID: USB-001, MEMORY-001, EMAIL-001, NETWORK-001
 - Date_Received: (when seized)
 - MD5_Hash: (from each lab)
 - SHA256_Hash: (from each lab)
@@ -123,12 +121,11 @@ Combine all commands run across all 5 labs.
 
 - cases/USB_Imaging/analysis_log.csv
 - cases/Memory_Forensics/analysis_log.csv
-- cases/Autopsy_GUI/analysis_log.csv
 - cases/Email_Logs/analysis_log.csv
 - cases/Network_Analysis/analysis_log.csv
 
 **In cases/Final_Report/master_analysis_log.csv:**
-Copy all rows from each lab's analysis_log.csv in chronological order.
+Copy all rows from each of the 4 labs' analysis_log.csv files in chronological order.
 
 **Sort by timestamp_utc** to create a complete timeline of analysis activities.
 
@@ -144,56 +141,58 @@ Create a comprehensive timeline showing WHEN attacks happened.
 CLOUDCORE INCIDENT TIMELINE
 Case: CLOUDCORE-2024-INS-001
 
-=== PHASE 1: PREPARATION ===
-[Date/Time from Lab 1] - Files created on USB
+=== PHASE 1: MALWARE INSTALLATION ===
+[2009-12-05 02:11:23 UTC] - Keylogger installed and started
 
-- Evidence: [from USB_Imaging file list]
-- Suspicious files: [project_secrets.zip, client_database.csv, etc.]
-- Timestamp correlation: [were these created same day?]
+- Evidence: ToolKeylogger.exe process (PID 280) from Memory_Forensics
+- Parent process: explorer.exe (normal user process)
+- Network libraries loaded: WININET.dll, urlmon.dll, iertutil.dll
+- Indicates: [suspect's system compromised with keylogger for credential theft]
 
-=== PHASE 2: ENCRYPTION/STAGING ===
-[Date/Time from Lab 2] - Memory dump captured
+=== PHASE 2: DATA STAGING ===
+[2009-12-05 to 2009-12-06] - Files copied to USB
 
-- TrueCrypt.exe running: [yes/no, PID]
-- Network connections: [IRC port 6667?, external IPs?]
-- Timestamp: [when was memory dumped?]
-- Indicates: [suspect was encrypting/preparing data]
+- Evidence: project_secrets.txt (inode 375) from USB_Imaging
+- Content: Database credentials (db_pass=TempPass_2009!) and client data
+- Backup copies: project_secrets_backup.txt (inode 1715)
+- Email draft: email_draft.txt (inode 663) about security concerns
+- Indicates: [suspect staging sensitive data for exfiltration]
 
-=== PHASE 3: COMMUNICATION ===
-[Date/Time from Lab 4] - Emails sent
+=== PHASE 3: EMAIL EXFILTRATION ===
+[2009-12-07 09:45:00 UTC] - Data sent via email
 
-- Recipients: [external email addresses]
-- Subject: [what was said?]
-- Attachments: [file names, sizes]
-- When: [specific timestamps]
-- Indicates: [suspect communicating with accomplice]
+- Evidence: Email from Email_Logs analysis
+- Sender: alex@cloudcore.com
+- Recipient: exfil@personal.com (external personal account)
+- Subject: "Project Update" (suspicious subject line)
+- Attachment: project_secrets.zip (matches USB content)
+- Indicates: [intentional data exfiltration to external address]
 
-=== PHASE 4: EXFILTRATION ===
-[Date/Time from Lab 5] - Network traffic
+=== PHASE 4: NETWORK ACTIVITY ===
+[2009-12-06 10:30-10:45 UTC] - Network traffic analysis
 
-- IRC C2 commands received: [yes/no]
-- Large data transfer detected: [size, destination]
-- Duration: [how long did transfer take?]
-- When: [specific timestamp]
-- Indicates: [data being stolen over network]
+- Evidence: Network_Analysis PCAP shows keylogger C2 communication
+- Keylogger exfiltration: Captured keystrokes sent to attacker server
+- Timeline: Overlaps with USB staging and email preparation
+- Indicates: [automated credential theft supporting insider attack]
 
-=== PHASE 5: CLEANUP ===
-[Date/Time from Lab 1] - Files deleted
+=== PHASE 5: COVER-UP ===
+[2009-12-07 after email] - Files deleted from USB
 
-- Deleted files: [list what was deleted]
-- When: [after exfiltration?]
-- Indicates: [suspect covering tracks]
+- Evidence: Multiple deleted files with "*" prefix in USB_Imaging
+- Deleted: project_secrets.txt, email_draft.txt, flag_backup.txt
+- Pattern: Intentional deletion of incriminating evidence
+- Indicates: [suspect attempting to hide tracks after exfiltration]
 
 === CONCLUSION ===
-Timeline shows coordinated, planned attack:
+Timeline shows coordinated insider attack assisted by external malware:
 
-1. Prepare data on USB
-2. Load into memory
-3. Encrypt with TrueCrypt
-4. Email to accomplice
-5. Exfiltrate over network
-6. Delete traces
-Total duration: [X hours/days]
+1. Keylogger installed (external compromise)
+2. Credentials captured via keylogger
+3. Sensitive data staged on USB using stolen credentials
+4. Data exfiltrated via personal email account
+5. Evidence deleted to cover tracks
+Total duration: ~2 days (2009-12-05 to 2009-12-07)
 ```
 
 ---
@@ -207,29 +206,39 @@ Show how findings from different labs support each other.
 ```
 EVIDENCE CORRELATION MATRIX
 
-Finding: "project_secrets.zip" file
+Finding: "project_secrets.txt" with database credentials
 
-- Lab 1: Found in recovered files (inode 257)
-- Lab 1: File deleted (marked with *)
-- Lab 4: Referenced in email subject line
-- Lab 5: Large transfer (50MB) to external server
-→ CONCLUSION: Same file from USB → emailed → exfiltrated
+- Lab 1: Found in recovered files (inode 375) on USB
+- Lab 1: Contains db_pass=TempPass_2009! and MegaCorp client data
+- Lab 1: Backup copy created (inode 1715) before deletion
+- Lab 4: Referenced in email attachment as project_secrets.zip
+→ CONCLUSION: Same sensitive file staged on USB → emailed → exfiltrated
 
-Finding: TrueCrypt process
+Finding: ToolKeylogger.exe malware process
 
-- Lab 2: TrueCrypt.exe running (PID 2048)
-- Lab 2: Network connections from PID 2048 to 8.8.8.8:6667
-- Lab 1: encrypted_container.dat found on USB
-→ CONCLUSION: Suspect used TrueCrypt to encrypt stolen data
+- Lab 2: ToolKeylogger.exe running (PID 280) under explorer.exe
+- Lab 2: Network libraries loaded (WININET.dll, urlmon.dll) for exfiltration
+- Lab 2: Process started 2009-12-05 02:11:23 UTC
+- Lab 4: Email draft mentions "unusual network activity" 
+→ CONCLUSION: Suspect's system compromised, enabling credential theft
 
-Finding: IRC C2 Communication
+Finding: Email exfiltration to external account
 
-- Lab 2: Memory shows connection to port 6667
-- Lab 5: Network capture shows IRC traffic
-- Lab 5: Commands visible in pcap (if readable)
-→ CONCLUSION: Malware or direct attacker control via IRC
+- Lab 4: Email from alex@cloudcore.com to exfil@personal.com
+- Lab 4: Subject "Project Update" with project_secrets.zip attachment
+- Lab 4: Timestamp 2009-12-07 09:45:00 UTC
+- Lab 1: Attachment content matches deleted USB files
+→ CONCLUSION: Direct evidence of intentional data theft
 
-STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
+Finding: Keylogger C2 communication
+
+- Lab 5: Network traffic shows keylogger data exfiltration
+- Lab 5: Timeline overlaps with USB staging period
+- Lab 2: Memory analysis confirms keylogger network capability
+- Lab 4: Email draft shows suspect detected unusual activity
+→ CONCLUSION: External malware enabled insider data theft
+
+STRONG CORRELATIONS = INSIDER ATTACK ENABLED BY EXTERNAL MALWARE
 ```
 
 ---
@@ -263,34 +272,35 @@ STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
 
 #### Lab: Memory Forensics
 
-- OS version: [Windows XP/etc]
+- OS version: [Windows XP SP3]
 - Total processes: [number]
-- TrueCrypt.exe: [running, PID, timestamp]
-- Network connections: [IRC, external IPs]
-- Key finding: [smoking gun?]
-
-#### Lab: GUI Analysis (Autopsy)
-
-- Total files analyzed: [number]
-- Timeline anomalies: [suspicious clusters?]
-- Metadata patterns: [what do timestamps show?]
-- Key finding: [what did GUI reveal that CLI didn't?]
+- ToolKeylogger.exe: [running, PID 280, started 2009-12-05 02:11:23 UTC]
+- Network libraries: [WININET.dll, urlmon.dll, iertutil.dll loaded]
+- Key finding: [Keylogger process stealing credentials]
 
 #### Lab: Email Analysis
 
 - Total emails: [number]
-- External recipients: [list addresses]
-- Suspicious subjects: [what was discussed?]
-- Attachments: [file names, sizes, when sent?]
-- Key finding: [proof of communication?]
+- External recipients: [exfil@personal.com]
+- Suspicious subjects: ["Project Update" for data exfiltration]
+- Attachments: [project_secrets.zip, matches USB content]
+- Key finding: [Direct evidence of intentional data theft]
 
 #### Lab: Network Analysis
 
 - Total packets: [number]
-- IRC C2 traffic: [yes/no, server IP, timestamps]
-- Data exfiltration: [yes/no, size, destination, when?]
-- DNS queries: [suspicious domains?]
-- Key finding: [proof of theft?]
+- Keylogger C2 traffic: [yes/no, timestamps, data volume]
+- Data exfiltration: [yes/no, captured keystrokes, destination]
+- DNS queries: [any suspicious domains?]
+- Key finding: [Keylogger exfiltrating credentials to attacker]
+
+#### Lab: Network Analysis
+
+- Total packets: [number]
+- Keylogger C2 traffic: [yes/no, timestamps, data volume]
+- Data exfiltration: [yes/no, captured keystrokes, destination]
+- DNS queries: [any suspicious domains?]
+- Key finding: [Keylogger exfiltrating credentials to attacker]
 
 ### Timeline (1-2 pages)
 
@@ -327,25 +337,28 @@ STRONG CORRELATIONS = PLANNED, COORDINATED ATTACK
 COMPLETE FORENSIC INVESTIGATION CHECKLIST
 
 EVIDENCE COLLECTION & CoC:
+
 ☐ Master chain_of_custody.csv contains all 5 labs
 ☐ All evidence hashes documented (MD5 and SHA256)
 ☐ Analyst names and dates recorded
 ☐ Evidence descriptions clear and specific
 
 ANALYSIS DOCUMENTATION:
+
 ☐ Master analysis_log.csv contains all commands from 5 labs
 ☐ All timestamps UTC format
 ☐ All commands include output redirection filenames
 ☐ Notes explain purpose of each command
 
 FINDINGS:
+
 ☐ USB_Imaging: Files listed and deleted files recovered
 ☐ Memory_Forensics: Suspicious processes and network connections documented
-☐ Autopsy_GUI: Timeline and artifact analysis complete
 ☐ Email_Logs: Headers, keywords, and recipients identified
-☐ Network_Analysis: IRC, DNS, and exfiltration analysed
+☐ Network_Analysis: Keylogger C2, DNS, and exfiltration analysed
 
 SYNTHESIS:
+
 ☐ Master timeline created (MASTER_TIMELINE.txt)
 ☐ Correlation matrix shows evidence relationships (CORRELATION_MATRIX.txt)
 ☐ Professional report written (INVESTIGATION_REPORT.md)
@@ -353,6 +366,7 @@ SYNTHESIS:
 ☐ Timeline is consistent across all labs
 
 REPORT QUALITY:
+
 ☐ Professional tone (formal, objective)
 ☐ Evidence cited properly (specific file names, PIDs, timestamps)
 ☐ Conclusion is supported by evidence
@@ -361,6 +375,7 @@ REPORT QUALITY:
 ☐ Grammar and spelling correct
 
 SUBMISSION:
+
 ☐ All files in cases/Final_Report/
 ☐ Report is readable (PDF or Markdown)
 ☐ CSV files are valid (can open in Excel/spreadsheet)
@@ -447,7 +462,7 @@ Questions to answer:
 
 ## 📚 Summary
 
-This lab brings all 5 previous investigations together into a unified case narrative. Your report should answer:
+This lab brings all 4 previous investigations together into a unified case narrative. Your report should answer:
 
 **THE 5 W's + H:**
 
@@ -462,7 +477,7 @@ If your report answers all 6 questions with supporting evidence, you've written 
 
 ---
 
-**Congratulations on completing all 6 labs!**
+**Congratulations on completing all 5 labs!**
 
 You've now experienced a complete forensic investigation from evidence collection through professional reporting. This is what real-world digital forensics looks like.
 
