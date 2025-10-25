@@ -11,6 +11,5 @@ This project uses public DFIR training datasets for educational purposes. All re
 
 ## Other Datasets
 - Disk/PCAP/Logs: Generated samples or public Wireshark captures.
-- Timeline Images: Custom (forensic_case_timeline.png/svg).
 
 For full terms, visit https://digitalcorpora.org/. Update as new files added.
