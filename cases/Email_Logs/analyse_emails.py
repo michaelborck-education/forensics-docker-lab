@@ -66,5 +66,5 @@ def analyze_emails(emails):
         print()
 
 if __name__ == "__main__":
-    emails = parse_mbox("evidence/mail.mbox")
+    emails = parse_mbox("/evidence/mail.mbox")
     analyze_emails(emails)

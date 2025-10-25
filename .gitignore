@@ -21,7 +21,7 @@ _archive
 
 # Docker and temp
 .git/
-*.log
+#*.log
 .DS_Store
 
 # IDE/editor
